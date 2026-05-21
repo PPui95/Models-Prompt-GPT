@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Model Prompt Generator v2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#0f0f0f;color:#f0f0f0}
+.header{background:#1a0808;border-bottom:2px solid #CC0000;padding:14px 20px;display:flex;align-items:center;gap:12px}
+.header-icon{width:42px;height:42px;background:#CC0000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.header h1{font-size:17px;font-weight:700;color:#fff}
+.header p{font-size:11px;color:#aaa;margin-top:2px}
+.layout{display:flex}
+.sidebar{width:250px;min-width:250px;background:#161616;border-right:1px solid #2a2a2a;padding:12px;overflow-y:auto}
+.sidebar-label{font-size:10px;font-weight:700;color:#CC0000;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px;padding-bottom:5px;border-bottom:1px solid #2a2a2a}
+.sidebar-section{margin-bottom:16px}
+.style-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.style-btn{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:7px;padding:6px 4px;cursor:pointer;text-align:center;font-size:10px;color:#bbb;transition:all .15s}
+.style-btn:hover{border-color:#CC0000;color:#fff;background:#2a1010}
+.style-btn.active{background:#CC0000;border-color:#CC0000;color:#fff;font-weight:700}
+.style-icon{font-size:15px;display:block;margin-bottom:2px}
+.scene-list{display:flex;flex-direction:column;gap:3px}
+.scene-item{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:5px;padding:7px 9px;cursor:pointer;font-size:11px;color:#bbb;display:flex;align-items:center;gap:6px;transition:all .15s}
+.scene-item:hover{background:#252525;border-color:#444;color:#fff}
+.scene-item.active{background:#2a0808;border-color:#CC0000;color:#ff8080;font-weight:600}
+.scene-dot{width:5px;height:5px;border-radius:50%;background:#333;flex-shrink:0}
+.scene-item.active .scene-dot{background:#CC0000}
+.content{flex:1;padding:16px;min-width:0}
+/* Options bar */
+.options-bar{background:#161616;border:1px solid #2a2a2a;border-radius:10px;padding:12px 14px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.opt-group{display:flex;flex-direction:column;gap:5px;min-width:120px}
+.opt-label{font-size:10px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:.8px}
+.opt-row{display:flex;gap:5px;flex-wrap:wrap}
+.opt-btn{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:6px;padding:5px 10px;font-size:11px;color:#bbb;cursor:pointer;transition:all .15s;white-space:nowrap}
+.opt-btn:hover{border-color:#555;color:#fff}
+.opt-btn.active{background:#CC0000;border-color:#CC0000;color:#fff;font-weight:700}
+.opt-btn.active-blue{background:#1a237e;border-color:#3f51b5;color:#90caf9;font-weight:700}
+/* Tabs */
+.tab-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.tab-btn{background:#1e1e1e;border:1px solid #2a2a2a;border-radius:20px;padding:6px 13px;font-size:12px;color:#888;cursor:pointer;transition:all .15s}
+.tab-btn:hover{border-color:#555;color:#fff}
+.tab-btn.active{background:#CC0000;border-color:#CC0000;color:#fff;font-weight:700}
+/* Stats */
+.stats-row{display:flex;gap:8px;margin-bottom:14px}
+.stat-card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:9px 13px;flex:1}
+.stat-num{font-size:20px;font-weight:800;color:#CC0000}
+.stat-label{font-size:10px;color:#555;margin-top:1px}
+/* Prompt card */
+.prompt-card{background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:18px}
+.prompt-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.prompt-title{font-size:16px;font-weight:700;color:#fff}
+.prompt-subtitle{font-size:11px;color:#888;margin-top:2px}
+.prompt-badge{background:#CC0000;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.section-label{font-size:10px;font-weight:700;color:#C9A84C;text-transform:uppercase;letter-spacing:1px}
+.prompt-text{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:8px;padding:13px;font-size:12px;line-height:1.8;color:#ddd;font-family:'Courier New',monospace;white-space:pre-wrap;word-break:break-word;margin-bottom:12px}
+/* Thai summary */
+.thai-summary{background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;padding:12px;margin-bottom:12px}
+.thai-summary-title{font-size:10px;font-weight:700;color:#4CAF50;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.thai-row{display:flex;gap:7px;margin-bottom:6px;align-items:flex-start}
+.thai-tag{background:#1a3a1a;color:#4CAF50;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;white-space:nowrap;flex-shrink:0;min-width:52px;text-align:center}
+.thai-val{font-size:12px;color:#c8e6c9;line-height:1.4}
+/* BG Upload */
+.bg-upload-section{background:#0a0a1a;border:1px solid #2a2a3a;border-radius:8px;padding:12px;margin-bottom:12px}
+.bg-upload-title{font-size:10px;font-weight:700;color:#7986CB;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.bg-upload-area{border:2px dashed #2a2a3a;border-radius:7px;padding:12px;text-align:center;cursor:pointer;transition:all .2s}
+.bg-upload-area:hover,.bg-upload-area.has-image{border-color:#7986CB;background:#0d0d22}
+.bg-preview{display:flex;align-items:center;gap:9px}
+.bg-preview-img{width:55px;height:40px;object-fit:cover;border-radius:5px;border:1px solid #2a2a3a}
+.bg-preview-info{flex:1;text-align:left}
+.bg-preview-name{font-size:11px;color:#fff;font-weight:600}
+.bg-preview-sub{font-size:10px;color:#777;margin-top:1px}
+.bg-clear-btn{background:none;border:1px solid #333;border-radius:5px;color:#888;font-size:11px;padding:3px 7px;cursor:pointer}
+.bg-clear-btn:hover{border-color:#CC0000;color:#CC0000}
+.bg-placeholder{color:#555;font-size:12px}
+.bg-placeholder span{display:block;font-size:20px;margin-bottom:3px}
+.bg-note{font-size:10px;color:#444;margin-top:6px}
+/* Buttons */
+.btn-row{display:flex;gap:7px;flex-wrap:wrap}
+.btn{border:none;border-radius:7px;padding:8px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary{background:#CC0000;color:#fff}
+.btn-primary:hover{background:#aa0000}
+.btn-secondary{background:#1e1e1e;border:1px solid #333;color:#ccc}
+.btn-secondary:hover{background:#282828;color:#fff}
+.btn-gold{background:#C9A84C;color:#000}
+.btn-gold:hover{background:#b8963e}
+/* Custom form */
+.custom-card{background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:18px}
+.custom-card h3{font-size:13px;font-weight:700;color:#C9A84C;margin-bottom:12px}
+.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.input-group{display:flex;flex-direction:column;gap:4px}
+.input-label{font-size:10px;color:#777;font-weight:700;text-transform:uppercase}
+.input-field{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;padding:7px 9px;font-size:12px;color:#fff;outline:none;width:100%;transition:border .15s}
+.input-field:focus{border-color:#CC0000}
+.input-field option{background:#1a1a1a}
+/* Howto */
+.howto-card{background:#161616;border:1px solid #2a2a2a;border-radius:12px;padding:18px}
+.howto-card h3{font-size:13px;font-weight:700;color:#C9A84C;margin-bottom:12px}
+.step{margin-bottom:10px;font-size:13px;color:#ccc;line-height:1.6}
+.step strong{color:#CC0000}
+.tip-box{background:#0d0d0d;border:1px solid #2a2a2a;border-radius:7px;padding:12px;margin-top:12px}
+.tip-title{color:#C9A84C;font-weight:700;font-size:12px;margin-bottom:7px}
+.tip{font-size:11px;color:#aaa;margin-bottom:4px}
+/* Toast */
+.toast{position:fixed;bottom:18px;right:18px;background:#C9A84C;color:#000;padding:9px 16px;border-radius:7px;font-size:13px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;z-index:9999}
+.toast.show{opacity:1}
+.divider{border:none;border-top:1px solid #2a2a2a;margin:12px 0}
+.empty-state{text-align:center;padding:50px 20px;color:#444}
+.empty-icon{font-size:44px;margin-bottom:9px}
+/* Size info badge */
+.size-badge{display:inline-flex;align-items:center;gap:5px;background:#0d1a2a;border:1px solid #1a3a5a;border-radius:6px;padding:4px 10px;font-size:11px;color:#90caf9;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-icon">✨</div>
+  <div><h1>Model Prompt Generator v2</h1><p>Gen รูปนางแบบ/นายแบบ ด้วย ChatGPT 4o — ครบทุก Option</p></div>
+</div>
+
+<div class="layout">
+<div class="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">🎨 Style</div>
+    <div class="style-grid" id="styleGrid"></div>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-label">📍 ฉาก</div>
+    <div class="scene-list" id="sceneList"></div>
+  </div>
+</div>
+
+<div class="content">
+  <!-- OPTIONS BAR -->
+  <div class="options-bar">
+    <div class="opt-group">
+      <div class="opt-label">👤 เพศ</div>
+      <div class="opt-row">
+        <div class="opt-btn active" id="g-female" onclick="setGender('female')">👩 หญิง</div>
+        <div class="opt-btn" id="g-male" onclick="setGender('male')">👨 ชาย</div>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">🖼 มุมกล้อง</div>
+      <div class="opt-row">
+        <div class="opt-btn active" id="fr-full" onclick="setFrame('full')">เต็มตัว</div>
+        <div class="opt-btn" id="fr-half" onclick="setFrame('half')">ครึ่งตัว</div>
+        <div class="opt-btn" id="fr-close" onclick="setFrame('close')">ใกล้หน้า</div>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">👥 คนในรูป</div>
+      <div class="opt-row">
+        <div class="opt-btn active" id="sub-ref" onclick="setSubject('ref')">📎 แนบรูป</div>
+        <div class="opt-btn" id="sub-gen" onclick="setSubject('gen')">🎨 ให้ AI สร้าง</div>
+      </div>
+    </div>
+    <div class="opt-group" id="countGroup">
+      <div class="opt-label">🔢 จำนวนคน</div>
+      <div class="opt-row">
+        <div class="opt-btn active" id="cnt-1" onclick="setCount(1)">1</div>
+        <div class="opt-btn" id="cnt-2" onclick="setCount(2)">2</div>
+        <div class="opt-btn" id="cnt-3" onclick="setCount(3)">3</div>
+        <div class="opt-btn" id="cnt-4" onclick="setCount(4)">4+</div>
+      </div>
+    </div>
+    <div class="opt-group">
+      <div class="opt-label">📐 ขนาดรูป</div>
+      <div class="opt-row">
+        <div class="opt-btn active" id="sz-fb" onclick="setSize('fb')">FB Post</div>
+        <div class="opt-btn" id="sz-reel" onclick="setSize('reel')">Reel/TikTok</div>
+        <div class="opt-btn" id="sz-ig" onclick="setSize('ig')">IG Post</div>
+        <div class="opt-btn" id="sz-yt" onclick="setSize('yt')">YouTube</div>
+        <div class="opt-btn" id="sz-sq" onclick="setSize('sq')">1:1</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num" id="statScenes">120+</div><div class="stat-label">ฉากทั้งหมด</div></div>
+    <div class="stat-card"><div class="stat-num">20</div><div class="stat-label">Styles</div></div>
+    <div class="stat-card"><div class="stat-num" id="statCopied">0</div><div class="stat-label">Copy แล้ว</div></div>
+  </div>
+
+  <div class="tab-row">
+    <div class="tab-btn active" id="tab-prompt" onclick="setTab('prompt')">📋 ดู Prompt</div>
+    <div class="tab-btn" id="tab-custom" onclick="setTab('custom')">✏️ ปรับเอง</div>
+    <div class="tab-btn" id="tab-howto" onclick="setTab('howto')">📖 วิธีใช้</div>
+  </div>
+
+  <div id="view-prompt">
+    <div id="promptOutput">
+      <div class="empty-state"><div class="empty-icon">👈</div><p style="font-size:14px;margin-bottom:5px">เลือก Style และฉากจากด้านซ้าย</p><p style="font-size:11px;color:#333">กดที่ชื่อฉากเพื่อดู Prompt</p></div>
+    </div>
+  </div>
+
+  <div id="view-custom" style="display:none">
+    <div class="custom-card">
+      <h3>✏️ ปรับ Prompt เองได้ทุกส่วน</h3>
+      <div class="input-grid">
+        <div class="input-group"><div class="input-label">ทรงผม</div>
+          <select class="input-field" id="c-hair">
+            <option value="long straight black hair, middle parted">ยาวตรง สีดำ</option>
+            <option value="short bob cut, jet black, sleek">บ็อบสั้น สีดำ</option>
+            <option value="long wavy hair with caramel highlights">ยาวหยัก ไฮไลต์</option>
+            <option value="high sleek ponytail">หางม้าสูง</option>
+            <option value="messy bun with face-framing strands">มวยสูง</option>
+            <option value="pixie cut, sleek and edgy">พิกซี่สั้น</option>
+            <option value="braided ponytail">เปียหางม้า</option>
+            <option value="shoulder-length with curtain bangs">ประบ่า ม่านหน้า</option>
+            <option value="short textured undercut, modern">ทรงสั้น Undercut ชาย</option>
+            <option value="medium length side-parted, neat">กลางแสกข้าง เรียบ ชาย</option>
+            <option value="short crew cut, professional">ทรงสั้นชาย Professional</option>
+          </select>
+        </div>
+        <div class="input-group"><div class="input-label">การแต่งหน้า/หน้า</div>
+          <select class="input-field" id="c-makeup">
+            <option value="natural minimal makeup, dewy glass skin">เนเชอรัล กลอส</option>
+            <option value="full glam, bold red lips, sculpted contour">Full glam ลิปแดง</option>
+            <option value="Korean glass skin, gradient pink lips">Korean glass skin</option>
+            <option value="smokey eye, nude matte lips">Smokey eye</option>
+            <option value="fresh no-makeup look">No-makeup look</option>
+            <option value="sun-kissed bronzed glow">Bronzed glow</option>
+            <option value="clean groomed look, light foundation, defined brows">ชายแต่งหน้าเบา</option>
+            <option value="natural masculine skin, slight groom">ชายหน้าธรรมชาติ</option>
+          </select>
+        </div>
+        <div class="input-group"><div class="input-label">เสื้อผ้า</div>
+          <select class="input-field" id="c-outfit">
+            <option value="crisp white blazer with tailored black trousers">สูทขาว กางเกงดำ</option>
+            <option value="deep red elegant evening gown">เดรสยาวสีแดง</option>
+            <option value="casual white t-shirt with light blue jeans">ยีนส์ เสื้อยืดขาว</option>
+            <option value="floral wrap midi dress in soft pink">เดรสลายดอก</option>
+            <option value="sporty activewear set in coral and white">ชุดกีฬาสีคอรัล</option>
+            <option value="navy blue business suit, white shirt, tie">สูทกรมท่าชาย ไทด์</option>
+            <option value="casual smart-casual outfit, chinos and polo shirt">Polo + กางเกง Chinos</option>
+            <option value="streetwear outfit, oversized hoodie, cargo pants">Streetwear Hoodie Cargo</option>
+          </select>
+        </div>
+        <div class="input-group"><div class="input-label">ฉาก</div>
+          <select class="input-field" id="c-scene">
+            <option value="modern glass office with city skyline view">ออฟฟิศกระจก วิวเมือง</option>
+            <option value="luxury hotel lobby with marble floors">ล็อบบี้โรงแรมหรู</option>
+            <option value="cozy outdoor café terrace with lush greenery">คาเฟ่กลางแจ้ง</option>
+            <option value="tropical beach with crystal clear turquoise water">ชายหาดทะเลใส</option>
+            <option value="rooftop restaurant at golden hour">Rooftop ยามพระอาทิตย์ตก</option>
+            <option value="minimalist white photography studio">สตูดิโอขาว</option>
+            <option value="night city streets with neon lights">เมืองกลางคืน นีออน</option>
+          </select>
+        </div>
+        <div class="input-group"><div class="input-label">แสง</div>
+          <select class="input-field" id="c-light">
+            <option value="warm golden hour sunlight">Golden hour</option>
+            <option value="soft professional studio strobe lighting">Studio strobe</option>
+            <option value="bright natural daylight, fresh and airy">แสงธรรมชาติ</option>
+            <option value="moody dramatic side lighting">Dramatic moody</option>
+            <option value="cool blue night lighting">Night blue</option>
+          </select>
+        </div>
+        <div class="input-group"><div class="input-label">โพส</div>
+          <select class="input-field" id="c-pose">
+            <option value="confident smile, looking directly at camera">มั่นใจ มองกล้อง</option>
+            <option value="candid natural laugh">หัวเราะธรรมชาติ</option>
+            <option value="sitting gracefully, hands folded">นั่งอย่างสง่า</option>
+            <option value="walking forward naturally">กำลังเดิน</option>
+            <option value="standing with one hand on hip">มือเท้าสะเอว</option>
+          </select>
+        </div>
+      </div>
+      <div class="btn-row" style="margin-bottom:12px">
+        <button class="btn btn-primary" onclick="genCustom()">✨ สร้าง Prompt</button>
+        <button class="btn btn-secondary" onclick="randomCustom()">🎲 สุ่มทั้งหมด</button>
+      </div>
+      <div id="customOut"></div>
+    </div>
+  </div>
+
+  <div id="view-howto" style="display:none">
+    <div class="howto-card">
+      <h3>📖 วิธีใช้งาน</h3>
+      <div class="step"><strong>Step 1:</strong> ตั้งค่า Option ด้านบน — เพศ / มุมกล้อง / จำนวนคน / ขนาดรูป</div>
+      <div class="step"><strong>Step 2:</strong> เลือก Style ซ้ายบน → กดชื่อฉาก → ดู Prompt ขึ้นมาทางขวา</div>
+      <div class="step"><strong>Step 3:</strong> (ถ้า "แนบรูป") เปิด ChatGPT → กด 📎 แนบรูปนางแบบ/นายแบบ</div>
+      <div class="step"><strong>Step 4:</strong> กด "📋 Copy Prompt" → วางใน ChatGPT → Enter</div>
+      <div class="tip-box">
+        <div class="tip-title">💡 Tips</div>
+        <div class="tip">• "แนบรูป" = ChatGPT จะล็อกหน้าตามรูปที่คุณแนบ</div>
+        <div class="tip">• "ให้ AI สร้าง" = ChatGPT จะสร้างตัวละครใหม่ตามที่ระบุใน Prompt</div>
+        <div class="tip">• ถ้าหน้าเปลี่ยน เพิ่ม: "MUST keep identical face from photo"</div>
+        <div class="tip">• แนบรูปฉากหลังได้ในช่อง "พื้นหลังที่ต้องการ"</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="toast" id="toast">✅ Copy แล้ว! ไปวางใน ChatGPT ได้เลย</div>
+<script>
+// ===== GLOBAL STATE =====
+var gender = 'female';
+var frame = 'full';
+var subject = 'ref';
+var count = 1;
+var imgSize = 'fb';
+var currentStyle = 'professional';
+var currentScene = null;
+var currentTab = 'prompt';
+var copiedCount = 0;
+var bgImageData = null;
+var bgImageName = '';
+
+// ===== SIZE CONFIG =====
+var SIZES = {
+  fb:   { label:'Facebook Post', ratio:'4:5', px:'1080x1350px', note:'โพสต์ Facebook แนวตั้ง' },
+  reel: { label:'Reel / TikTok', ratio:'9:16', px:'1080x1920px', note:'Reels, TikTok, Shorts' },
+  ig:   { label:'IG Square', ratio:'1:1', px:'1080x1080px', note:'Instagram โพสต์สี่เหลี่ยม' },
+  yt:   { label:'YouTube Thumbnail', ratio:'16:9', px:'1280x720px', note:'YouTube thumbnail' },
+  sq:   { label:'Square 1:1', ratio:'1:1', px:'1080x1080px', note:'ทั่วไป Square' }
+};
+
+// ===== DATA =====
+var DATA = {
+  professional: { label:"💼 Professional", scenes: [
+    { name:"Office Meeting Room", hair:"High sleek ponytail, jet black", makeup:"Natural professional makeup, neutral lips", outfit:"Crisp white blouse, tailored navy blazer, pearl earrings", scene:"Modern glass meeting room, city skyline view", light:"Soft natural daylight, floor-to-ceiling windows", pose:"Standing confidently, arms crossed, slight smile", th_hair:"หางม้าสูง เรียบ สีดำ", th_makeup:"เนเชอรัล คิ้วชัด ลิปนู้ด", th_outfit:"เสื้อเชิ้ตขาว สูทกรมท่า ต่างหูมุก", th_scene:"ห้องประชุมกระจก วิวเมือง", th_light:"แสงธรรมชาตินุ่ม", th_pose:"ยืนมั่นใจ แขนกอด ยิ้มเบา" },
+    { name:"Executive Desk", hair:"Shoulder-length blowout, dark brown", makeup:"Polished makeup, muted rose lips", outfit:"Burgundy structured blazer, silk blouse, gold jewelry", scene:"Luxurious executive office, bookshelves, desk lamp", light:"Warm tungsten lamp mixed with daylight", pose:"Sitting at desk, hands clasped, confident eye contact", th_hair:"ประบ่า บลอว์เอาต์ น้ำตาลเข้ม", th_makeup:"คอนทัวร์เบา ลิปชมพูอมแดง", th_outfit:"สูทเบอร์กันดี เสื้อไหม เครื่องทอง", th_scene:"ห้องทำงาน Executive โต๊ะไม้ ชั้นหนังสือ", th_light:"ไฟโคมอบอุ่น + แสงธรรมชาติ", th_pose:"นั่งโต๊ะ มือประกบ มองกล้อง" },
+    { name:"Business Presentation", hair:"Side-parted, long straight, jet black", makeup:"Bold red lip, defined eye makeup", outfit:"Charcoal grey power suit, white shirt, pointed heels", scene:"Modern conference room, presentation screen", light:"Bright even overhead corporate lighting", pose:"Standing beside screen, one hand pointing", th_hair:"แสกข้าง ยาวตรง ดำสนิท", th_makeup:"ลิปแดงจัด ตาชัด", th_outfit:"สูทเทาเข้ม เสื้อขาว รองเท้าหัวแหลม", th_scene:"ห้องประชุม มีจอ Presentation", th_light:"แสงออฟฟิศสว่างสม่ำเสมอ", th_pose:"ยืนชี้จอ ดูมีส่วนร่วม" },
+    { name:"Corporate Lobby", hair:"French twist updo, elegant", makeup:"Gold shimmer eyeshadow, nude glossy lips", outfit:"Black structured midi dress, gold earrings, strapped heels", scene:"Grand lobby, marble floors, modern art installation", light:"Dramatic architectural lighting", pose:"Walking through lobby, portfolio in hand", th_hair:"มวยฝรั่งเศส หรูหรา", th_makeup:"อายแชโดว์ทอง ลิปนู้ดกลอส", th_outfit:"เดรสดำ ต่างหูทองใหญ่ รองเท้าสายรัด", th_scene:"ล็อบบี้บริษัท พื้นหินอ่อน งานศิลป์", th_light:"ไฟสถาปัตย์ ขาวเย็น + อุ่น", th_pose:"เดินแบบ candid พอร์ตโฟลิโอในมือ" },
+    { name:"Rooftop Business Lunch", hair:"Low chignon bun, gold clip", makeup:"Warm glowy makeup, berry stained lips", outfit:"Camel wrap dress, blazer draped, gold watch", scene:"Rooftop restaurant terrace, Bangkok skyline", light:"Golden hour warm sunlight", pose:"Seated at table, champagne flute, sophisticated smile", th_hair:"มวยต่ำ เรียบ กิ๊บทอง", th_makeup:"กลอว์อบอุ่น บรอนซ์ ลิปเบอร์รี่", th_outfit:"เดรสพันสีคาเมล สูทพาด นาฬิกาทอง", th_scene:"Rooftop กรุงเทพ โต๊ะอาหารสวยงาม", th_light:"Golden hour อบอุ่น", th_pose:"นั่งโต๊ะ ถือแก้วแชมเปญ ยิ้มอ่อนโยน" }
+  ]},
+  casual: { label:"👗 Casual", scenes: [
+    { name:"Weekend Brunch", hair:"Messy bun with loose strands", makeup:"Fresh dewy skin, mascara, rosy cheeks", outfit:"Oversized cream linen shirt, high-waisted jeans, white sneakers", scene:"Bright airy brunch restaurant, rattan furniture, potted plants", light:"Bright natural morning sunlight", pose:"Laughing naturally, holding coffee cup with both hands", th_hair:"มวยสูงยุ่งๆ ธรรมชาติ", th_makeup:"ผิวกลอส มาสคาร่า แก้มชมพู", th_outfit:"เสื้อลินินครีม ยีนส์เอวสูง สนีกเกอร์ขาว", th_scene:"ร้านบรั้นช์สว่าง เฟอร์นิเจอร์หวาย ต้นไม้", th_light:"แสงเช้าสดใส", th_pose:"หัวเราะ ถือแก้วกาแฟสองมือ" },
+    { name:"Shopping Day", hair:"Half-up half-down with soft waves, silk scrunchie", makeup:"Light BB cream, glossy lips, mascara", outfit:"Pastel lavender hoodie, white mini skirt, platform sneakers", scene:"Trendy shopping district, colorful storefronts", light:"Bright midday sunlight", pose:"Holding shopping bags, turning to smile at camera", th_hair:"ครึ่งขึ้นครึ่งลง ลอนนุ่ม สครันชี่ผ้าไหม", th_makeup:"BB cream กลอส", th_outfit:"ฮู้ดม่วง Pastel สเกิร์ตขาว สนีกเกอร์พื้นสูง", th_scene:"ย่านช้อปปิ้ง ร้านค้าสีสัน", th_light:"แสงกลางวันสดใส", th_pose:"ถุงช้อปปิ้ง หันยิ้มกล้อง" },
+    { name:"Park Afternoon", hair:"Low ponytail, natural, few flyaways", makeup:"SPF tinted moisturizer, rosy cheeks", outfit:"Striped linen wide-leg pants, fitted white tank, sneakers", scene:"Lush green park, tall trees, dappled shade", light:"Beautiful filtered sunlight through tree canopy", pose:"Sitting on grass, leaning back on hands, laughing freely", th_hair:"หางม้าต่ำ ผมหลุดนิดหน่อย", th_makeup:"กันแดดรองพื้น แก้มสีชมพู", th_outfit:"กางเกงลินินลาย Wide-leg เสื้อยืดขาว สนีกเกอร์", th_scene:"สวนสาธารณะร่มรื่น ต้นไม้ใหญ่", th_light:"แสงลอดกิ่งไม้สวย", th_pose:"นั่งสนาม เอนหลังมือ หัวเราะอิสระ" }
+  ]},
+  luxury: { label:"💎 Luxury", scenes: [
+    { name:"5-Star Hotel Balcony", hair:"Hollywood waves, long, dark, lustrous", makeup:"Full glamour, smokey amber eye, sculpted contour, nude glossy lips", outfit:"Silk champagne slip dress, diamond jewelry, strappy heels", scene:"Private balcony, infinity pool, tropical ocean view, sunset", light:"Dramatic golden sunset, orange pink horizon, backlit glow", pose:"Leaning on marble railing, wind in hair, gazing at horizon", th_hair:"เวฟฮอลลีวูด ยาว ดำเงางาม", th_makeup:"ตาเต็ม Smokey คอนทัวร์ ลิปนู้ดกลอส", th_outfit:"เดรสไหมสีแชมเปญ เพชร รองเท้าสายรัด", th_scene:"ระเบียงโรงแรม 5 ดาว สระอินฟินิตี้ วิวทะเล พระอาทิตย์ตก", th_light:"พระอาทิตย์ตกทอง Backlit", th_pose:"เอนราวบัลโคนีหินอ่อน มองขอบฟ้า" },
+    { name:"Private Yacht", hair:"Tousled long waves, sun-bleached highlights", makeup:"Bronzed sun-kissed, gold shimmer, peachy coral lips", outfit:"White broderie anglaise resort set, sun hat, gold bracelet", scene:"Luxury yacht deck, deep blue sea, champagne on teak table", light:"Mediterranean midday sun, sparkle on ocean water", pose:"Sitting at yacht bow, looking out to sea, pure joy", th_hair:"เวฟยาวยุ่งๆ ไฮไลต์แสงแดด", th_makeup:"ผิวบรอนซ์ กลิตเตอร์ทอง ลิปคอรัล", th_outfit:"ชุด Resort ขาวปักลาย หมวกใบใหญ่ กำไลทอง", th_scene:"ดาดฟ้าเรือยอร์ช ทะเลน้ำเงินเข้ม แชมเปญบนโต๊ะ", th_light:"แสงกลางวันเมดิเตอร์เรเนียน", th_pose:"นั่งหัวเรือ มองทะเล ยิ้มสุขใจ" },
+    { name:"Luxury Penthouse Pool", hair:"Sleek wet-look hair, slicked back", makeup:"Waterproof bold red lip, natural glowing skin", outfit:"Designer swimsuit, flowing silk pareo, tortoiseshell sunglasses, gold jewelry", scene:"Rooftop infinity pool, city skyline 360 degrees, glass railings, sunset", light:"Golden hour, warm apricot sky, reflections on pool water", pose:"Stepping out of pool, water glistening, confident over-shoulder look", th_hair:"ผมเปียกสลิกแบ็ค ดูดราม่า", th_makeup:"ลิปแดงกันน้ำ ผิวกลอว์", th_outfit:"ชุดว่ายน้ำดีไซเนอร์ ผ้าไหมพัน แว่น Tortoiseshell เครื่องประดับทอง", th_scene:"สระอินฟินิตี้ Penthouse วิว 360 พระอาทิตย์ตก", th_light:"Golden hour ท้องฟ้าสีแอปริคอต เงาสะท้อนน้ำ", th_pose:"ก้าวออกจากสระ น้ำเปล่งประกาย เหลียวหลัง มั่นใจ" }
+  ]},
+  korean: { label:"🌸 Korean", scenes: [
+    { name:"Cherry Blossom Park", hair:"Soft curtain bangs, long straight, subtle caramel highlights", makeup:"Korean glass skin, gradient cherry blossom lips, puppy liner", outfit:"Pastel pink maxi dress with lace, white cardigan, Mary Jane shoes", scene:"Korean park, cherry blossom bloom, pink petals falling, wooden bridge", light:"Soft diffused spring light, pink petal bokeh, dreamy", pose:"Catching falling petals, looking up softly, peaceful smile", th_hair:"ม่านหน้านุ่ม ยาวตรง ไฮไลต์คาราเมลอ่อน", th_makeup:"Glass skin Korean ลิป Gradient ชมพูซากุระ Puppy liner", th_outfit:"เดรสยาวชมพู Pastel ลูกไม้ คาร์ดิแกนขาว รองเท้า Mary Jane", th_scene:"สวนสาธารณะเกาหลี ซากุระบาน กลีบร่วง สะพานไม้ริมบึง", th_light:"แสงฤดูใบไม้ผลินุ่ม โบเก้กลีบซากุระ", th_pose:"รับกลีบซากุระร่วง มองขึ้น ยิ้มสงบ" },
+    { name:"K-Drama Rooftop", hair:"Windswept romantic waves, slightly messy", makeup:"Soft romantic Korean, flushed cheeks, pink tinted lips", outfit:"Oversized cream cable knit sweater, wide-leg jeans, canvas sneakers", scene:"Rooftop of Korean apartment building at night, city lights, fairy lights above", light:"Warm fairy lights glow, soft blue night sky, romantic", pose:"Hugging knees on rooftop chair, gazing at city lights, wistful", th_hair:"เวฟโรแมนติก ลมพัดเบาๆ", th_makeup:"Korean โรแมนติก แก้มชมพู ลิปสีชมพู", th_outfit:"สเวตเตอร์ถักครีม Oversized ยีนส์ขากว้าง รองเท้าผ้าใบ", th_scene:"ดาดฟ้าอพาร์ตเมนต์เกาหลีกลางคืน ไฟเมือง ไฟนางฟ้า", th_light:"ไฟนางฟ้าอบอุ่น ท้องฟ้าน้ำเงินนุ่ม", th_pose:"กอดเข่าบนเก้าอี้ดาดฟ้า มองไฟเมือง เหม่อฝัน" }
+  ]},
+  sporty: { label:"🏃 Sporty", scenes: [
+    { name:"Morning Run Trail", hair:"Sporty high ponytail, athletic headband", makeup:"Bare skin, natural flush, SPF only", outfit:"Color-blocked running set in coral and white, running shoes, sports watch", scene:"Forest trail at sunrise, golden light through trees, misty morning", light:"Sunrise warm golden light, atmospheric mist", pose:"Mid-stride running, hair flying, focused determined expression", th_hair:"หางม้าสูง Sporty คาดผม", th_makeup:"ผิวธรรมชาติ หน้าแดงจากออกกำลัง กันแดด", th_outfit:"ชุดวิ่ง Color-block คอรัล+ขาว รองเท้าวิ่ง นาฬิกากีฬา", th_scene:"ทางป่าสวยตอนพระอาทิตย์ขึ้น แสงทอง หมอกยามเช้า", th_light:"แสงพระอาทิตย์ขึ้นทอง + หมอก", th_pose:"วิ่งอยู่ ผมปลิว ดูมุ่งมั่น" },
+    { name:"Rooftop Yoga", hair:"Loose low bun, zen and natural", makeup:"Completely bare, clear radiant skin", outfit:"High-end yoga set in sage green, seamless leggings, crop bralette", scene:"Rooftop yoga deck at sunrise, bamboo plants, terracotta pots, city view", light:"Gentle soft sunrise light, peaceful golden tones", pose:"Warrior II yoga pose, arms stretched, eyes closed, serene", th_hair:"มวยต่ำหลวมๆ เซน ธรรมชาติ", th_makeup:"ไม่แต่งหน้า ผิวใสเรเดียนต์", th_outfit:"ชุดโยคะ Sage green Seamless กางเกงแน่น บรา Crop", th_scene:"ดาดฟ้าโยคะตอนพระอาทิตย์ขึ้น ไม้ไผ่ กระถางดินเผา วิวเมือง", th_light:"แสงพระอาทิตย์ขึ้นนุ่ม สีทองสงบ", th_pose:"ท่า Warrior II แขนกาง หลับตา แข็งแกร่งและสงบ" }
+  ]},
+  beach: { label:"🌊 Beach", scenes: [
+    { name:"Sunset Beach Walk", hair:"Long beach waves, salt-textured, golden highlights", makeup:"Sun-kissed bronzed glowing skin, waterproof mascara, coral lips", outfit:"Flowing boho beach dress in white, beaded sandals, shell anklet", scene:"Empty tropical beach at golden hour, wet sand reflecting sunset", light:"Spectacular beach sunset, orange pink purple sky, backlit glow", pose:"Walking along shoreline, sandals in hand, peaceful smile", th_hair:"เวฟยาว ผมทะเล ไฮไลต์แสงแดด", th_makeup:"ผิวบรอนซ์ Sun-kissed มาสคาร่ากันน้ำ ลิปคอรัล", th_outfit:"เดรสชายหาด Boho ขาว รองเท้าแตะลูกปัด กำไลเปลือกหอย", th_scene:"ชายหาดเขตร้อนว่างเปล่า Golden hour ทรายเปียกสะท้อน", th_light:"พระอาทิตย์ตกทะเลสวยมาก ส้ม ชมพู ม่วง Backlit", th_pose:"เดินตามแนวชายฝั่ง ถือรองเท้า ยิ้มสงบ" }
+  ]},
+  night: { label:"🌃 Night Out", scenes: [
+    { name:"Wine Bar Date Night", hair:"Elegant low side bun, Hollywood-inspired, face-framing waves", makeup:"Sophisticated evening, burgundy ombre lip, bronze smokey eye", outfit:"Deep emerald velvet midi dress, nude heels, gold clutch, statement earrings", scene:"Upscale wine bar, exposed brick, moody low lighting", light:"Warm moody wine bar lighting, intimate and sophisticated", pose:"Holding wine glass by stem, swirling slightly, engaged smile", th_hair:"มวยข้างต่ำ Hollywood เวฟเฟรมหน้า", th_makeup:"ลิปเบอร์กันดีไล่เฉด Smokey บรอนซ์ ผิวเรเดียนต์", th_outfit:"เดรสกำมะหยี่ Emerald กลมเข่า รองเท้านู้ด กระเป๋าทอง ต่างหู Statement", th_scene:"ไวน์บาร์หรู อิฐโชว์ ไฟมืด โชว์ขวดไวน์", th_light:"ไฟบาร์อบอุ่นมืด ดูสนิท หรู", th_pose:"ถือก้านแก้วไวน์ หมุนเบาๆ ยิ้มคุย" },
+    { name:"Neon City Streets", hair:"Voluminous blowout, tousled, rock-inspired", makeup:"Bold graphic colorful makeup, electric eye, glossy lip", outfit:"Sheer bodysuit, structured mini dress, thigh-high boots, leather jacket", scene:"Cyberpunk neon-lit city streets at night, neon signs, light rain", light:"Neon pink and blue reflections on wet pavement, futuristic", pose:"Mid-stride, looking up at neon signs, rain on jacket, cinematic", th_hair:"บลอว์เอาต์ฟู Rockstar ยุ่งๆ", th_makeup:"ตาสีสด กลอส คอนทัวร์ชัด", th_outfit:"บอดี้สูทโปร่งใส + เดรส Mini สูง บูตต้นขา แจ็คเก็ตหนัง", th_scene:"ถนนเมืองกลางคืน Cyberpunk ป้ายนีออน ฝนตกเบา", th_light:"นีออนสีชมพูน้ำเงินสะท้อนพื้นเปียก ดูอนาคต", th_pose:"เดินอยู่ มองขึ้นป้ายนีออน ฝนบนแจ็คเก็ต" }
+  ]},
+  nature: { label:"🌿 Nature", scenes: [
+    { name:"Lavender Field", hair:"Loose low braid with wildflowers", makeup:"Rosy natural look, flushed cheeks, dewy skin, pink stained lips", outfit:"Vintage floral prairie dress, straw hat, ankle boots, wicker basket", scene:"Endless purple lavender field, Provence, rolling hills, blue sky", light:"Warm afternoon light, slight golden haze, romantic and idyllic", pose:"Running through lavender rows, hat in hand, laughing, dress catching air", th_hair:"เปียต่ำหลวม สอดดอกไม้ป่า โรแมนติก", th_makeup:"แก้มชมพูธรรมชาติ ผิวกลอว์ ลิปชมพูอิ่ม", th_outfit:"เดรสลายดอกวินเทจ Prairie หมวกฟาง บูตข้อเท้า ตะกร้าหวาย", th_scene:"ทุ่งลาเวนเดอร์สีม่วง Provence เขาลูกคลื่น", th_light:"แสงบ่ายทอง หมอกบางๆ โรแมนติก", th_pose:"วิ่งผ่านแถวลาเวนเดอร์ ถือหมวก หัวเราะ เดรสปลิว" }
+  ]},
+  cafe: { label:"☕ Café", scenes: [
+    { name:"Specialty Coffee Bar", hair:"Effortless shoulder-length waves, natural", makeup:"Coffee shop casual, tinted SPF, mascara, peach gloss", outfit:"Relaxed chic, tapered beige trousers, fitted knit top, loafers", scene:"Award-winning specialty coffee bar, exposed concrete, espresso machine", light:"Natural light from large windows, warm wooden accents", pose:"Watching barista pour latte art, anticipatory delighted smile", th_hair:"เวฟประบ่า ธรรมชาติ ไม่จัด", th_makeup:"กันแดดรองพื้น มาสคาร่า กลอสพีช", th_outfit:"กางเกงเบจ เสื้อถักแน่น รองเท้า Loafer กระเป๋าหนังเล็ก", th_scene:"คาเฟ่สเปเชียลตี้ คอนกรีต เครื่องชงกาแฟมืออาชีพ", th_light:"แสงธรรมชาติจากหน้าต่างใหญ่ ไม้อบอุ่น", th_pose:"มองบาริสต้าเทลาเต้อาร์ต ยิ้มตั้งใจ" },
+    { name:"Rainy Day Café", hair:"Slightly damp from rain, natural waves, cozy", makeup:"Minimal pink-cheeked look, rosy and warm", outfit:"Oversized chunky knit in camel, warm scarf, jeans, ankle boots", scene:"Cozy café window seat, rain streaming down glass, warm interior", light:"Warm café interior light contrasting grey rainy window, hygge", pose:"Looking out rain-streaked window while holding hot drink, contemplative", th_hair:"ผมเปียกนิดจากฝน เวฟธรรมชาติ โคซี่", th_makeup:"แก้มชมพูจากอากาศ มินิมัล", th_outfit:"สเวตเตอร์ถักคาเมล Oversized ผ้าพันคออบอุ่น ยีนส์ บูตข้อเท้า", th_scene:"นั่งริมหน้าต่างคาเฟ่ ฝนไหลบนกระจก ข้างในอบอุ่น", th_light:"ไฟคาเฟ่อบอุ่น vs หน้าต่างฝนสีเทา Hygge", th_pose:"มองออกหน้าต่างฝน ถือแก้วร้อน ครุ่นคิด" }
+  ]},
+  travel: { label:"✈️ Travel", scenes: [
+    { name:"Paris Streets", hair:"Chic French girl effortless messy bun, wisps framing face", makeup:"French minimal, mascara, red lip, clear skin", outfit:"Striped marinière top, tailored trousers, trench coat draped, ballet flats", scene:"Parisian boulevard, Eiffel Tower distant, café terrasse, blooming chestnuts", light:"Soft Parisian afternoon light, grey sky, romantic golden moments", pose:"Sitting at café terrasse, croissant in hand, people-watching", th_hair:"มวยยุ่ง French girl ลอนหน้าหลุด", th_makeup:"ฝรั่งเศส มินิมัล มาสคาร่า ลิปแดง ผิวใส", th_outfit:"เสื้อลายทาง Marinière กางเกงเรียบ เทรนช์โค้ทพาด รองเท้า Ballet", th_scene:"บูเลอวาร์ดปารีส หอไอเฟล Café terrasse ต้นเกาลัดบาน", th_light:"แสงบ่ายปารีสนุ่ม ฟ้าเทา ทองชั่วคราว", th_pose:"นั่งคาเฟ่ถือครัวซองต์ ดูคนเดิน ยิ้มสบาย" }
+  ]},
+  minimal: { label:"⬜ Minimal", scenes: [
+    { name:"White Studio Portrait", hair:"Sleek middle-parted straight hair, ultra clean", makeup:"Absolutely minimal, clear glass skin, barely there brow gel", outfit:"Simple white linen wide-leg set, no jewelry", scene:"Pure white infinity cyclorama studio, no props", light:"Soft diffused studio light from large softbox, even and gentle", pose:"Simple direct gaze at camera, slight natural smile", th_hair:"แสกกลาง ตรงเรียบสุดขีด", th_makeup:"มินิมัลสุด ผิว Glass skin เจลคิ้วเบา", th_outfit:"ชุดลินินขาว Wide-leg เรียบ ไม่มีเครื่องประดับ", th_scene:"สตูดิโอขาวอินฟินิตี้ ไม่มีอะไรเลย แค่แสง", th_light:"แสง Softbox นุ่ม สม่ำเสมอ", th_pose:"มองกล้องตรงๆ ยิ้มธรรมชาติเบา Beauty portrait" }
+  ]},
+  elegant: { label:"🌹 Elegant", scenes: [
+    { name:"Grand Opera House", hair:"Intricate French twist with pearl hair pins", makeup:"Timeless elegant, classic red lip, cat eye, luminous porcelain skin", outfit:"Black floor-length couture gown with beading, long gloves, diamond jewelry", scene:"Grand opera house, red velvet, gold balconies, massive chandelier", light:"Warm golden chandelier light, theatrical and glamorous", pose:"Standing on grand staircase, one hand on banister, looking back, classic film star", th_hair:"ผมเฟรนช์ทวิสต์ซับซ้อน กิ๊บมุก Couture", th_makeup:"ลิปแดง Classic ตาแมว ผิวพอร์ซเลนเรเดียนต์", th_outfit:"เดรสยาวถึงพื้น สีดำ ลายปัก ถุงมือยาว เพชร", th_scene:"โรงอุปรากรใหญ่ กำมะหยี่แดง ระเบียงทอง โคมไฟยักษ์", th_light:"โคมไฟทองอบอุ่น ดูโรงละคร หรูหรา", th_pose:"ยืนบันไดใหญ่ มือแตะราว เหลียวหลัง ดูเป็นดาราหนังคลาสสิก" }
+  ]},
+  party: { label:"🎉 Party", scenes: [
+    { name:"Rooftop Club", hair:"Big voluminous curls, party-ready, glitter hair gems", makeup:"Full glam, dramatic smokey eye, glitter on cheekbones, deep plum lips", outfit:"Sequin mini dress in midnight blue, strappy heels, clutch, chandelier earrings", scene:"Exclusive rooftop club, city lights backdrop, DJ setup, bokeh lights", light:"Night club atmosphere, purple and blue accent lights, bokeh", pose:"On the dance floor, arms up, eyes closed, completely euphoric", th_hair:"ลอนใหญ่ฟู Party-ready กลิตเตอร์ประดับ", th_makeup:"Full glam Smokey ดราม่า กลิตเตอร์แก้ม ลิปพลัม", th_outfit:"เดรสเลื่อม Midnight blue สั้น รองเท้าสายรัด กระเป๋า Clutch ต่างหู Chandelier", th_scene:"คลับ Rooftop หรู ไฟเมือง DJ บรรยากาศปาร์ตี้ โบเก้ไฟ", th_light:"ไฟคลับ ม่วง น้ำเงิน โบเก้ฉากหลัง", th_pose:"บนฟลอร์เต้น แขนขึ้น หลับตา ดีใจสุดๆ" }
+  ]},
+  festival: { label:"🎪 Festival", scenes: [
+    { name:"Music Festival", hair:"Boho festival hair, braids, flowers, gems, bandana", makeup:"Festival glam, glitter freckles, bold eye, holographic details", outfit:"Bohemian outfit, crochet crop top, high-waisted denim shorts, fringed boots, layered jewelry", scene:"Outdoor music festival, giant stage with light show, crowd energy, golden hour", light:"Festival golden hour with dramatic stage lights, magical atmosphere", pose:"Arms in air, eyes closed, completely lost in music", th_hair:"ผม Boho Festival เปีย ดอกไม้ เพชร บันดาน่า", th_makeup:"กลิตเตอร์กระ ตาเข้ม Holographic", th_outfit:"ชุด Boho Festival เสื้อโครเชต์ กางเกงยีนส์เอวสูง บูตพู่ สร้อยซ้อนชั้น", th_scene:"เทศกาลดนตรีกลางแจ้ง เวทีใหญ่ ไฟแสงสี พลังงานฝูงชน Golden hour", th_light:"Golden hour Festival + ไฟเวทีดราม่า", th_pose:"แขนขึ้น หลับตา หลงอยู่กับดนตรี" }
+  ]},
+  homelife: { label:"🏠 Home Life", scenes: [
+    { name:"Morning Kitchen", hair:"Effortless morning bed-waves, soft and undone", makeup:"No makeup, fresh morning face, genuine natural beauty", outfit:"Soft pajama set in pale yellow, fluffy slippers, oversized cardigan", scene:"Scandinavian kitchen, morning sun streaming in, coffee brewing, fresh flowers", light:"Warm soft morning sunlight through kitchen window, golden and peaceful", pose:"Holding oversized mug with both hands, leaning on counter, content smile", th_hair:"ผมยุ่งๆ ตื่นนอน ธรรมชาติ", th_makeup:"ไม่แต่งเลย ผิวเช้าสด", th_outfit:"ชุดนอน Pastel เหลือง สลิปเปอร์ขนนุ่ม คาร์ดิแกน Oversized", th_scene:"ครัว Scandinavian แดดเช้า กาแฟชง ดอกไม้บนเคาน์เตอร์", th_light:"แสงเช้าผ่านหน้าต่างครัว ทอง สงบ", th_pose:"ถือแก้วกาแฟใหญ่สองมือ เอนเคาน์เตอร์ ยิ้มสบาย" }
+  ]},
+  streetwear: { label:"🧢 Street", scenes: [
+    { name:"Graffiti Wall", hair:"Braids with gold rings, edgy and expressive", makeup:"Bold graphic eyeliner wings, orange-red lip, metallic liner", outfit:"Oversized graphic tee, cargo pants, chunky boots, layered chains, bucket hat", scene:"Urban street with large colorful graffiti mural, gritty urban setting", light:"Natural urban daylight, shadow play on textured walls", pose:"Leaning against wall, arms crossed, cool direct stare", th_hair:"เปียใส่ห่วงทอง ดูแข็งแกร่ง", th_makeup:"Eyeliner เส้นหนา ลิปส้มแดง ไลเนอร์เมทัลลิก", th_outfit:"เสื้อยืด Graphic Oversized Cargo สูง บูตหนัก สร้อยหลายชั้น Bucket hat", th_scene:"ถนนเมือง กำแพงกราฟฟิตี้สีสัน Urban", th_light:"แสงธรรมชาติกลางวัน เงาบนผนัง", th_pose:"พิงกำแพง แขนกอด จ้องกล้อง ดู Cool" }
+  ]},
+  vintage: { label:"🕰️ Vintage", scenes: [
+    { name:"Retro Diner", hair:"Victory rolls pinup style", makeup:"Vintage pinup, matte red lip, winged liner, defined brows, rouge cheeks", outfit:"Polka dot fit and flare dress 1950s, pearls, kitten heels, white gloves", scene:"Classic American diner, red leather booths, jukebox, checkered floor, chrome details", light:"Warm retro diner light, nostalgic and inviting", pose:"Seated in booth, milkshake in hand, playful wink at camera", th_hair:"Victory rolls สไตล์ Pinup", th_makeup:"ลิปแดงด้าน Winged liner คิ้วชัด แก้มแดง", th_outfit:"เดรสลายจุด Fit and Flare 1950s ไข่มุก รองเท้าแมว ถุงมือขาว", th_scene:"ไดเนอร์อเมริกันคลาสสิก บูธหนังแดง จุ๊กบ็อกซ์ พื้นลายตาราง", th_light:"ไฟ retro อบอุ่น บรรยากาศโรแมนติก", th_pose:"นั่งบูธ ถือมิลค์เชค กระพริบตา" }
+  ]},
+  art: { label:"🎭 Artistic", scenes: [
+    { name:"Art Gallery", hair:"Editorial avant-garde, extreme sleek or sculptural updo", makeup:"High art editorial, bold unexpected colors", outfit:"Conceptual designer piece, avant-garde silhouette", scene:"Contemporary art gallery white cube, large scale artworks, polished concrete", light:"Gallery track lighting, dramatic spotlight", pose:"Standing in conversation with artwork, head tilted in contemplation", th_hair:"ทรง Editorial Avant-garde หรือมวยประติมากรรม", th_makeup:"สีสันหนักแบบ High art ไม่ธรรมดา", th_outfit:"เสื้อผ้าแนวคิด Avant-garde ทรงสถาปัตย์", th_scene:"แกลเลอรีศิลปะ White cube งานศิลป์ใหญ่ พื้นคอนกรีต", th_light:"สปอตไลต์แทร็ก ดราม่า", th_pose:"ยืนดูงานศิลป์ เอียงหัวครุ่นคิด" }
+  ]},
+  fitness: { label:"💪 Fitness", scenes: [
+    { name:"Pilates Studio", hair:"Clean low bun, ballet-inspired", makeup:"Fresh dewy skin, tinted lip balm, mascara", outfit:"Pastel pink Pilates set, fitted leggings, matching long-sleeve top, grip socks", scene:"Bright airy Pilates studio, reformer machines, large mirrors, wood floors", light:"Bright natural light, fresh and clean", pose:"On reformer machine, controlled movement, focused and graceful", th_hair:"มวยต่ำ Ballet เรียบ", th_makeup:"ผิวกลอว์ ลิปบาล์มสี มาสคาร่า", th_outfit:"ชุด Pilates สีชมพู Pastel กางเกงแน่น เสื้อแขนยาว ถุงเท้า Grip", th_scene:"สตูดิโอ Pilates สว่าง เครื่อง Reformer กระจกใหญ่ พื้นไม้", th_light:"แสงธรรมชาติสว่าง สดชื่นสะอาด", th_pose:"อยู่บนเครื่อง Reformer เคลื่อนไหวมีสติ โฟกัส สง่า" }
+  ]},
+  studio: { label:"📸 Studio", scenes: [
+    { name:"Clean White Backdrop", hair:"Sleek polished blowout, full body and perfectly styled", makeup:"Professional model makeup, flawless base, defined features, photogenic", outfit:"Simple solid white or cream knit dress, clean lines, minimal", scene:"Professional photography studio, pure white seamless backdrop, no distractions", light:"Professional 3-point studio lighting setup, even and flattering, softboxes", pose:"Direct confident gaze at camera, slight smile, natural model energy", th_hair:"บลอว์เอาต์ฟู จัดทรงสมบูรณ์แบบ", th_makeup:"เมกอัพนางแบบ รองพื้นไร้รอยต่อ เส้นชัด", th_outfit:"เดรสสีขาวหรือครีม เรียบ Clean lines", th_scene:"สตูดิโอขาวสะอาด ฉากหลังขาว Seamless ไม่มีอะไรรบกวน", th_light:"แสง 3-point สตูดิโอ Softbox สม่ำเสมอ เหมาะกับหน้า", th_pose:"มองกล้องตรง ยิ้มเบาๆ พลังงานนางแบบธรรมชาติ" },
+    { name:"Dramatic Black Backdrop", hair:"Extreme high fashion styling, avant-garde or dramatic", makeup:"High contrast dramatic, full editorial makeup, bold artistic expression", outfit:"All black structured editorial ensemble, fashion forward and striking", scene:"Pure black infinity backdrop studio, dramatic and stark, high fashion environment", light:"Dramatic high contrast Rembrandt lighting, artistic shadows, moody", pose:"Dynamic fashion pose, strong stance, editorial arms, fierce high fashion expression", th_hair:"ทรง High fashion สุดขีด Editorial", th_makeup:"คอนทราสต์สูง เมกอัพ Editorial ศิลปะ", th_outfit:"ชุดดำล้วน Editorial โครงสร้างชัด แฟชั่นสุดขอบ", th_scene:"สตูดิโอ Backdrop ดำอินฟินิตี้ ดราม่า", th_light:"แสงคอนทราสต์สูง Rembrandt lighting", th_pose:"โพสแฟชั่น Dynamic ยืนมั่น แขน Editorial ดู Fierce" },
+    { name:"Beauty Close-Up Portrait", hair:"Clean sleek style, low bun or straight, face-focused", makeup:"Flawless beauty editorial, perfect skin, highlighted features, beauty campaign quality", outfit:"Simple plain shoulder-baring top or bare shoulders, focus is entirely on the face", scene:"Clean white or cream beauty backdrop, soft elegant studio environment", light:"Perfect beauty lighting, ring light or large softbox, completely shadow-free and luminous", pose:"Close up beauty portrait, slight angle, eyes piercing the camera, beauty campaign perfection", th_hair:"เรียบสะอาด มวยต่ำหรือยาวตรง โฟกัสที่หน้า", th_makeup:"Beauty editorial สมบูรณ์แบบ ผิวไร้ที่ติ ไฮไลต์ชัด", th_outfit:"เสื้อไหล่โล่ง หรือโชว์ไหล่ โฟกัสที่ใบหน้า", th_scene:"ฉากหลังขาวหรือครีม Beauty studio", th_light:"Ring light หรือ Softbox ใหญ่ ไร้เงา สมบูรณ์", th_pose:"Beauty portrait ใกล้ เอียงเล็กน้อย ตาทะลุกล้อง" },
+    { name:"Colored Gel Backdrop", hair:"Polished editorial hair, styled to match the dramatic color mood", makeup:"Bold makeup that complements the gel color — statement lip or dramatic eye", outfit:"Monochrome outfit that either matches or powerfully contrasts the backdrop color", scene:"Professional studio with vivid colored gel backdrop — vibrant red, electric blue, or deep purple", light:"Dramatic colored gel studio lighting, strong color cast, fashion editorial mood", pose:"Strong editorial pose, facing camera directly, dramatic and intentional body language", th_hair:"ผมจัดทรง Editorial เข้ากับโทนสีดราม่า", th_makeup:"เมกอัพเข้ม เข้ากับสีฉาก — ลิปหนา หรือตาดราม่า", th_outfit:"ชุด Monochrome เข้ากันหรือตัดกับสีฉากอย่างดี", th_scene:"สตูดิโอ Gel backdrop สีจัด — แดงสด น้ำเงินไฟฟ้า ม่วงเข้ม", th_light:"Gel lighting สตูดิโอ สีสด Editorial mood ดราม่า", th_pose:"โพสตรงหน้ากล้อง ดราม่า ภาษากายตั้งใจชัดเจน" },
+    { name:"High Key White Studio", hair:"Bright and clean hair styling, voluminous or sleek — both work beautifully", makeup:"Soft luminous beauty makeup, brightening technique, flushed dewy skin", outfit:"All white or very light pastel outfit, clean and pure, minimal accessories", scene:"High key white studio, everything overexposed slightly, pure brilliant white surrounding", light:"Maximum brightness studio setup, multiple softboxes, nearly shadowless everywhere", pose:"Gentle and graceful pose, soft energy, light feminine or editorial expression", th_hair:"ทรงผมสะอาดสว่าง ฟูหรือเรียบ — ทั้งสองแบบสวย", th_makeup:"เมกอัพ Beauty นุ่มๆ สดใส ผิวกลอว์", th_outfit:"ชุดขาวล้วนหรือ Pastel อ่อนมาก สะอาด มินิมัล", th_scene:"สตูดิโอ High Key ขาวสว่างมาก ทุกอย่าง Overexpose เล็กน้อย", th_light:"สว่างสูงสุด หลาย Softbox เกือบไม่มีเงาเลย", th_pose:"โพสนุ่มนวล สง่าเบา พลังงานนุ่มๆ Editorial" },
+    { name:"Low Key Dark Studio", hair:"Dramatic hair styling, sleek or wild — strong presence", makeup:"Sculpted dramatic makeup, strong contour, dark lips or intense eye", outfit:"Dark dramatic outfit — deep jewel tones or all black, structured and powerful", scene:"Dark low key studio, black backdrop, strategic spot lighting, deep dramatic shadows", light:"Low key Rembrandt or split lighting, strong directional light, rich deep shadows", pose:"Powerful commanding pose, strong confident stance, artistic shadow interplay", th_hair:"ทรงผมดราม่า เรียบหรือยุ่งแรง — มีอยู่ชัดเจน", th_makeup:"เมกอัพแกะสลักดราม่า คอนทัวร์แรง ลิปเข้ม หรือตาดราม่า", th_outfit:"ชุดดราม่าเข้ม — สีอัญมณีเข้ม หรือดำล้วน โครงสร้างชัดแข็งแกร่ง", th_scene:"สตูดิโอ Low Key มืด Backdrop ดำ สปอตไลต์ strategic เงาดราม่า", th_light:"Rembrandt หรือ Split lighting แสงทิศทางแรง เงาดำลึก", th_pose:"โพส Commanding แข็งแกร่ง ยืนมั่นคง เงาสร้างสรรค์" },
+    { name:"Gold Luxury Studio", hair:"Glamorous voluminous styling, warm tones or dark lustrous hair", makeup:"Old Hollywood glamour, red lip, sculpted contour, luminous highlighted skin", outfit:"Gold or champagne colored gown or structured suit, luxury fashion", scene:"Gold toned luxury studio, warm gold backdrop, gold reflectors, opulent environment", light:"Warm golden studio lighting, flattering glamour light, rich warm tones throughout", pose:"Old Hollywood glamour pose, elegant and powerful, classic beauty stance", th_hair:"ทรงผมกลอร์เรียส ฟู โทนอุ่นหรือดำเงางาม", th_makeup:"Old Hollywood glamour ลิปแดง คอนทัวร์แกะสลัก ผิวไฮไลต์ส่องแสง", th_outfit:"เดรสทองหรือแชมเปญ หรือสูทหรูหรา", th_scene:"สตูดิโอทอง หรูหรา Backdrop สีทอง Reflector ทอง", th_light:"แสงสตูดิโอโทนทองอบอุ่น Glamour lighting ทองตลอด", th_pose:"โพส Old Hollywood Glamour สง่างาม คลาสสิก" },
+    { name:"Neon Lit Studio", hair:"Fun bold hair styling, experimental color or extreme texture", makeup:"Neon-inspired makeup, bright colors, futuristic elements, glitter", outfit:"Futuristic or streetwear bold outfit, neon accents, statement pieces", scene:"Dark studio with multiple neon light tubes, cyberpunk aesthetic, electric colors", light:"Neon tube lighting in pink, blue, purple, green — colorful dramatic effect", pose:"Dynamic energetic pose, movement freeze, futuristic editorial vibe", th_hair:"ทรงผมสนุก ทดลอง สีบ้า หรือ texture สุดขีด", th_makeup:"เมกอัพ Neon สีสดใส ฟิวเจอริสต์ กลิตเตอร์", th_outfit:"ชุด Futuristic หรือ Streetwear เข้มข้น Neon accent ชิ้นที่โดดเด่น", th_scene:"สตูดิโอมืด หลอดนีออนหลาย cyberpunk สีไฟฟ้า", th_light:"หลอดนีออน ชมพู น้ำเงิน ม่วง เขียว — สีดราม่า", th_pose:"โพสพลังงานสูง Dynamic freeze movement Editorial ฟิวเจอริสต์" },
+    { name:"Retro Pastel Studio", hair:"Soft retro styling, pin curls or elegant waves, vintage feminine", makeup:"Soft pastel retro makeup, rosy blush, vintage red lip, classic feminine", outfit:"Pastel retro outfit — 50s or 60s inspired silhouette, soft colors, vintage accessories", scene:"Retro pastel studio, soft pink or mint backdrop, vintage props, nostalgic warmth", light:"Soft pastel studio lighting, warm and dreamy, vintage filter feel", pose:"Playful vintage pose, flirtatious smile, retro hand placement, charming energy", th_hair:"ทรงผม Retro นุ่มๆ Pin curls หรือเวฟ Vintage หญิง", th_makeup:"เมกอัพพาสเทล Retro แก้มชมพู ลิปแดงวินเทจ Classic feminine", th_outfit:"ชุด Pastel Retro — ทรง 50s หรือ 60s สีนุ่ม เครื่องประดับวินเทจ", th_scene:"สตูดิโอ Retro Pastel ฉากชมพูหรือมิ้นท์ Props วินเทจ อบอุ่นโรแมนติก", th_light:"แสงสตูดิโอพาสเทลนุ่ม อบอุ่นและฝันๆ ให้ความรู้สึก Vintage filter", th_pose:"โพส Vintage เล่นๆ ยิ้มเย้ายวน มือ Retro style น่ารักน่าหลงใหล" },
+    { name:"Cinematic Moody Studio", hair:"Artistically tousled or slicked dramatic hair, strong presence", makeup:"Sculpted cinematic makeup, defined features, strong shadows and highlights", outfit:"Cinematic wardrobe — dark rich colors, draped fabric, editorial silhouette", scene:"Moody cinematic studio setup, dark atmosphere, single dramatic key light", light:"Cinematic single key light setup, strong shadows, film noir atmosphere", pose:"Cinematic storytelling pose, emotional expression, character and depth", th_hair:"ผมยุ่งๆ อาร์ตๆ หรือสลิกดราม่า มีอยู่ชัดเจนแรง", th_makeup:"เมกอัพ Cinematic แกะสลัก เส้นชัด เงาไฮไลต์แรง", th_outfit:"เสื้อผ้า Cinematic สีเข้มร่ำรวย ผ้าพลิ้ว ทรง Editorial", th_scene:"สตูดิโอ Moody Cinematic บรรยากาศมืด แสงเดี่ยวดราม่า Key light", th_light:"Cinematic single key light เงาแรง Film noir atmosphere", th_pose:"โพส Cinematic เล่าเรื่อง อารมณ์ลึก มีตัวตน มีความลึก" },
+    { name:"Fashion Week Runway Studio", hair:"Avant-garde runway hair, sculptural or dramatically styled", makeup:"High fashion runway makeup, bold statement, runway editorial level", outfit:"Designer runway piece, avant-garde silhouette, fashion week aesthetic", scene:"Fashion week runway studio setup, sleek floor, spotlights, editorial environment", light:"Fashion show lighting, dramatic runway spots, high fashion editorial atmosphere", pose:"Runway model walk pose, fierce and confident, editorial high fashion expression", th_hair:"ผม Avant-garde Runway ประติมากรรม หรือจัดทรงดราม่าสุดขีด", th_makeup:"เมกอัพ High fashion Runway ระดับ Statement สูงมาก", th_outfit:"ชุด Designer Runway ทรง Avant-garde สไตล์ Fashion week", th_scene:"สตูดิโอ Runway ลักษณะ Fashion week พื้นเรียบ สปอตไลต์ Editorial", th_light:"แสง Fashion show Runway spots ดราม่า High fashion", th_pose:"โพสเดิน Runway นางแบบ Fierce มั่นใจ ดู High fashion" },
+    { name:"Urban Industrial Studio", hair:"Cool effortless styling, textured or slick — urban edge", makeup:"Natural or bold urban makeup, strong brows, clean or dramatic finish", outfit:"Urban streetwear or edgy fashion — denim, leather, statement pieces", scene:"Industrial studio with exposed brick, steel beams, concrete walls, urban raw aesthetic", light:"Hard industrial lighting, warm tungsten or cool fluorescent, raw atmosphere", pose:"Urban editorial pose, casual power stance, authentic street energy", th_hair:"ทรงผม Urban เท่ หยาบหรือเรียบ — ขอบ Urban", th_makeup:"เมกอัพ Urban ธรรมชาติหรือเข้มข้น คิ้วแรง จบ Clean หรือดราม่า", th_outfit:"Urban Streetwear หรือแฟชั่น Edgy — ยีนส์ หนัง ชิ้น Statement", th_scene:"สตูดิโอ Industrial อิฐโชว์ คานเหล็ก ผนังคอนกรีต Aesthetic Urban raw", th_light:"ไฟ Industrial แรง Tungsten อบอุ่น หรือ Fluorescent เย็น บรรยากาศดิบ", th_pose:"โพส Urban Editorial ท่ายืน Power casual พลังงาน Street authentic" },
+    { name:"Floral Garden Studio", hair:"Romantic feminine styling, flowers woven in, soft and beautiful", makeup:"Romantic botanical makeup, dewy skin, rosy cheeks, flower-inspired colors", outfit:"Floral or romantic feminine outfit, light fabrics, soft colors, garden party aesthetic", scene:"Indoor garden studio, lush plants and flowers everywhere, botanical paradise setting", light:"Soft diffused natural-feeling light, warm and romantic, garden ambiance", pose:"Graceful feminine pose among flowers, touching petals, romantic dreamy energy", th_hair:"ทรงผม Romantic feminine สอดดอกไม้ นุ่มสวยงาม", th_makeup:"เมกอัพ Romantic Botanical ผิวกลอว์ แก้มชมพู สีดอกไม้", th_outfit:"ชุดลายดอกหรือ Romantic feminine ผ้าเบา สีนุ่ม Garden party aesthetic", th_scene:"สตูดิโอสวนในร่ม พืชดอกไม้เยอะมาก Botanical paradise", th_light:"แสงนุ่ม Diffused ให้ความรู้สึกธรรมชาติ อบอุ่นโรแมนติก บรรยากาศสวน", th_pose:"โพสสง่าหญิง Feminine ท่ามกลางดอกไม้ แตะกลีบดอก พลังงาน Romantic dreamy" },
+    { name:"Mirror Reflection Studio", hair:"Visually impactful hair, styled to create interesting reflections", makeup:"Striking makeup that looks dramatic from multiple angles", outfit:"Visually interesting outfit with texture or shine, reflects beautifully in mirrors", scene:"Studio with multiple large mirrors creating infinite reflections, artistic environment", light:"Strategic lighting that plays beautifully with the mirror reflections", pose:"Playing with reflections, multiple angles visible, artistic conceptual pose", th_hair:"ผมที่ดูน่าสนใจทุกมุม สร้างเงาสะท้อนสวยงาม", th_makeup:"เมกอัพโดดเด่น ดูดราม่าจากหลายมุม", th_outfit:"ชุดที่มี Texture หรือความเงา สะท้อนกระจกได้สวย", th_scene:"สตูดิโอกระจกหลายบาน เงาสะท้อนอินฟินิตี้ สภาพแวดล้อมทางศิลปะ", th_light:"แสง Strategic เล่นกับเงาสะท้อนกระจกได้สวยงาม", th_pose:"เล่นกับเงาสะท้อน มองได้หลายมุม โพสแนวคิดทางศิลปะ" },
+    { name:"Color Pop Studio", hair:"Fun vibrant hair styling that complements or contrasts bold background", makeup:"Bold colorful makeup with graphic elements, maximalist and playful", outfit:"Bright color-blocked or bold patterned outfit, maximalist fashion statement", scene:"Bright vivid colored backdrop — hot pink, electric yellow, or bold orange studio", light:"Even bright studio lighting that makes colors pop, vibrant and energetic", pose:"Fun playful energetic pose, full of personality, maximalist energy", th_hair:"ทรงผมสนุกสีสัน เข้ากันหรือตัดกับฉากหลังสีจัด", th_makeup:"เมกอัพสีสัน Graphic Maximalist สนุก", th_outfit:"ชุด Color-block สีสด หรือลายโดดเด่น แฟชั่น Maximalist statement", th_scene:"สตูดิโอ Backdrop สดใสจัดมาก — ชมพูร้อน เหลืองไฟฟ้า หรือส้มกล้าหาญ", th_light:"แสงสตูดิโอสม่ำเสมอสว่าง ทำให้สีดูโดดเด่น พลังงานสูง", th_pose:"โพสสนุก เล่นๆ พลังงานสูง เต็มไปด้วยบุคลิก Maximalist energy" },
+    { name:"Fine Art Nude Studio", hair:"Artistically arranged hair, natural or dramatically styled for artistic composition", makeup:"Natural or artistic makeup, serving the artistic vision of the photograph", outfit:"Minimal fabric or draped cloth, artistic body painting optional, fine art approach", scene:"Clean fine art photography studio, neutral backdrop, minimal props, pure artistic focus", light:"Fine art lighting — Rembrandt, butterfly, or split lighting for sculptural beauty", pose:"Artistic fine art pose, elegant and dignified, compositional focus on form and line", th_hair:"ผมจัดวางอย่างศิลปะ ธรรมชาติหรือดราม่า เพื่อ Composition ทางศิลปะ", th_makeup:"เมกอัพธรรมชาติหรือทางศิลปะ รับใช้วิสัยทัศน์ทางศิลปะของภาพ", th_outfit:"ผ้าน้อยชิ้น หรือผ้าคลุมพริ้ว ทาสีร่างกายเชิงศิลป์ได้ แนวทาง Fine art", th_scene:"สตูดิโอ Fine art photography สะอาด Backdrop กลางๆ Props น้อย โฟกัสศิลปะล้วนๆ", th_light:"แสง Fine art — Rembrandt, Butterfly, หรือ Split lighting ความงามประติมากรรม", th_pose:"โพส Fine art สง่างาม มีศักดิ์ศรี โฟกัส Composition รูปทรงและเส้น" },
+    { name:"Sports Action Studio", hair:"Functional sporty hair — ponytail, braid, or athletic updo", makeup:"Athletic natural makeup, SPF, healthy glow, performance-ready look", outfit:"Premium athletic wear — sports bra, leggings, or team uniform, athletic shoes", scene:"Dynamic sports studio setup, action photography environment, motion blur background", light:"Sports photography lighting, fast flash freezing motion, high energy", pose:"Dynamic athletic action pose, jumping, stretching, power move, full of energy", th_hair:"ผมกีฬา Functional — หางม้า เปีย หรือมวยสำหรับออกกำลัง", th_makeup:"Athletic เนเชอรัล กันแดด ผิวสุขภาพดี ดู Performance-ready", th_outfit:"ชุดกีฬา Premium — Sports bra Legging หรือชุดทีม รองเท้ากีฬา", th_scene:"สตูดิโอกีฬา Dynamic ถ่ายภาพ Action Motion blur background", th_light:"แสงกีฬา Flash เร็ว Freeze motion พลังงานสูง", th_pose:"โพส Dynamic กีฬา Action กระโดด ยืด Power move เต็มพลังงาน" },
+    { name:"Glamour Sequin Studio", hair:"Glamorous voluminous hair, old Hollywood waves or dramatic updo", makeup:"Old Hollywood glamour makeup, red or nude lip, sculpted contour, radiant skin", outfit:"Dazzling sequin or beaded gown, full glamour fashion, sparkle and shine", scene:"Glamour photography studio, soft warm backdrop, flattering golden lighting", light:"Glamour lighting setup, butterfly or clamshell lighting for maximum glamour effect", pose:"Classic glamour pose, elegant and poised, radiating confidence and allure", th_hair:"ผมกลอร์เรียส ฟู เวฟ Old Hollywood หรือมวยดราม่า", th_makeup:"Old Hollywood Glamour ลิปแดงหรือนู้ด คอนทัวร์แกะสลัก ผิวส่องแสง", th_outfit:"เดรสเลื่อมหรือลูกปัดแวววาว Full glamour fashion ประกายและความเงา", th_scene:"สตูดิโอ Glamour photography ฉากหลังอบอุ่นนุ่ม ไฟทองเหมาะกับหน้า", th_light:"Glamour lighting setup Butterfly หรือ Clamshell lighting เพื่อ Glamour สูงสุด", th_pose:"โพส Glamour คลาสสิก สง่างาม สมถะ แผ่ความมั่นใจและเสน่ห์" },
+    { name:"Studio with Props", hair:"Versatile styling that complements the chosen props and concept", makeup:"Makeup suited to the prop concept — playful, dramatic, or elegant", outfit:"Outfit coordinated with props — matching theme, color, or era", scene:"Creative studio with themed props — vintage telephone, books, flowers, instruments, etc.", light:"Creative studio lighting suited to prop theme and mood", pose:"Interacting naturally and creatively with props, storytelling through objects", th_hair:"ทรงผม Versatile เข้ากับ Props และแนวคิดที่เลือก", th_makeup:"เมกอัพเหมาะกับแนวคิด Props — สนุก ดราม่า หรือสง่างาม", th_outfit:"ชุดประสานกับ Props — ธีม สี หรือยุคสมัยเดียวกัน", th_scene:"สตูดิโอสร้างสรรค์ที่มี Props ตามธีม — โทรศัพท์วินเทจ หนังสือ ดอกไม้ เครื่องดนตรี ฯลฯ", th_light:"แสงสตูดิโอสร้างสรรค์เหมาะกับธีม Props และ Mood", th_pose:"โต้ตอบกับ Props อย่างธรรมชาติและสร้างสรรค์ เล่าเรื่องผ่านวัตถุ" }
+  ]}
+};
+
+// ===== OPTION SETTERS =====
+function setGender(g) {
+  gender = g;
+  ['female','male'].forEach(function(x){ document.getElementById('g-'+x).className='opt-btn'+(x===g?' active':''); });
+  if(currentScene!==null) renderPrompt();
+}
+function setFrame(f) {
+  frame = f;
+  ['full','half','close'].forEach(function(x){ document.getElementById('fr-'+x).className='opt-btn'+(x===f?' active':''); });
+  if(currentScene!==null) renderPrompt();
+}
+function setSubject(s) {
+  subject = s;
+  ['ref','gen'].forEach(function(x){ document.getElementById('sub-'+x).className='opt-btn'+(x===s?' active':''); });
+  if(currentScene!==null) renderPrompt();
+}
+function setCount(c) {
+  count = c;
+  [1,2,3,4].forEach(function(x){ document.getElementById('cnt-'+x).className='opt-btn'+(x===c?' active':''); });
+  if(currentScene!==null) renderPrompt();
+}
+function setSize(s) {
+  imgSize = s;
+  ['fb','reel','ig','yt','sq'].forEach(function(x){ document.getElementById('sz-'+x).className='opt-btn'+(x===s?' active':''); });
+  if(currentScene!==null) renderPrompt();
+}
+
+// ===== RENDER STYLE GRID =====
+function renderStyleGrid() {
+  var styles = Object.keys(DATA);
+  var html = '';
+  styles.forEach(function(s) {
+    var lbl = DATA[s].label;
+    var icon = lbl.match(/^(..)/)[1];
+    var name = lbl.slice(2).trim();
+    html += '<div class="style-btn'+(s===currentStyle?' active':'')+'" onclick="setStyle(\''+s+'\')"><span class="style-icon">'+icon+'</span>'+name+'</div>';
+  });
+  document.getElementById('styleGrid').innerHTML = html;
+  document.getElementById('statScenes').textContent = getTotalScenes()+'+';
+}
+function getTotalScenes() {
+  var n = 0;
+  Object.keys(DATA).forEach(function(s){ n += DATA[s].scenes.length; });
+  return n;
+}
+
+function setStyle(s) { currentStyle=s; currentScene=null; renderStyleGrid(); renderScenes(); showEmpty(); }
+
+function renderScenes() {
+  var scenes = DATA[currentStyle].scenes;
+  var html = '';
+  scenes.forEach(function(sc,i){
+    html += '<div class="scene-item'+(i===currentScene?' active':'')+'" onclick="selectScene('+i+')">';
+    html += '<div class="scene-dot"></div>'+sc.name+'</div>';
+  });
+  document.getElementById('sceneList').innerHTML = html;
+}
+
+function selectScene(i) { currentScene=i; renderScenes(); setTab('prompt'); renderPrompt(); }
+function showEmpty() { document.getElementById('promptOutput').innerHTML='<div class="empty-state"><div class="empty-icon">👈</div><p style="font-size:14px;margin-bottom:5px">เลือก Style และฉากจากด้านซ้าย</p><p style="font-size:11px;color:#333">กดที่ชื่อฉากเพื่อดู Prompt</p></div>'; }
+
+// ===== BUILD THAI SUMMARY =====
+function buildThaiSummary(sc) {
+  return '<div class="thai-summary"><div class="thai-summary-title">🇹🇭 สรุปภาษาไทย — รูปที่จะได้ประมาณนี้</div>'
+    +'<div class="thai-row"><div class="thai-tag">ทรงผม</div><div class="thai-val">'+sc.th_hair+'</div></div>'
+    +'<div class="thai-row"><div class="thai-tag">เมกอัพ</div><div class="thai-val">'+sc.th_makeup+'</div></div>'
+    +'<div class="thai-row"><div class="thai-tag">ชุด</div><div class="thai-val">'+sc.th_outfit+'</div></div>'
+    +'<div class="thai-row"><div class="thai-tag">ฉาก</div><div class="thai-val">'+sc.th_scene+'</div></div>'
+    +'<div class="thai-row"><div class="thai-tag">แสง</div><div class="thai-val">'+sc.th_light+'</div></div>'
+    +'<div class="thai-row"><div class="thai-tag">โพส</div><div class="thai-val">'+sc.th_pose+'</div></div>'
+    +'</div>';
+}
+
+// ===== BUILD BG UPLOAD =====
+function buildBgUpload() {
+  var inner = bgImageData
+    ? '<div class="bg-preview"><img src="'+bgImageData+'" class="bg-preview-img"><div class="bg-preview-info"><div class="bg-preview-name">'+bgImageName+'</div><div class="bg-preview-sub">ใช้เป็น Reference ฉากหลังใน Prompt</div></div><button class="bg-clear-btn" onclick="clearBg(event)">✕ ลบ</button></div>'
+    : '<div class="bg-placeholder"><span>🖼️</span>คลิกอัปโหลดรูปฉากพื้นหลัง (ไม่บังคับ)</div><div class="bg-note">เช่น รูปห้อง ร้านอาหาร สถานที่ ที่อยากให้นายแบบ/นางแบบไปยืน</div>';
+  return '<div class="bg-upload-section"><div class="bg-upload-title">🖼️ พื้นหลังที่ต้องการ (ถ้ามี)</div>'
+    +'<div class="bg-upload-area'+(bgImageData?' has-image':'')+'" onclick="document.getElementById(\'bgFileInput\').click()">'
+    +'<input type="file" accept="image/*" id="bgFileInput" style="display:none" onchange="handleBgUpload(event)">'
+    +inner+'</div></div>';
+}
+function handleBgUpload(e) {
+  var file=e.target.files[0]; if(!file) return;
+  bgImageName=file.name;
+  var reader=new FileReader();
+  reader.onload=function(ev){ bgImageData=ev.target.result; renderPrompt(); };
+  reader.readAsDataURL(file);
+}
+function clearBg(e) { e.stopPropagation(); bgImageData=null; bgImageName=''; renderPrompt(); }
+
+// ===== BUILD PROMPT TEXT =====
+function buildPromptText(sc, isCustom) {
+  var sz = SIZES[imgSize];
+  var genderWord = gender==='female' ? 'woman' : 'man';
+  var genderThai = gender==='female' ? 'ผู้หญิง' : 'ผู้ชาย';
+  var frameMap = { full:'Full body shot, showing the entire figure from head to toe', half:'Half body shot, framing from waist up', close:'Close-up portrait, head and shoulders only' };
+  var frameThai = { full:'เต็มตัว', half:'ครึ่งตัว', close:'ใกล้หน้า' };
+  var countMap = {1:'one person',2:'two people',3:'three people',4:'a group of four or more people'};
+  var hasBg = !!bgImageData;
+
+  var subjectBlock = '';
+  if (subject === 'ref') {
+    subjectBlock = '[Attach your model photo'+(hasBg?' AND a background reference image':'')+' before sending this message]\n\n';
+    subjectBlock += 'Using the '+genderWord+' in the attached photo as the subject, generate a photorealistic image.\n\n';
+    subjectBlock += 'KEEP IDENTICAL — do not change:\n';
+    subjectBlock += '- Face shape, facial features, nose, eyes, lips, skin tone\n';
+    subjectBlock += '- Age appearance and overall facial structure\n\n';
+  } else {
+    subjectBlock = hasBg ? '[Attach a background reference image before sending]\n\n' : '';
+    var countStr = count > 1 ? countMap[count] || (count+' people') : 'one person';
+    subjectBlock += 'Generate a photorealistic image featuring '+countStr+' ('+genderThai+').\n';
+    subjectBlock += 'Create an attractive, realistic '+genderWord+' with natural Thai features, age 25-35.\n\n';
+  }
+
+  var hairLine = 'HAIR: '+(sc.hair||'natural styled hair');
+  var makeupLine = 'FACE: '+(sc.makeup||'natural makeup');
+  var outfitLine = 'OUTFIT: '+(sc.outfit||'stylish outfit');
+  var sceneLine = 'SCENE: '+(sc.scene||'beautiful setting');
+  var bgLine = hasBg && subject==='ref' ? '\nBACKGROUND REFERENCE: Place the model naturally within the environment shown in the attached background image.' : '';
+  var lightLine = 'LIGHTING: '+(sc.light||'beautiful natural lighting');
+  var poseLine = 'POSE: '+(sc.pose||'natural confident pose');
+
+  var prompt = subjectBlock;
+  prompt += 'CHANGE TO:\n';
+  prompt += hairLine+'\n';
+  prompt += makeupLine+'\n';
+  prompt += outfitLine+'\n\n';
+  prompt += sceneLine+bgLine+'\n';
+  prompt += lightLine+'\n';
+  prompt += poseLine+'\n\n';
+  prompt += 'FRAMING: '+frameMap[frame]+'\n\n';
+  prompt += 'IMAGE SPECS:\n';
+  prompt += '- Platform: '+sz.label+' ('+sz.note+')\n';
+  prompt += '- Aspect ratio: '+sz.ratio+' ('+sz.px+')\n';
+  prompt += '- Style: High-end editorial photography, magazine cover quality\n';
+  prompt += '- Camera: 85mm portrait lens, shallow depth of field, ultra-detailed\n';
+  if (subject==='ref') {
+    prompt += '\nIMPORTANT: Maintain exact facial likeness from the reference photo. Only change hair, makeup, outfit, background, and pose.';
+  }
+  return prompt;
+}
+
+// ===== RENDER PROMPT =====
+function renderPrompt() {
+  if (currentScene===null) { showEmpty(); return; }
+  var sc = DATA[currentStyle].scenes[currentScene];
+  var sz = SIZES[imgSize];
+  var prompt = buildPromptText(sc, false);
+  var html = '<div class="prompt-card">';
+  html += '<div class="prompt-header"><div><div class="prompt-title">'+sc.name+'</div><div class="prompt-subtitle">'+DATA[currentStyle].label+'</div></div><div class="prompt-badge">ChatGPT 4o</div></div>';
+  html += '<div class="size-badge">📐 '+sz.label+' · '+sz.ratio+' · '+sz.px+'</div>';
+  html += '<div style="height:12px"></div>';
+  html += buildThaiSummary(sc);
+  html += '<div style="border-top:1px solid #2a2a2a;margin:12px 0"></div>';
+  html += buildBgUpload();
+  html += '<div class="section-label" style="margin-bottom:6px">📋 Prompt (Copy วางใน ChatGPT)</div>';
+  html += '<div class="prompt-text" id="promptText">'+prompt+'</div>';
+  html += '<div class="btn-row">';
+  html += '<button class="btn btn-primary" onclick="copyPrompt(\'promptText\')">📋 Copy Prompt</button>';
+  html += '<button class="btn btn-secondary" onclick="nextScene()">⏭ ฉากถัดไป</button>';
+  html += '<button class="btn btn-gold" onclick="randomScene()">🎲 สุ่มฉาก</button>';
+  html += '</div></div>';
+  document.getElementById('promptOutput').innerHTML = html;
+}
+
+// ===== COPY (shared, robust) =====
+function copyPrompt(elemId) {
+  var el = document.getElementById(elemId);
+  if (!el) { alert('ไม่พบ Prompt'); return; }
+  var text = el.innerText || el.textContent;
+  if (!text || !text.trim()) { alert('Prompt ว่างเปล่า กรุณาสร้าง Prompt ก่อน'); return; }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(showToast).catch(function(){ fallbackCopy(text); });
+  } else { fallbackCopy(text); }
+}
+function fallbackCopy(text) {
+  var ta = document.createElement('textarea');
+  ta.value = text; ta.style.position='fixed'; ta.style.top='-9999px';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  try { document.execCommand('copy'); showToast(); } catch(e){ alert('Copy ไม่ได้ กรุณา Copy ด้วยตนเอง'); }
+  document.body.removeChild(ta);
+}
+function showToast() {
+  copiedCount++; document.getElementById('statCopied').textContent=copiedCount;
+  var t=document.getElementById('toast'); t.classList.add('show');
+  setTimeout(function(){ t.classList.remove('show'); }, 2500);
+}
+
+function nextScene() {
+  var scenes=DATA[currentStyle].scenes;
+  currentScene=(currentScene===null?0:(currentScene+1)%scenes.length);
+  renderScenes(); renderPrompt();
+}
+function randomScene() {
+  var styles=Object.keys(DATA);
+  currentStyle=styles[Math.floor(Math.random()*styles.length)];
+  currentScene=Math.floor(Math.random()*DATA[currentStyle].scenes.length);
+  renderStyleGrid(); renderScenes(); renderPrompt();
+}
+
+// ===== TABS =====
+function setTab(tab) {
+  currentTab=tab;
+  ['prompt','custom','howto'].forEach(function(t){
+    document.getElementById('tab-'+t).className='tab-btn'+(t===tab?' active':'');
+    document.getElementById('view-'+t).style.display=t===tab?'':'none';
+  });
+}
+
+// ===== CUSTOM PROMPT =====
+function genCustom() {
+  var sc = {
+    hair: document.getElementById('c-hair').value,
+    makeup: document.getElementById('c-makeup').value,
+    outfit: document.getElementById('c-outfit').value,
+    scene: document.getElementById('c-scene').value,
+    light: document.getElementById('c-light').value,
+    pose: document.getElementById('c-pose').value,
+    th_hair:'ตามที่เลือก', th_makeup:'ตามที่เลือก', th_outfit:'ตามที่เลือก',
+    th_scene:'ตามที่เลือก', th_light:'ตามที่เลือก', th_pose:'ตามที่เลือก'
+  };
+  var prompt = buildPromptText(sc, true);
+  var html = '<div style="margin-top:12px">';
+  html += '<div class="section-label" style="margin-bottom:6px">✨ Prompt ที่สร้างขึ้น</div>';
+  html += '<div class="prompt-text" id="customPromptText">'+prompt+'</div>';
+  html += '<div class="btn-row"><button class="btn btn-primary" onclick="copyPrompt(\'customPromptText\')">📋 Copy Prompt</button></div>';
+  html += '</div>';
+  document.getElementById('customOut').innerHTML = html;
+}
+function randomCustom() {
+  ['c-hair','c-makeup','c-outfit','c-scene','c-light','c-pose'].forEach(function(id){
+    var s=document.getElementById(id); s.selectedIndex=Math.floor(Math.random()*s.options.length);
+  });
+  genCustom();
+}
+
+// ===== INIT =====
+function init() { renderStyleGrid(); renderScenes(); }
+init();
+</script>
+</body>
+</html>
