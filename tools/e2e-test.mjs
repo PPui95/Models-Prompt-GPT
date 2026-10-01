@@ -163,6 +163,29 @@ await q.click("[data-consent-open]");
 ok("cookie settings link reopens banner",await q.locator("#consentBar").isVisible());
 
 
+
+// ---------- K. pair pack ----------
+q=await newPage("2026-10-01T10:00:00");
+await q.goto("http://localhost:8788/match.html"); await fill(q,1988,3,3,"f","14");
+await q.selectOption("#bd2-y","1986");await q.selectOption("#bd2-m","7");await q.selectOption("#bd2-d","20");await q.selectOption("#sex2","m");await q.selectOption("#bh2","6");
+await q.fill("#nm2","คุณบี"); await q.click("#f2 .go");
+ok("match page offers pair pack",await q.locator('#matchOut .pay[data-tier="pair"]').count()===1);
+await q.evaluate(()=>{document.getElementById("status").textContent="";});
+await q.click('#matchOut .pay[data-tier="pair"]'); await q.waitForFunction(()=>!location.search&&document.getElementById("status")?.textContent.includes("ชำระเงินสำเร็จ"));
+const sp=created.at(-1);
+ok("pair pack charges 990 THB with both birth keys",sp.amount===99000&&sp.metadata.tier==="pair"&&sp.metadata.key==="1988-03-03|14|f"&&sp.metadata.key2==="1986-07-20|06|m",JSON.stringify(sp.metadata));
+ok("buyer gets full pack and compatibility detail",(await txt(q,"#status")).includes("แพ็กชีวิตฉบับสมบูรณ์")&&await q.locator("#matchOut .lock").count()===0);
+ok("partner form restored after payment",(await q.evaluate(()=>getDate("bd2")))==="1986-07-20"&&await q.inputValue("#nm2")==="คุณบี"&&await q.inputValue("#sex2")==="m");
+await q.goto("http://localhost:8788/chart.html"); await fill(q,1986,7,20,"m","6");
+ok("partner's own report is unlocked too",(await txt(q,"#status")).includes("แพ็กชีวิตฉบับสมบูรณ์")&&await locks(q,"#p-luck")===0);
+r=await call(checkout,{key:"1988-03-03|14|f",key2:"1988-03-03|14|f",tier:"pair"});
+ok("pair pack with the same person twice is rejected",r.status===400);
+r=await call(checkout,{key:"1988-03-03|14|f",tier:"pair"});
+ok("pair pack without partner is rejected",r.status===400);
+// share card
+await q.click("#t-read"); await q.click("#shareBtn"); await q.waitForSelector("#shareModal img");
+ok("share card renders an image",(await q.getAttribute("#shareModal img","src")).startsWith("data:image/png"));
+
 // ---------- I. layout ----------
 q=await newPage("2026-10-01T10:00:00");
 for(const pg of ["index","daily","chart","match","fengshui","privacy"]){await q.goto("http://localhost:8788/"+pg+".html");await q.waitForTimeout(150);const w=await q.evaluate(()=>document.documentElement.scrollWidth);if(w>400){fail++;console.log("FAIL  overflow",pg,w);}}

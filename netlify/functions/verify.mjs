@@ -1,7 +1,7 @@
 import { env, json, signToken, verifyToken, codeMatches, stripe } from "../lib/shared.mjs";
 
 const DAY = 864e5;
-const EXP = { year: 396 * DAY, full: 3650 * DAY }; // year pack: 12-month window + 1 month grace
+const EXP = { year: 396 * DAY, full: 3650 * DAY }; // year pack: 12-month window + 1 month grace // year pack: 12-month window + 1 month grace
 
 // POST { session_id } | { code } | { token } -> { ok, key, t, p, exp, token? }
 export default async (req) => {
@@ -31,11 +31,16 @@ export default async (req) => {
     if (!ok) return json({ ok: false, error: "not_found" }, 404);
     if (data.payment_status !== "paid") return json({ ok: false, pending: true }, 202);
     const key = data.metadata?.key;
-    const t = data.metadata?.tier === "full" ? "full" : "year";
+    const t = ["full", "pair"].includes(data.metadata?.tier) ? "full" : "year"; // a pair pack is a full pack for two people
     const p = Number(data.metadata?.p) || (data.created ? data.created * 1000 : Date.now());
     const exp = p + EXP[t];
     const amount = typeof data.amount_total === "number" ? data.amount_total / 100 : undefined; // THB, for ad conversion value
-    return json({ ok: true, key, t, p, exp, amount, token: signToken({ k: key, t, p, exp, sid }, secret) });
+    const extra = [];
+    const key2 = data.metadata?.key2;
+    if (data.metadata?.tier === "pair" && key2) {
+      extra.push({ key: key2, t: "full", p, exp, token: signToken({ k: key2, t: "full", p, exp, sid }, secret) });
+    }
+    return json({ ok: true, key, t, p, exp, amount, extra, token: signToken({ k: key, t, p, exp, sid }, secret) });
   } catch (e) {
     console.error(e);
     return json({ error: "server" }, 500);

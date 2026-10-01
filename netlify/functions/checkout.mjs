@@ -4,26 +4,30 @@ import { KEY_RE, env, json, stripe, verifyToken } from "../lib/shared.mjs";
 const prices = () => {
   const year = parseInt(process.env.PRICE_YEAR_THB || "299", 10);
   const full = parseInt(process.env.PRICE_FULL_THB || "690", 10);
-  return { year, full, upgrade: full - year };
+  const pair = parseInt(process.env.PRICE_PAIR_THB || "990", 10);
+  return { year, full, upgrade: full - year, pair };
 };
 
 const NAMES = {
   year: "แพ็กดวงปี: พื้นดวงเชิงลึก + ดวง 12 เดือนข้างหน้า",
   full: "แพ็กชีวิตฉบับสมบูรณ์: รายงานดวงจีนทุกหมวด",
   upgrade: "อัปเกรดเป็นแพ็กชีวิตฉบับสมบูรณ์",
+  pair: "แพ็กคู่: แพ็กชีวิตฉบับสมบูรณ์ 2 ดวง",
 };
 
-// POST { key, page, tier: "year"|"full"|"upgrade", token? } -> { url }
+// POST { key, key2?, page, tier: "year"|"full"|"upgrade"|"pair", token? } -> { url }
 export default async (req) => {
   if (req.method !== "POST") return json({ error: "method_not_allowed" }, 405);
   let body;
   try { body = await req.json(); } catch { return json({ error: "bad_request" }, 400); }
   const key = body?.key;
   if (!KEY_RE.test(key || "")) return json({ error: "invalid_key" }, 400);
-  const tier = ["year", "full", "upgrade"].includes(body?.tier) ? body.tier : "year";
+  const tier = ["year", "full", "upgrade", "pair"].includes(body?.tier) ? body.tier : "year";
+  if (tier === "pair" && (!KEY_RE.test(body?.key2 || "") || body.key2 === key)) return json({ error: "invalid_partner" }, 400);
 
   try {
     const metadata = { key, tier: tier === "upgrade" ? "full" : tier };
+    if (tier === "pair") metadata.key2 = body.key2;
     if (tier === "upgrade") {
       // upgrade only from a valid year-pack token for the same birth data; keep its purchase date
       const p = verifyToken(body?.token, env("TOKEN_SECRET"));

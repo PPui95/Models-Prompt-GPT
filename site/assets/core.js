@@ -1,7 +1,8 @@
 /* ===== ตั้งค่าร้าน: แก้ตรงนี้ก่อนขายจริง (ใช้ร่วมกันทุกหน้า) ===== */
 const CONFIG={
   priceYear:299,                // แพ็กดวงปี (บาท) ต้องตรงกับ PRICE_YEAR_THB บน Netlify
-  priceFull:690,                // แพ็กชีวิตฉบับสมบูรณ์ (บาท) ต้องตรงกับ PRICE_FULL_THB บน Netlify
+  priceFull:690,
+  pricePair:990,                // แพ็กคู่: ฉบับสมบูรณ์ 2 ดวง ต้องตรงกับ PRICE_PAIR_THB                // แพ็กชีวิตฉบับสมบูรณ์ (บาท) ต้องตรงกับ PRICE_FULL_THB บน Netlify
   contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
   metaPixelId:"",               // Meta (Facebook/Instagram) Pixel ID เช่น "1234567890123456" เว้นว่าง = ไม่ติดตาม
   tiktokPixelId:"",             // TikTok Pixel ID เช่น "C1ABCDEF2GHIJK3LMNOP" เว้นว่าง = ไม่ติดตาม
@@ -189,9 +190,9 @@ const STAR_TXT={
 /* ---------- ดวงปี 2026 丙午 ตามนักษัตร ---------- */
 const Y2026=[
  {s:2,tag:"ชง (冲太岁)",t:"ปีแห่งการเปลี่ยนแปลงใหญ่ อาจย้ายงาน ย้ายบ้าน หรือเปลี่ยนทิศชีวิต",work:"มีการเปลี่ยนแปลงในที่ทำงาน เช่น ย้ายแผนก เปลี่ยนหัวหน้า หรือได้งานใหม่ ไม่ควรลาออกด้วยอารมณ์ เตรียมแผนสำรองไว้ก่อน",money:"รายจ่ายไม่คาดคิดสูง เลี่ยงการเก็งกำไรและการค้ำประกัน กันเงินสำรองฉุกเฉินมากกว่าปกติ",love:"คู่รักมีเรื่องให้ปรับตัว คนโสดอาจเจอความสัมพันธ์ที่มาเร็วไปเร็ว ใช้เวลาดูใจให้นาน",health:"ระวังอุบัติเหตุบนท้องถนน ไต และการนอนไม่พอ ตรวจสุขภาพประจำปีให้ครบ",tip:"ปีชงไม่ใช่ปีร้าย แต่เป็นปีที่ชีวิตบังคับให้เปลี่ยน ยิ่งวางแผนล่วงหน้า ยิ่งเปลี่ยนไปในทางที่ดี การทำบุญหรือไหว้ไท่ส่วยตามความเชื่อช่วยให้ใจนิ่ง"},
- {s:2.5,tag:"害太岁",t:"ระวังเรื่องคนรอบข้างและการถูกเข้าใจผิด",work:"ระวังการถูกเข้าใจผิดหรือถูกแทงข้างหลัง ทำงานให้มีหลักฐาน ส่งสรุปงานเป็นลายลักษณ์อักษร ผลงานจะพูดแทนคุณเอง",money:"รายได้ทรงตัว อ่านสัญญาและเอกสารให้ละเอียดก่อนเซ็น ไม่ควรให้ยืมเงินก้อน",love:"เรื่องเล็กอาจลุกลามถ้าไม่พูดกัน หาเวลาคุยกันแบบไม่มีมือถือ คนโสดได้เจอคนผ่านงาน",health:"ระบบย่อยอาหาร กระเพาะ และความเครียดสะสม ออกกำลังกายสม่ำเสมอช่วยได้มาก",tip:"เลือกคบคนให้ดี อยู่กับคนที่หนุนใจ ปีนี้ความสงบคือความสำเร็จ"},
+ {s:2.5,tag:"ทำลาย (害太岁)",t:"ระวังเรื่องคนรอบข้างและการถูกเข้าใจผิด",work:"ระวังการถูกเข้าใจผิดหรือถูกแทงข้างหลัง ทำงานให้มีหลักฐาน ส่งสรุปงานเป็นลายลักษณ์อักษร ผลงานจะพูดแทนคุณเอง",money:"รายได้ทรงตัว อ่านสัญญาและเอกสารให้ละเอียดก่อนเซ็น ไม่ควรให้ยืมเงินก้อน",love:"เรื่องเล็กอาจลุกลามถ้าไม่พูดกัน หาเวลาคุยกันแบบไม่มีมือถือ คนโสดได้เจอคนผ่านงาน",health:"ระบบย่อยอาหาร กระเพาะ และความเครียดสะสม ออกกำลังกายสม่ำเสมอช่วยได้มาก",tip:"เลือกคบคนให้ดี อยู่กับคนที่หนุนใจ ปีนี้ความสงบคือความสำเร็จ"},
  {s:4.5,tag:"สามประสาน (三合)",t:"ปีที่มีผู้ใหญ่อุปถัมภ์ งานเติบโต เหมาะเริ่มสิ่งใหม่",work:"มีผู้ใหญ่ดึงขึ้น มีโอกาสเลื่อนตำแหน่งหรือได้รับงานใหญ่ เหมาะเปิดธุรกิจหรือโปรเจกต์ใหม่",money:"รายได้เพิ่มจากผลงานและชื่อเสียง เป็นปีที่ดีสำหรับลงทุนในตัวเองและสินทรัพย์ระยะยาว",love:"เสน่ห์แรง คนโสดมีโอกาสพบคนถูกใจ คู่รักเหมาะวางแผนอนาคตร่วมกัน",health:"พลังงานสูงจนอาจทำงานหนักเกิน ระวังความดันและการพักผ่อนไม่พอ",tip:"ปีทองที่ต้องรีบใช้ ตั้งเป้าให้ชัดตั้งแต่ต้นปีแล้วลงมือเลย"},
- {s:3,tag:"破太岁",t:"มีอุปสรรคเล็กๆ ระหว่างทาง แผนอาจต้องปรับกลางคัน",work:"แผนงานอาจสะดุดหรือต้องแก้กลางทาง ยืดหยุ่นและมีแผนสำรองเสมอ งานต่อเนื่องจากปีก่อนจะไปได้ดีกว่างานใหม่",money:"มีรายจ่ายซ่อมแซมหรือเรื่องบ้าน กันงบไว้ล่วงหน้า เลี่ยงการซื้อของใหญ่ตามอารมณ์",love:"ความสัมพันธ์ต้องการความอดทน ระวังคำพูดที่ทำร้ายใจ คนโสดเน้นพัฒนาตัวเองก่อน",health:"ตับ สายตา และความเครียด พักสายตาจากหน้าจอบ้าง",tip:"ค่อยๆ ไป ไม่ต้องรีบ สิ่งที่แตกหักจะกลายเป็นโอกาสสร้างใหม่ที่ดีกว่า"},
+ {s:3,tag:"แตก (破太岁)",t:"มีอุปสรรคเล็กๆ ระหว่างทาง แผนอาจต้องปรับกลางคัน",work:"แผนงานอาจสะดุดหรือต้องแก้กลางทาง ยืดหยุ่นและมีแผนสำรองเสมอ งานต่อเนื่องจากปีก่อนจะไปได้ดีกว่างานใหม่",money:"มีรายจ่ายซ่อมแซมหรือเรื่องบ้าน กันงบไว้ล่วงหน้า เลี่ยงการซื้อของใหญ่ตามอารมณ์",love:"ความสัมพันธ์ต้องการความอดทน ระวังคำพูดที่ทำร้ายใจ คนโสดเน้นพัฒนาตัวเองก่อน",health:"ตับ สายตา และความเครียด พักสายตาจากหน้าจอบ้าง",tip:"ค่อยๆ ไป ไม่ต้องรีบ สิ่งที่แตกหักจะกลายเป็นโอกาสสร้างใหม่ที่ดีกว่า"},
  {s:3.5,tag:"ปีกลาง",t:"ดวงทรงตัว ได้ผลจากสิ่งที่ลงแรงไว้ปีก่อน",work:"ได้ผลจากสิ่งที่ลงแรงไว้ เหมาะพัฒนาทักษะใหม่ สอบใบอนุญาต หรือจัดระบบงานให้มีประสิทธิภาพ",money:"การเงินพอดี ไม่หวือหวา เหมาะออมระยะยาวและวางแผนเกษียณ",love:"ความรักสงบ คู่รักเติบโตไปด้วยกัน คนโสดเจอคนผ่านกลุ่มเรียนหรือกิจกรรม",health:"ระวังกระเพาะและการกินไม่ตรงเวลา",tip:"ปีแห่งการวางรากฐาน สิ่งที่สร้างปีนี้จะส่งผลในอีก 2–3 ปี"},
  {s:3.5,tag:"ไฟหนุน",t:"ชื่อเสียงและการได้รับการยอมรับเด่น",work:"ได้รับการยอมรับ โอกาสมาจากการออกสื่อ การพูด และการนำเสนอ",money:"รายได้ดีแต่รายจ่ายตามอารมณ์ก็สูง ทำงบประมาณรายเดือนให้ชัด",love:"มีเสน่ห์ คนเข้าหาเยอะ ระวังความสัมพันธ์ซ้อน คู่รักควรมีเวลาคุณภาพด้วยกัน",health:"หัวใจ ความร้อนในร่างกาย และการนอน ดื่มน้ำให้พอ",tip:"ใช้แสงที่ได้รับสร้างแบรนด์ของตัวเองให้มั่นคง"},
  {s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน",work:"อยากเปลี่ยนงานหรือเริ่มสิ่งใหม่ ทำได้แต่ต้องมีแผนสำรอง และไม่ตัดสินใจตอนอารมณ์ร้อน",money:"เงินเข้าเร็วออกเร็ว ห้ามลงทุนตามกระแส แบ่งเงินเป็นสัดส่วนชัดเจน",love:"อารมณ์ขึ้นลง คู่รักอาจทะเลาะเรื่องเล็ก ใจเย็นแล้วค่อยคุย",health:"ระวังอุบัติเหตุ การเดินทาง และหัวใจ ลดคาเฟอีนและความเครียด",tip:"ปีนักษัตรตัวเองคือปีทบทวน ถามตัวเองว่าอยากเป็นใครใน 12 ปีข้างหน้า"},
@@ -212,7 +213,7 @@ const GOD_2026=[
 
 /* ---------- ดวงปี 2570 丁未 (แพะไฟ) ตามนักษัตร ---------- */
 const Y2027=[
- {s:2.5,tag:"害太岁",t:"ปีที่ต้องระวังคนรอบข้างและความเข้าใจผิด",work:"ระวังเพื่อนร่วมงานที่ไม่จริงใจ ทำงานให้มีหลักฐานและสื่อสารเป็นลายลักษณ์อักษร งานที่ทำเองจะเสร็จไวกว่างานกลุ่ม",money:"รายได้ทรงตัว ไม่ควรค้ำประกันหรือให้ยืมก้อนใหญ่ เก็บเงินสำรองให้ได้ 6 เดือน",love:"มีเรื่องน้อยใจสะสมได้ง่าย พูดกันตรงๆ แต่นุ่มนวล คนโสดอย่ารีบผูกมัด",health:"ระบบทางเดินปัสสาวะ ไต และการนอน",tip:"เลือกคนที่ไว้ใจได้ให้น้อยแต่แน่น ปีนี้คุณภาพของความสัมพันธ์สำคัญกว่าจำนวน"},
+ {s:2.5,tag:"ทำลาย (害太岁)",t:"ปีที่ต้องระวังคนรอบข้างและความเข้าใจผิด",work:"ระวังเพื่อนร่วมงานที่ไม่จริงใจ ทำงานให้มีหลักฐานและสื่อสารเป็นลายลักษณ์อักษร งานที่ทำเองจะเสร็จไวกว่างานกลุ่ม",money:"รายได้ทรงตัว ไม่ควรค้ำประกันหรือให้ยืมก้อนใหญ่ เก็บเงินสำรองให้ได้ 6 เดือน",love:"มีเรื่องน้อยใจสะสมได้ง่าย พูดกันตรงๆ แต่นุ่มนวล คนโสดอย่ารีบผูกมัด",health:"ระบบทางเดินปัสสาวะ ไต และการนอน",tip:"เลือกคนที่ไว้ใจได้ให้น้อยแต่แน่น ปีนี้คุณภาพของความสัมพันธ์สำคัญกว่าจำนวน"},
  {s:2,tag:"ชง (冲太岁)",t:"ปีชง การเปลี่ยนแปลงใหญ่มาหา ทั้งงาน บ้าน หรือความสัมพันธ์",work:"อาจย้ายงาน เปลี่ยนตำแหน่ง หรือโครงสร้างองค์กรเปลี่ยน วางแผนล่วงหน้าและอัปเดตประวัติการทำงานไว้",money:"รายจ่ายไม่คาดคิด เลี่ยงการลงทุนเสี่ยงสูง เน้นสภาพคล่อง",love:"ความสัมพันธ์ถูกทดสอบ คู่ที่ผ่านปีนี้ไปได้จะมั่นคงขึ้นมาก",health:"กระเพาะ ระบบย่อย และอุบัติเหตุ ขับรถระมัดระวัง",tip:"การเปลี่ยนแปลงที่เราเลือกเองดีกว่าการเปลี่ยนแปลงที่ถูกบังคับ เริ่มปรับตัวก่อนเรื่องจะมาถึง"},
  {s:3.5,tag:"ปีกลาง",t:"ปีที่ค่อยเป็นค่อยไป สร้างฐานให้มั่นคง",work:"เหมาะพัฒนาทักษะและวางระบบงาน ผลลัพธ์ชัดเจนช่วงครึ่งปีหลัง",money:"การเงินสม่ำเสมอ เหมาะออมและลงทุนระยะยาวแบบสม่ำเสมอ (DCA)",love:"ความสัมพันธ์เรียบง่าย ใช้เวลาคุณภาพร่วมกันมากขึ้น",health:"ตับ ความเครียด และการออกกำลังกายที่ขาดหาย",tip:"ไม่ต้องรีบ ปีนี้คือปีวางเสาเข็มให้ปีถัดไป"},
  {s:4.5,tag:"สามประสาน (三合)",t:"ปีที่ดีมาก มีผู้อุปถัมภ์และโอกาสเติบโต",work:"มีคนเห็นฝีมือ ได้รับมอบหมายงานสำคัญ เหมาะเริ่มโปรเจกต์ใหม่ เปิดธุรกิจ หรือขอเลื่อนตำแหน่ง",money:"รายได้เพิ่มจากผลงานและเครือข่าย เหมาะลงทุนในตัวเองและสินทรัพย์ระยะยาว",love:"มีเสน่ห์ คนโสดเจอคนถูกใจผ่านเพื่อนหรือผู้ใหญ่แนะนำ คู่รักเหมาะวางแผนอนาคต",health:"สุขภาพดี ระวังทำงานหนักจนพักผ่อนไม่พอ",tip:"ตอบรับโอกาสและคำชวน ความสำเร็จปีนี้มาจากคนรอบตัว"},
@@ -222,7 +223,7 @@ const Y2027=[
  {s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน",work:"อยากเปลี่ยนหลายเรื่อง ทำได้แต่ทีละอย่างและมีแผนสำรอง ระวังตัดสินใจตอนเหนื่อยหรือน้อยใจ",money:"เงินเข้าออกเร็ว ทำงบประมาณและเลี่ยงการลงทุนตามกระแส",love:"อารมณ์อ่อนไหวง่าย บอกความต้องการตรงๆ แทนการรอให้อีกฝ่ายเดา",health:"กระเพาะ ม้าม และความเครียดสะสม",tip:"ปีนักษัตรตัวเองคือปีทบทวนตัวตน ตั้งเป้าหมาย 12 ปีข้างหน้าให้ชัด"},
  {s:3.5,tag:"ปีกลาง",t:"ปีแห่งการเดินทางและโอกาสใหม่",work:"งานที่เกี่ยวกับต่างถิ่น ออนไลน์ หรือเทคโนโลยีไปได้ดี ปรับตัวเร็วคือจุดแข็ง",money:"รายได้มีหลายทาง แต่รายจ่ายเพิ่มตาม จดบันทึกรายรับรายจ่าย",love:"ความสัมพันธ์ต้องมีเรื่องใหม่ทำด้วยกัน คนโสดเจอคนจากการเดินทางหรือกิจกรรม",health:"ปอด ระบบหายใจ และการพักผ่อนน้อย",tip:"ลองสิ่งใหม่ทีละน้อย แล้วจะเจอโอกาสที่ไม่คาดคิด"},
  {s:3.5,tag:"ปีกลาง",t:"ปีที่ความละเอียดได้รับผลตอบแทน",work:"งานที่ต้องการความแม่นยำได้รับคำชม เหมาะเป็นผู้เชี่ยวชาญเฉพาะด้าน ระวังแบกงานคนเดียว",money:"การเงินมั่นคง เหมาะปิดหนี้และปรับพอร์ตให้สมดุล",love:"ชมกันให้มากกว่าติ ความสัมพันธ์จะอบอุ่นขึ้น",health:"ผิวหนัง ปอด และความเครียดจากความสมบูรณ์แบบ",tip:"ดีพอแล้วก็คือดี ปล่อยวางเรื่องเล็กบ้าง"},
- {s:2.5,tag:"破+刑太岁",t:"ปีที่แผนอาจสะดุดและมีแรงเสียดทาน",work:"ระวังความขัดแย้งกับเพื่อนร่วมงานหรือหัวหน้า ตรวจเอกสารและสัญญาให้รอบคอบ แผนต้องยืดหยุ่น",money:"มีรายจ่ายซ่อมแซมหรือเรื่องครอบครัว กันงบสำรองไว้",love:"เลี่ยงคำพูดแรง ใจเย็นแล้วค่อยคุย",health:"กระเพาะ ข้อต่อ และอุบัติเหตุเล็กน้อย",tip:"สิ่งที่สะดุดคือสัญญาณให้ปรับ ไม่ใช่ให้หยุด"},
+ {s:2.5,tag:"แตก+เบียด (破刑太岁)",t:"ปีที่แผนอาจสะดุดและมีแรงเสียดทาน",work:"ระวังความขัดแย้งกับเพื่อนร่วมงานหรือหัวหน้า ตรวจเอกสารและสัญญาให้รอบคอบ แผนต้องยืดหยุ่น",money:"มีรายจ่ายซ่อมแซมหรือเรื่องครอบครัว กันงบสำรองไว้",love:"เลี่ยงคำพูดแรง ใจเย็นแล้วค่อยคุย",health:"กระเพาะ ข้อต่อ และอุบัติเหตุเล็กน้อย",tip:"สิ่งที่สะดุดคือสัญญาณให้ปรับ ไม่ใช่ให้หยุด"},
  {s:4.5,tag:"สามประสาน (三合)",t:"ปีที่ดีมาก ทีมงานดี เพื่อนช่วยเหลือ",work:"งานเป็นทีมได้ผลดีเยี่ยม มีโอกาสเลื่อนตำแหน่งหรือได้รับความไว้วางใจ",money:"รายได้เพิ่มจากความร่วมมือ เหมาะเริ่มลงทุนระยะยาว",love:"มีผู้ใหญ่หรือเพื่อนแนะนำคนดีให้ คู่รักมั่นคงและอบอุ่น",health:"ไต ระบบปัสสาวะ และการพักผ่อน",tip:"ใจกว้างเป็นจุดแข็ง แต่ต้องรู้จักปฏิเสธด้วย"}
 ];
 const YEAR_DATA={2026:Y2026,2027:Y2027};
@@ -234,9 +235,9 @@ const REL_YEAR={
   chong:{s:2,tag:"ชง (冲太岁)",t:"ปีแห่งการเปลี่ยนแปลงใหญ่ วางแผนล่วงหน้า เน้นสภาพคล่องและความไม่ประมาท"},
   liuhe:{s:4.5,tag:"หกประสาน (六合)",t:"ปีที่ดีมาก มีคนช่วย เหมาะเจรจา ร่วมมือ และเรื่องความรัก"},
   sanhe:{s:4.5,tag:"สามประสาน (三合)",t:"ปีที่ดีมาก มีผู้อุปถัมภ์ งานเติบโต เหมาะเริ่มสิ่งใหม่"},
-  hai:{s:2.5,tag:"害太岁",t:"ระวังความเข้าใจผิดกับคนรอบข้าง ทำงานให้มีหลักฐาน"},
-  po:{s:3,tag:"破太岁",t:"แผนอาจสะดุดระหว่างทาง ยืดหยุ่นและมีแผนสำรอง"},
-  xing:{s:3,tag:"刑太岁",t:"มีแรงเสียดทาน ระวังคำพูดและเรื่องเอกสาร"},
+  hai:{s:2.5,tag:"ทำลาย (害太岁)",t:"ระวังความเข้าใจผิดกับคนรอบข้าง ทำงานให้มีหลักฐาน"},
+  po:{s:3,tag:"แตก (破太岁)",t:"แผนอาจสะดุดระหว่างทาง ยืดหยุ่นและมีแผนสำรอง"},
+  xing:{s:3,tag:"เบียด (刑太岁)",t:"มีแรงเสียดทาน ระวังคำพูดและเรื่องเอกสาร"},
   neutral:{s:3.5,tag:"ปีกลาง",t:"ดวงทรงตัว ได้ผลจากความสม่ำเสมอ เหมาะพัฒนาตัวเอง"}
 };
 const yearPillar=by=>[((by-4)%10+10)%10,((by-4)%12+12)%12];
@@ -440,9 +441,11 @@ function buildDate(p){
 function buildHours(){
   let o='<option value="">ไม่ทราบเวลาเกิด</option>';
   for(let h=0;h<24;h++){const br=Math.floor((h+1)/2)%12;o+=`<option value="${h}">${pad(h)}:00–${pad(h)}:59 ยาม${BR_TH[br]}</option>`;}
-  $("bh").innerHTML=o;
+  $("bh").innerHTML=o; if($("bh2")) $("bh2").innerHTML=o;
 }
 const getHour=()=>$("bh").value===""?null:Number($("bh").value);
+// partner's report key (match forms): birth date | hour | sex
+function reportKey2(){const h=$("bh2")&&$("bh2").value!==""?pad($("bh2").value):"";return `${getDate("bd2")}|${h}|${$("sex2")?$("sex2").value:"f"}`;}
 function reportKey(){
   const h=getHour();
   return `${getDate("bd")}|${h==null?"":pad(h)}|${$("sex").value}`;
@@ -459,12 +462,13 @@ const godLine=g=>`<b>${GOD[g.idx].han} ${GOD[g.idx].th}</b> (${GOD[g.idx].kw}) �
 
 const TIER_NAME={year:"แพ็กดวงปี",full:"แพ็กชีวิตฉบับสมบูรณ์"};
 // need: "year" (either pack unlocks it), "full" (only the complete pack), "renew" (buy a fresh 12-month window)
-function lockCard(title,items,need="year"){
+function lockCard(title,items,need="year",opts={}){
   const up=need==="full"&&TIER==="year";
   const btnY=`<button class="go pay" data-tier="year" type="button">${TIER_NAME.year} ${CONFIG.priceYear} บาท</button>`;
   const btnF=`<button class="go pay" data-tier="full" type="button">${TIER_NAME.full} ${CONFIG.priceFull} บาท</button>`;
   const btnU=`<button class="go pay" data-tier="upgrade" type="button">อัปเกรดเป็น${TIER_NAME.full} จ่ายเพิ่ม ${CONFIG.priceFull-CONFIG.priceYear} บาท</button>`;
-  const buttons=need==="renew"?btnY:up?btnU:need==="full"?btnF:btnY+btnF;
+  const btnP=opts.pair?`<button class="go pay" data-tier="pair" type="button">แพ็กคู่ 2 ดวง ${CONFIG.pricePair} บาท</button>`:"";
+  const buttons=(need==="renew"?btnY:up?btnU:need==="full"?btnF:btnY+btnF)+btnP;
   const note=need==="renew"?`ต่ออายุดวง 12 เดือนชุดใหม่ นับจากวันที่ชำระ`
     :up?`คุณมี${TIER_NAME.year}อยู่แล้ว จ่ายเฉพาะส่วนต่างเพื่อปลดล็อกทุกหมวด`
     :need==="full"?`ส่วนนี้อยู่ใน${TIER_NAME.full}เท่านั้น ได้ครบทุกหมวด: พื้นดวงเชิงลึก ดวง 12 เดือนข้างหน้า วัยจร 10 ปี การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์ และ PDF`
@@ -473,7 +477,7 @@ function lockCard(title,items,need="year"){
     <h2>${title}</h2>
     <p>${up?"ปลดล็อกส่วนนี้ด้วยการอัปเกรด":"ส่วนนี้ประกอบด้วย"}</p>
     <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
-    <p class="note">${note}<br>จ่ายครั้งเดียวต่อวันเดือนปีเกิด · ชำระด้วย PromptPay หรือบัตร</p>
+    <p class="note">${note}${opts.pair?`<br><b>แพ็กคู่</b>: แพ็กชีวิตฉบับสมบูรณ์ทั้งของคุณและอีกฝ่าย (ปกติ ${CONFIG.priceFull*2} บาท)`:""}<br>จ่ายครั้งเดียวต่อวันเดือนปีเกิด · ชำระด้วย PromptPay หรือบัตร</p>
     <div class="row">${buttons}</div>
     <p class="msg" aria-live="polite"></p>
     <form class="row unlock" novalidate>
@@ -488,11 +492,11 @@ document.addEventListener("click",async e=>{
   const msg=btn.parentElement.nextElementSibling;
   if(framed){say(msg,"การชำระเงินใช้ได้บนเว็บจริงเท่านั้น หน้านี้เป็นพรีวิว","err");return;}
   btn.disabled=true; say(msg,"กำลังเปิดหน้าชำระเงิน...");
-  store.set("bazi_pending",{key:reportKey(),nm:$("nm").value.trim()});
+  store.set("bazi_pending",{key:reportKey(),nm:$("nm").value.trim(),bd2:$("bd2-y")?getDate("bd2"):"",nm2:$("nm2")?$("nm2").value.trim():"",bh2:$("bh2")?$("bh2").value:"",sex2:$("sex2")?$("sex2").value:""});
   try{
     const tier=btn.dataset.tier||"year", acc=effAccess(reportKey());
     track("InitiateCheckout",{tier,value:tierValue(tier)});
-    const {status,data}=await api("/checkout",{key:reportKey(),page:document.body.dataset.page||"chart",tier,token:tier==="upgrade"&&acc?acc.yearTok:undefined});
+    const {status,data}=await api("/checkout",{key:reportKey(),key2:tier==="pair"?reportKey2():undefined,page:document.body.dataset.page||"chart",tier,token:tier==="upgrade"&&acc?acc.yearTok:undefined});
     if(status===200&&data.url){location.href=data.url;return;}
     say(msg,"เปิดหน้าชำระเงินไม่สำเร็จ ลองใหม่อีกครั้ง หรือติดต่อ "+CONFIG.contact,"err");
   }catch(_){say(msg,"เชื่อมต่อระบบชำระเงินไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่","err");}
@@ -541,6 +545,7 @@ function renderRead(b,a,male){
     <h2>เจ้าชะตา: ${elSpan(stemEl(dm),d.name)} <span class="tag">${EL_TH[stemEl(dm)]}${yinyang(dm)}</span></h2>
     <p>${d.core}</p>
     ${kv([["จุดแข็ง",d.strength],["จุดที่ต้องระวัง",d.weak]])}
+    <div class="row"><button class="ghost" type="button" id="shareBtn">สร้างการ์ดธาตุของฉันไว้แชร์</button></div>
   </div>
   <div class="grid2">
     <div class="card">
@@ -901,7 +906,7 @@ function runMatch(){
   <div class="card">
     <h3>คำแนะนำสำหรับความสัมพันธ์</h3><p>${R.adv}</p>
     <p class="note">คู่ไหนก็ไปได้ดีถ้าเข้าใจกันและพูดคุยกันสม่ำเสมอ คะแนนนี้บอกจุดที่ง่ายและจุดที่ต้องใส่ใจ ไม่ได้ตัดสินความสัมพันธ์</p>
-  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปีนี้"],"full")}`;
+  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปีนี้"],"full",{pair:reportKey2()!==reportKey()})}`;
 }
 
 
@@ -991,6 +996,51 @@ function renderDaily(b,a){
 }
 
 
+
+/* ===================== การ์ดแชร์ (วาดในเบราว์เซอร์ ไม่ส่งข้อมูลออกไป) ===================== */
+const DM_TAG=["ผู้นำที่ยืนหยัด","อ่อนโยนแต่เหนียวแน่น","อบอุ่น ส่องแสงให้ทุกคน","ละเอียดอ่อน ลึกซึ้ง","มั่นคง เป็นที่พึ่ง","หล่อเลี้ยง ใจกว้าง","เด็ดขาด ตรงไปตรงมา","ประณีต มีคุณค่า","ฉลาด คิดกว้าง","ลึกซึ้ง หยั่งรู้"];
+const EL_HEX=["#5FAF74","#E8664F","#D1A54E","#B9C2C9","#6FA3D8"];
+function wrapText(ctx,text,x,y,maxW,lh){let line="",yy=y;for(const ch of [...text]){const t=line+ch;if(ctx.measureText(t).width>maxW&&line){ctx.fillText(line,x,yy);line=ch.trim()?ch:"";yy+=lh;}else line=t;}if(line)ctx.fillText(line,x,yy);return yy;}
+async function makeShareCard(b,a){
+  try{await document.fonts.ready;}catch(_){}
+  const W=1080,H=1920,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const dm=b.day[0], e=stemEl(dm), yb=b.year[1], cy=chineseYearOf(todayParts()), Y=animalYear(cy,yb);
+  const g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,"#16231F");g.addColorStop(1,"#070B0A");x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.globalAlpha=.08;x.fillStyle=EL_HEX[e];x.beginPath();x.arc(W*.78,H*.3,420,0,Math.PI*2);x.fill();x.globalAlpha=1;
+  // seal
+  x.save();x.translate(110,150);x.rotate(-0.07);x.strokeStyle="#D2473B";x.lineWidth=6;x.strokeRect(-55,-55,110,110);x.fillStyle="#D2473B";x.font='900 40px "Noto Serif TC",serif';x.textAlign="center";x.textBaseline="middle";
+  x.fillText("八",-24,-24);x.fillText("字",24,-24);x.fillText("命",-24,24);x.fillText("理",24,24);x.restore();
+  x.textAlign="left";x.textBaseline="alphabetic";x.fillStyle="#C9D3CE";x.font='500 40px "IBM Plex Sans Thai",sans-serif';x.fillText("ธาตุประจำตัวของฉัน · ดวงจีน 8 อักษร",200,165);
+  // hero character
+  x.textAlign="center";x.fillStyle=EL_HEX[e];x.font='900 400px "Noto Serif TC",serif';x.fillText(STEMS[dm],W/2,700);
+  x.fillStyle="#FFFFFF";x.font='700 84px "Noto Serif Thai",serif';x.fillText(DM[dm].name,W/2,905);
+  x.fillStyle=EL_HEX[e];x.font='600 52px "IBM Plex Sans Thai",sans-serif';x.fillText(`ธาตุ${EL_TH[e]}${yinyang(dm)} · ${DM_TAG[dm]}`,W/2,990);
+  x.fillStyle="#C9D3CE";x.font='400 40px "IBM Plex Sans Thai",sans-serif';x.textAlign="left";
+  wrapText(x,DM[dm].strength,110,1085,W-220,58);
+  // element bars
+  const max=Math.max(...a.cnt,1);x.font='600 38px "IBM Plex Sans Thai",sans-serif';
+  a.cnt.forEach((v,i)=>{const yy=1250+i*74;x.fillStyle=EL_HEX[i];x.fillText(EL_HAN[i]+" "+EL_TH[i],110,yy+14);
+    x.fillStyle="rgba(255,255,255,.12)";x.fillRect(320,yy-14,560,28);x.fillStyle=EL_HEX[i];x.fillRect(320,yy-14,560*v/max,28);x.fillStyle="#C9D3CE";x.fillText(String(v),910,yy+14);});
+  // year line
+  x.fillStyle="#FFFFFF";x.font='700 46px "Noto Serif Thai",serif';x.fillText(`ปี${BR_TH[yb]} (${ANIMAL[yb]}) ในปี${ANIMAL[yearPillar(cy)[1]]}${EL_TH[stemEl(yearPillar(cy)[0])]} ${BE(cy)}`,110,1700);
+  x.fillStyle="#D3AA5C";x.font='600 42px "IBM Plex Sans Thai",sans-serif';x.fillText(Y.tag,110,1762);
+  x.fillStyle="#8FA39B";x.font='500 34px "IBM Plex Sans Thai",sans-serif';x.textAlign="center";x.fillText("ดูธาตุของคุณฟรีที่ "+location.host,W/2,1860);
+  return c;
+}
+async function openShare(){
+  if(!current||!currentA) return;
+  const cv=await makeShareCard(current,currentA), url=cv.toDataURL("image/png");
+  let m=$("shareModal");
+  if(!m){m=document.createElement("div");m.id="shareModal";m.className="share-modal";m.setAttribute("role","dialog");m.setAttribute("aria-label","การ์ดธาตุของฉัน");document.body.appendChild(m);}
+  m.innerHTML=`<div class="share-box"><img alt="การ์ดธาตุประจำตัว" src="${url}"><p class="note">กดค้างที่รูปเพื่อบันทึก หรือใช้ปุ่มด้านล่าง</p>
+    <div class="row"><a class="go" href="${url}" download="ธาตุของฉัน.png">บันทึกรูป</a><button class="ghost" type="button" id="shareNative" hidden>แชร์</button><button class="ghost" type="button" id="shareClose">ปิด</button></div></div>`;
+  m.hidden=false;
+  cv.toBlob(bl=>{if(!bl)return;const f=new File([bl],"ธาตุของฉัน.png",{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){const s=$("shareNative");s.hidden=false;s.onclick=()=>navigator.share({files:[f],title:"ธาตุประจำตัวของฉัน"}).catch(()=>{});}});
+  $("shareClose").onclick=()=>{m.hidden=true;};
+}
+document.addEventListener("click",e=>{if(e.target.closest("#shareBtn")) openShare(); else if(e.target.id==="shareModal") e.target.hidden=true;});
+
 /* ===================== Pixel + ความยินยอมคุกกี้ (PDPA) ===================== */
 // Pixels load only after the visitor accepts. Only funnel events and amounts are sent, never birth data or names.
 const TRACKING_ON=!!(CONFIG.metaPixelId||CONFIG.tiktokPixelId);
@@ -1010,13 +1060,13 @@ function loadPixels(){
 const TT_NAME={ViewContent:"ViewContent",InitiateCheckout:"InitiateCheckout",Purchase:"CompletePayment"};
 function track(name,data={},eventId){
   if(!pixelsLoaded) return;
-  const p={content_name:data.tier?("แพ็ก"+(data.tier==="year"?"ดวงปี":data.tier==="upgrade"?"อัปเกรด":"สมบูรณ์")):(data.page||PAGE),content_type:"product"};
+  const p={content_name:data.tier?("แพ็ก"+(data.tier==="year"?"ดวงปี":data.tier==="upgrade"?"อัปเกรด":data.tier==="pair"?"คู่":"สมบูรณ์")):(data.page||PAGE),content_type:"product"};
   if(data.value!=null){p.value=data.value;p.currency="THB";}
   if(window.fbq) eventId?fbq('track',name,p,{eventID:eventId}):fbq('track',name,p);
   if(window.ttq) ttq.track(TT_NAME[name],p,eventId?{event_id:eventId}:undefined);
   try{const L=JSON.parse(sessionStorage.getItem("bazi_tlog")||"[]");L.push([name,p.value??null,eventId||null]);sessionStorage.setItem("bazi_tlog",JSON.stringify(L.slice(-20)));}catch(e){}
 }
-const tierValue=t=>t==="year"?CONFIG.priceYear:t==="upgrade"?CONFIG.priceFull-CONFIG.priceYear:CONFIG.priceFull;
+const tierValue=t=>t==="year"?CONFIG.priceYear:t==="upgrade"?CONFIG.priceFull-CONFIG.priceYear:t==="pair"?CONFIG.pricePair:CONFIG.priceFull;
 function showConsent(){
   if(!TRACKING_ON) return;
   let bar=$("consentBar");
@@ -1094,8 +1144,10 @@ async function boot(){
     $("status")&&($("status").textContent="กำลังยืนยันการชำระเงิน...");
     try{
       const {status,data}=await api("/verify",{session_id:sid});
-      if(status===200&&data.ok){restoreForm(data.key);store.set("bazi_pending",null);saveMe();addAccess(accFrom(data));
-        track("Purchase",{value:data.amount??(data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]);return;}
+      if(status===200&&data.ok){restoreForm(data.key);
+        const pp=store.get("bazi_pending"); if(pp&&pp.bd2&&$("bd2-y")){setDate("bd2",pp.bd2);if($("nm2"))$("nm2").value=pp.nm2||"";if($("bh2"))$("bh2").value=pp.bh2||"";if($("sex2"))$("sex2").value=pp.sex2||"f";}
+        store.set("bazi_pending",null);saveMe();(data.extra||[]).forEach(x=>{ACC=ACC.filter(a=>!(a.k===x.key&&a.t===x.t));ACC.push(accFrom(x));});addAccess(accFrom(data));
+        track("Purchase",{value:data.amount??(data.extra&&data.extra.length?CONFIG.pricePair:data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.extra&&data.extra.length?"pair":data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]);return;}
       const p=store.get("bazi_pending"); if(p) restoreForm(p.key); run();
       $("status")&&($("status").textContent=status===202?"ยังไม่ได้รับยืนยันการชำระเงิน รอสักครู่แล้วรีเฟรชหน้านี้":"ยืนยันการชำระเงินไม่สำเร็จ กรุณาติดต่อ "+CONFIG.contact);
     }catch(_){run();$("status")&&($("status").textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ รีเฟรชหน้านี้อีกครั้ง");}

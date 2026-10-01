@@ -74,6 +74,7 @@ PAGES['index']=('ดวงจีน แปดอักษร','ดูดวง�
         </tbody>
       </table></div>
       <p class="note">ซื้อแพ็กดวงปีไปแล้ว อัปเกรดเป็นฉบับสมบูรณ์ได้โดยจ่ายเฉพาะส่วนต่าง</p>
+      <p class="note"><b>แพ็กคู่ <span data-cfg="pricePair"></span> บาท</b>: แพ็กชีวิตฉบับสมบูรณ์ทั้งของคุณและคู่ของคุณ ซื้อได้ที่<a href="match.html">หน้าคู่สมพงษ์</a></p>
       <div class="cta-row"><a class="go" href="chart.html">เริ่มผูกดวง</a></div>
     </div>
     <div class="card">
@@ -120,6 +121,8 @@ PAGES['chart']=('ผูกดวงฉบับเต็ม | ดวงจีน
     <form id="f2">
       <label for="nm2">ชื่ออีกฝ่าย (ไม่ใส่ก็ได้)<input type="text" id="nm2" maxlength="40" placeholder="เช่น คุณเอ"></label>
       <fieldset class="dsel"><legend>วันเกิดของอีกฝ่าย (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd2-d" aria-label="วันที่เกิดของอีกฝ่าย"></select><select id="bd2-m" aria-label="เดือนเกิดของอีกฝ่าย"></select><select id="bd2-y" aria-label="ปีเกิดของอีกฝ่าย พ.ศ."></select></div></fieldset>
+      <label for="sex2">เพศของอีกฝ่าย<select id="sex2"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
+      <label for="bh2">เวลาเกิดของอีกฝ่าย<select id="bh2"></select></label>
       <button class="go" type="submit">ดูคู่สมพงษ์</button>
     </form>
     <div id="matchOut" class="grid2"></div>
@@ -132,6 +135,8 @@ PAGES['match']=('คู่สมพงษ์ | ดวงจีน แปดอ�
   <form id="f2">
     <label for="nm2">ชื่ออีกฝ่าย (ไม่ใส่ก็ได้)<input type="text" id="nm2" maxlength="40" placeholder="เช่น คุณเอ"></label>
     <fieldset class="dsel"><legend>วันเกิดของอีกฝ่าย (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd2-d" aria-label="วันที่เกิดของอีกฝ่าย"></select><select id="bd2-m" aria-label="เดือนเกิดของอีกฝ่าย"></select><select id="bd2-y" aria-label="ปีเกิดของอีกฝ่าย พ.ศ."></select></div></fieldset>
+      <label for="sex2">เพศของอีกฝ่าย<select id="sex2"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
+      <label for="bh2">เวลาเกิดของอีกฝ่าย<select id="bh2"></select></label>
     <button class="go" type="submit">ดูคู่สมพงษ์</button>
   </form>
   <div id="matchOut" class="grid2"></div>''')
