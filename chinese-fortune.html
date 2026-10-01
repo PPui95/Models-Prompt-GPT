@@ -7,11 +7,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;900&family=Noto+Serif+Thai:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
 <style>
-/* Layout: one reading column; the four pillars sit as vertical ink tiles under a seal-stamped header, tabs switch reading / year 2026 / compatibility */
+/* Layout: one reading column; four pillars as vertical ink tiles under a seal header; tabs switch report chapters; premium chapters show a lock card until unlocked */
 :root{
   --paper:#ECEFEA; --sheet:#F7F8F5; --ink:#1B2421; --muted:#5B6862; --line:#CDD5CF;
-  --cinnabar:#B3342B; --jade:#2E6A58; --gold:#9A7428;
-  --wood:#3F7F4E; --fire:#C0412F; --earth:#A07A2E; --metal:#7D8790; --water:#2D5C8C;
+  --cinnabar:#B3342B; --jade:#2E6A58; --gold:#8E6A20;
+  --wood:#3F7F4E; --fire:#C0412F; --earth:#9A742A; --metal:#6E7882; --water:#2D5C8C;
   --f-display:"Noto Serif Thai","Noto Serif TC",Georgia,serif;
   --f-han:"Noto Serif TC","Noto Serif SC","Songti TC",serif;
   --f-body:"IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;
@@ -25,65 +25,96 @@
   --cinnabar:#E0645A; --jade:#6DB59E; --gold:#D3AA5C;
   --wood:#77B987; --fire:#EE7563; --earth:#D3AE63; --metal:#B4BDC4; --water:#78A9DB; color-scheme:dark}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
-.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:22px}
+.wrap{max-width:780px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:22px}
 header{display:flex;gap:16px;align-items:center}
 .seal{flex:none;width:58px;height:58px;border:2px solid var(--cinnabar);color:var(--cinnabar);border-radius:6px;display:grid;grid-template-columns:1fr 1fr;place-items:center;font-family:var(--f-han);font-weight:900;font-size:21px;line-height:1;padding:4px;transform:rotate(-4deg)}
 h1{font-family:var(--f-display);font-size:clamp(24px,5vw,32px);line-height:1.2;margin:0;text-wrap:balance}
 header p{margin:2px 0 0;color:var(--muted);font-size:14px}
 form{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
 label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
-input[type=date],input[type=time]{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
-.chk{display:flex;gap:8px;align-items:center;flex-direction:row;color:var(--ink);font-size:14px;padding-bottom:9px}
+input[type=date],input[type=time],input[type=text],select{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.chk{display:flex;gap:8px;align-items:center;color:var(--ink);font-size:14px;padding-bottom:9px}
 button{font:inherit;cursor:pointer}
 .go{background:var(--cinnabar);color:#fff;border:0;border-radius:6px;padding:9px 14px;font-weight:600}
 .go:hover{filter:brightness(1.08)}
+.ghost{background:none;border:1px solid var(--line);color:var(--ink);border-radius:6px;padding:7px 12px;font-weight:500}
 :focus-visible{outline:2px solid var(--jade);outline-offset:2px}
 .note{font-size:12.5px;color:var(--muted);margin:0}
 .tag{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--gold);border:1px solid var(--gold);border-radius:99px;padding:0 8px;margin-left:6px;vertical-align:2px}
 
 .pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.pillar{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 6px 12px;text-align:center;display:grid;gap:4px;min-width:0}
+.pillar{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 6px 12px;text-align:center;display:grid;gap:3px;min-width:0;align-content:start}
 .pillar.dm{border-color:var(--cinnabar);box-shadow:0 0 0 1px var(--cinnabar) inset}
 .pillar .cap{font-size:12px;color:var(--muted);letter-spacing:.04em}
 .han{font-family:var(--f-han);font-weight:900;font-size:clamp(34px,9vw,52px);line-height:1.05}
 .sub{font-size:12px;line-height:1.35}
-.god{font-size:11.5px;color:var(--gold);min-height:1.3em}
+.god{font-size:11.5px;color:var(--gold);min-height:1.3em;line-height:1.3}
+.hidden-stems{border-top:1px dashed var(--line);margin-top:4px;padding-top:4px;font-size:11px;line-height:1.4;color:var(--muted)}
+.hidden-stems b{font-family:var(--f-han);font-size:14px}
 .pillar.off{opacity:.45}
 .el-wood{color:var(--wood)}.el-fire{color:var(--fire)}.el-earth{color:var(--earth)}.el-metal{color:var(--metal)}.el-water{color:var(--water)}
 
-.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
-.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 12px;font-weight:500;white-space:nowrap}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 11px;font-weight:500;white-space:nowrap}
 .tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--cinnabar)}
+.tabs .lk{font-size:11px;color:var(--gold);margin-left:3px}
 section.panel{display:grid;gap:18px}
-h2{font-family:var(--f-display);font-size:20px;margin:0;line-height:1.3}
-h3{font-size:15px;margin:0 0 4px;font-weight:600}
-.card{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px;min-width:0}
+h2{font-family:var(--f-display);font-size:20px;margin:0;line-height:1.3;text-wrap:balance}
+h3{font-size:15px;margin:0;font-weight:600}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px;min-width:0;align-content:start}
 .card p{margin:0;max-width:65ch}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .bars{display:grid;gap:8px}
-.bar{display:grid;grid-template-columns:72px 1fr 28px;gap:10px;align-items:center;font-size:13.5px}
+.bar{display:grid;grid-template-columns:96px 1fr 28px;gap:10px;align-items:center;font-size:13.5px}
 .track{height:10px;border-radius:5px;background:var(--line);overflow:hidden}
 .fill{height:100%;border-radius:5px}
 .num{font-variant-numeric:tabular-nums;text-align:right;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{font-size:12.5px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;background:var(--paper)}
+.chip{font-size:12.5px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;background:var(--paper);white-space:nowrap}
 .chip.good{border-color:var(--jade);color:var(--jade)}
 .chip.bad{border-color:var(--cinnabar);color:var(--cinnabar)}
 dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:14px}
-dt{color:var(--muted)}dd{margin:0}
+dt{color:var(--muted)}dd{margin:0;min-width:0}
 .stars{color:var(--gold);letter-spacing:2px;font-size:16px}
 table{width:100%;border-collapse:collapse;font-size:13.5px}
 .tblwrap{overflow-x:auto}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em}
+th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em;white-space:nowrap}
 tr.me td{background:color-mix(in srgb,var(--cinnabar) 9%,transparent)}
-.hanS{font-family:var(--f-han);font-weight:900;font-size:18px}
+.hanS{font-family:var(--f-han);font-weight:900;font-size:18px;white-space:nowrap}
 .score{font-family:var(--f-han);font-size:46px;font-weight:900;line-height:1;color:var(--cinnabar);font-variant-numeric:tabular-nums}
-.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:4px;padding:1px 8px;color:#fff}
+.rate{display:inline-block;font-size:12px;font-weight:600;border-radius:4px;padding:1px 8px;white-space:nowrap;border:1px solid currentColor}
+.r3{color:var(--jade)}.r2{color:var(--jade)}.r1{color:var(--muted)}.r0{color:var(--cinnabar)}
+.lock{border:1.5px dashed var(--gold);background:var(--sheet);border-radius:10px;padding:18px;display:grid;gap:12px}
+.lock ul{margin:0;padding-left:20px;display:grid;gap:2px}
+.lock .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.lock .row input{flex:1 1 160px;width:auto}
+.price{font-family:var(--f-display);font-size:22px;color:var(--gold);font-weight:700}
+.msg{font-size:13px;min-height:1.2em;margin:0}
+.msg.err{color:var(--cinnabar)}.msg.ok{color:var(--jade)}
+.cta{border-left:3px solid var(--jade);padding:4px 0 4px 12px;font-size:14px}
+.compass{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-width:360px}
+.compass div{border:1px solid var(--line);border-radius:6px;padding:6px 4px;text-align:center;font-size:12px;line-height:1.35;min-height:62px;display:grid;align-content:center}
+.compass .g{border-color:var(--jade);color:var(--jade)}
+.compass .b{border-color:var(--cinnabar);color:var(--cinnabar)}
+.compass .c{font-family:var(--f-han);font-size:26px;font-weight:900;color:var(--ink)}
+.compass small{display:block;color:var(--muted);font-size:10.5px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.print-head{display:none}
 footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
-@media (max-width:460px){.pillars{gap:6px}.pillar{padding:8px 2px}.sub{font-size:11px}}
+@media (max-width:460px){.pillars{gap:6px}.pillar{padding:8px 2px}.sub{font-size:11px}.bar{grid-template-columns:80px 1fr 24px}}
 @media (prefers-reduced-motion:no-preference){.han{transition:transform .25s}.pillar:hover .han{transform:translateY(-2px)}}
+@media print{
+  body{background:#fff;color:#000;font-size:12px}
+  #f,.tabs,.toolbar,.lock,#exnote,#f2{display:none!important}
+  section.panel[hidden]{display:grid!important}
+  section.panel{break-before:page}
+  #p-read{break-before:auto}
+  .card,.pillar{break-inside:avoid;border-color:#bbb}
+  .print-head{display:block;margin-bottom:6px}
+}
 </style>
 </head>
 <body>
@@ -92,31 +123,45 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
   <header>
     <div class="seal" aria-hidden="true"><span>八</span><span>字</span><span>命</span><span>理</span></div>
     <div>
-      <h1>ดวงจีน แปดอักษร</h1>
-      <p>ผูกดวงสี่เสา (ปาจื้อ 八字) ธาตุประจำตัว ดวงปี 2026 ม้าไฟ และคู่สมพงษ์</p>
+      <h1 id="brand">ดวงจีน แปดอักษร</h1>
+      <p>ผูกดวงสี่เสา (ปาจื้อ 八字) วัยจร 10 ปี ดวงรายเดือน 2026 การเงินตามธาตุ และฮวงจุ้ยเลขกัว</p>
     </div>
   </header>
 
   <form id="f">
+    <label for="nm">ชื่อ (ใส่ในรายงาน)<input type="text" id="nm" maxlength="40" placeholder="เช่น คุณมาลี"></label>
+    <label for="sex">เพศ<select id="sex"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
     <label for="bd">วันเกิด (ค.ศ.)<input type="date" id="bd" min="1900-01-01" max="2100-12-31" required></label>
     <label for="bt">เวลาเกิด<input type="time" id="bt"></label>
     <label class="chk" for="nohour"><input type="checkbox" id="nohour"> ไม่ทราบเวลาเกิด</label>
     <button class="go" type="submit">ผูกดวง</button>
   </form>
-  <p class="note" id="exnote">ตัวอย่างที่กรอกไว้: เกิด 15 ส.ค. 1985 เวลา 10:30 น. ใส่วันเกิดของคุณแล้วกด “ผูกดวง”</p>
+  <p class="note" id="exnote">ข้อมูลตัวอย่าง: หญิง เกิด 15 ส.ค. 1985 เวลา 10:30 น. ใส่ข้อมูลของคุณแล้วกด “ผูกดวง”</p>
 
+  <div class="print-head" id="printHead"></div>
   <div class="pillars" id="pillars" aria-label="สี่เสาดวงชะตา"></div>
+
+  <div class="toolbar">
+    <span class="note" id="status"></span>
+    <button class="ghost" type="button" id="pdfBtn" hidden>บันทึกรายงาน PDF</button>
+  </div>
 
   <div class="tabs" role="tablist">
     <button role="tab" id="t-read" aria-selected="true" aria-controls="p-read">พื้นดวง</button>
-    <button role="tab" id="t-year" aria-selected="false" aria-controls="p-year">ดวงปี 2026</button>
+    <button role="tab" id="t-luck" aria-selected="false" aria-controls="p-luck">วัยจร 10 ปี<span class="lk">●</span></button>
+    <button role="tab" id="t-month" aria-selected="false" aria-controls="p-month">ดวงปี/เดือน 2026<span class="lk">●</span></button>
+    <button role="tab" id="t-money" aria-selected="false" aria-controls="p-money">การเงิน & อาชีพ<span class="lk">●</span></button>
+    <button role="tab" id="t-fs" aria-selected="false" aria-controls="p-fs">ฮวงจุ้ย<span class="lk">●</span></button>
     <button role="tab" id="t-match" aria-selected="false" aria-controls="p-match">คู่สมพงษ์</button>
   </div>
 
   <section class="panel" id="p-read" role="tabpanel" aria-labelledby="t-read"></section>
-  <section class="panel" id="p-year" role="tabpanel" aria-labelledby="t-year" hidden></section>
+  <section class="panel" id="p-luck" role="tabpanel" aria-labelledby="t-luck" hidden></section>
+  <section class="panel" id="p-month" role="tabpanel" aria-labelledby="t-month" hidden></section>
+  <section class="panel" id="p-money" role="tabpanel" aria-labelledby="t-money" hidden></section>
+  <section class="panel" id="p-fs" role="tabpanel" aria-labelledby="t-fs" hidden></section>
   <section class="panel" id="p-match" role="tabpanel" aria-labelledby="t-match" hidden>
-    <form id="f2" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+    <form id="f2">
       <label for="bd2">วันเกิดของอีกฝ่าย<input type="date" id="bd2" min="1900-01-01" max="2100-12-31" required></label>
       <button class="go" type="submit">ดูคู่สมพงษ์</button>
     </form>
@@ -125,11 +170,20 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
 
   <footer>
     คำนวณเสาปีและเสาเดือนตามปฏิทินสุริยคติจีน (ปีใหม่เริ่มที่ลี่ชุน ประมาณ 4 ก.พ.) วันเปลี่ยนสารทใช้ค่าประมาณ อาจคลาด ±1 วันสำหรับคนเกิดตรงรอยต่อ
-    เสาวันนับตามวันปฏิทิน ส่วนคนเกิด 23:00–23:59 ได้ยามชวดของคืนนั้น ใช้เพื่อความบันเทิงและเป็นแนวทางทบทวนตนเอง ไม่ใช่คำทำนายที่แน่นอน
+    เสาวันนับตามวันปฏิทิน ใช้เพื่อความบันเทิงและเป็นแนวทางทบทวนตนเอง ไม่ใช่คำทำนายที่แน่นอน และไม่ใช่คำแนะนำการลงทุนเฉพาะบุคคล
   </footer>
 </div>
 
 <script>
+/* ===== ตั้งค่าร้าน: แก้ตรงนี้ก่อนขายจริง ===== */
+const CONFIG={
+  price:"199 บาท / รายงาน",
+  contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
+  consult:"อยากวางแผนการเงินและประกันให้เข้ากับดวง ปรึกษาแบบตัวต่อตัวได้",
+  codes:["PUEY2026"]            // รหัสปลดล็อก (เปลี่ยนเป็นของคุณ)
+};
+/* ============================================ */
+
 const STEMS="甲乙丙丁戊己庚辛壬癸".split("");
 const STEM_TH=["กะ","อิก","เปี้ย","เต็ง","โบ่ว","กี้","แก","ซิง","หยิม","กุ่ย"];
 const BR="子丑寅卯辰巳午未申酉戌亥".split("");
@@ -138,16 +192,19 @@ const ANIMAL=["หนู","วัว","เสือ","กระต่าย","�
 const EL=["wood","fire","earth","metal","water"];
 const EL_TH=["ไม้","ไฟ","ดิน","ทอง","น้ำ"];
 const EL_HAN="木火土金水".split("");
+const MON_TH=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
 const stemEl=s=>Math.floor(s/2);
 const BR_EL=[4,2,0,0,2,1,1,2,3,3,2,4];
+// 藏干 hidden stems, main qi first
+const HIDDEN=[[9],[5,9,7],[0,2,4],[1],[4,1,9],[2,4,6],[3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]];
 const yinyang=i=>i%2===0?"หยาง":"หยิน";
 
 const LUCK={
-  0:{color:"เขียว ฟ้าอมเขียว",dir:"ตะวันออก",num:"3, 8",act:"ต้นไม้ งานสร้างสรรค์ การเรียนรู้"},
-  1:{color:"แดง ชมพู ม่วง ส้ม",dir:"ใต้",num:"2, 7",act:"แสงแดด การออกงาน การพูดในที่สาธารณะ"},
-  2:{color:"เหลือง น้ำตาล ครีม",dir:"ศูนย์กลาง ตะวันออกเฉียงเหนือ",num:"5, 0",act:"อสังหาฯ งานที่ต้องอดทน สร้างความน่าเชื่อถือ"},
-  3:{color:"ขาว ทอง เงิน เทา",dir:"ตะวันตก",num:"4, 9",act:"ระบบ ระเบียบ การเงิน เครื่องประดับโลหะ"},
-  4:{color:"ดำ น้ำเงิน กรมท่า",dir:"เหนือ",num:"1, 6",act:"การเดินทาง การสื่อสาร งานที่ใช้ปัญญา"}
+  0:{color:"เขียว ฟ้าอมเขียว",dir:"ตะวันออก",num:"3, 8",act:"ต้นไม้ งานสร้างสรรค์ การเรียนรู้",job:"การศึกษา สิ่งพิมพ์ สุขภาพ เกษตร แฟชั่น งานพัฒนาคน"},
+  1:{color:"แดง ชมพู ม่วง ส้ม",dir:"ใต้",num:"2, 7",act:"แสงแดด การออกงาน การพูดในที่สาธารณะ",job:"สื่อ การตลาด เทคโนโลยี ความงาม ร้านอาหาร พลังงาน"},
+  2:{color:"เหลือง น้ำตาล ครีม",dir:"ศูนย์กลาง ตะวันออกเฉียงเหนือ",num:"5, 0",act:"อสังหาฯ งานที่ต้องอดทน สร้างความน่าเชื่อถือ",job:"อสังหาฯ ก่อสร้าง ประกัน ที่ปรึกษา HR คลังสินค้า"},
+  3:{color:"ขาว ทอง เงิน เทา",dir:"ตะวันตก",num:"4, 9",act:"ระบบ ระเบียบ การเงิน เครื่องประดับโลหะ",job:"การเงิน ธนาคาร กฎหมาย วิศวกรรม ยานยนต์ เครื่องจักร"},
+  4:{color:"ดำ น้ำเงิน กรมท่า",dir:"เหนือ",num:"1, 6",act:"การเดินทาง การสื่อสาร งานที่ใช้ปัญญา",job:"การค้า โลจิสติกส์ ท่องเที่ยว การสื่อสาร จิตวิทยา งานให้คำปรึกษา"}
 };
 
 const DM_TEXT=[
@@ -162,18 +219,16 @@ const DM_TEXT=[
  ["壬 มหาสมุทร","ฉลาด คิดกว้าง ชอบอิสระและการผจญภัย ปรับตัวได้ทุกสถานการณ์ ระวังความไม่อยู่นิ่งและการเปลี่ยนใจบ่อย"],
  ["癸 น้ำค้าง/ฝน","ลึกซึ้ง มีญาณหยั่งรู้ เข้าใจจิตใจคนเก่ง เหมาะกับงานให้คำปรึกษาหรืองานเบื้องหลัง ระวังอารมณ์แปรปรวนและเก็บตัวมากเกิน"]
 ];
-
 const ANIMAL_TEXT=["ไหวพริบดี หาโอกาสเก่ง ประหยัดและรู้จักเก็บ","ขยัน อดทน ซื่อตรง ทำอะไรทำจริง","กล้าหาญ มั่นใจ ชอบความท้าทาย","สุภาพ มีศิลปะ รักสงบ","ทะเยอทะยาน มีบารมี คิดการใหญ่","ฉลาดลึก รอบคอบ มีเสน่ห์","รักอิสระ กระตือรือร้น ชอบเคลื่อนไหว","ใจดี อ่อนโยน มีศิลปะ","หัวไว แก้ปัญหาเก่ง สนุกสนาน","ละเอียด ตรงเวลา มีระเบียบ","ซื่อสัตย์ จริงใจ รักความยุติธรรม","ใจกว้าง ใจบุญ จริงใจ มีโชคลาภ"];
 
-// 2026 丙午 (ม้าไฟ) outlook by birth-year branch
 const Y2026={
-  0:{s:2,tag:"ชง (冲太岁)",t:"ปีแห่งการเปลี่ยนแปลงใหญ่ อาจย้ายงาน ย้ายบ้าน หรือเปลี่ยนทิศชีวิต ระวังการลงทุนเสี่ยงและสุขภาพ ใช้ความนิ่งเป็นจุดแข็ง ทำบุญเสริมดวงต้นปีจะช่วยได้"},
+  0:{s:2,tag:"ชง (冲太岁)",t:"ปีแห่งการเปลี่ยนแปลงใหญ่ อาจย้ายงาน ย้ายบ้าน หรือเปลี่ยนทิศชีวิต ระวังการลงทุนเสี่ยงและสุขภาพ ใช้ความนิ่งเป็นจุดแข็ง"},
   1:{s:2.5,tag:"害太岁",t:"ระวังเรื่องคนรอบข้างและการถูกเข้าใจผิด เซ็นสัญญาให้รอบคอบ งานยังเดินได้ถ้าทำแบบมีหลักฐานและระบบชัดเจน"},
   2:{s:4.5,tag:"สามประสาน (三合)",t:"ปีที่มีผู้ใหญ่อุปถัมภ์ งานเติบโต เหมาะเริ่มโปรเจกต์ใหม่หรือขยายธุรกิจ พลังสูงแต่อย่าเร่งจนสุขภาพเสีย"},
   3:{s:3,tag:"破太岁",t:"มีอุปสรรคเล็กๆ ระหว่างทาง แผนอาจต้องปรับกลางคัน ค่อยๆ ไปจะถึง เน้นเก็บเงินสำรองและดูแลความสัมพันธ์ในบ้าน"},
   4:{s:3.5,tag:"ปีกลาง",t:"ดวงทรงตัว ได้ผลจากสิ่งที่ลงแรงไว้ปีก่อน เหมาะพัฒนาทักษะและจัดระบบชีวิตให้แน่นขึ้น"},
   5:{s:3.5,tag:"ไฟหนุน",t:"ชื่อเสียงและการได้รับการยอมรับเด่น โอกาสมาจากการสื่อสารและการออกสื่อ ระวังใช้จ่ายตามอารมณ์"},
-  6:{s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน ระวังความใจร้อนและอุบัติเหตุ ทำสิ่งใหม่ได้แต่ต้องมีแผนสำรอง ไหว้ไท่ส่วยต้นปีตามความเชื่อ"},
+  6:{s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน ระวังความใจร้อนและอุบัติเหตุ ทำสิ่งใหม่ได้แต่ต้องมีแผนสำรอง"},
   7:{s:4.5,tag:"หกประสาน (六合)",t:"ปีที่ดีมาก มีคนช่วย ความรักและการเงินสดใส เหมาะเจรจา ร่วมทุน แต่งงาน หรือเปิดตลาดใหม่"},
   8:{s:3.5,tag:"ปีกลาง",t:"งานมีโอกาสใหม่จากการเดินทางหรือคนต่างถิ่น การเงินต้องจัดสรรดีๆ เพราะรายจ่ายสูงขึ้นตามโอกาส"},
   9:{s:3.5,tag:"ปีกลาง",t:"เหมาะกับการเรียนรู้และสร้างความเชี่ยวชาญ งานละเอียดได้ผลดี ระวังความเครียดสะสมจากความสมบูรณ์แบบ"},
@@ -182,6 +237,14 @@ const Y2026={
 };
 
 const GOD_NAME=[["比肩 เพื่อน","劫财 คู่แข่ง"],["食神 ฝีมือ","伤官 ความคิดสร้างสรรค์"],["偏财 ลาภลอย","正财 รายได้ประจำ"],["七杀 อำนาจกดดัน","正官 ตำแหน่ง"],["偏印 ปัญญาแปลก","正印 ผู้อุปถัมภ์"]];
+const GROUP=["比劫 ตัวตน","食伤 ผลงาน","财 ทรัพย์","官杀 อำนาจ","印 ปัญญา"];
+const GROUP_TRAIT=[
+  "พึ่งตัวเองสูง มั่นใจ ชอบตัดสินใจเอง ทำงานเป็นทีมได้ดีเมื่อมีเป้าร่วมกัน แต่ไม่ชอบถูกสั่ง",
+  "สมองไว ไอเดียเยอะ สื่อสารเก่ง ชอบสร้างสิ่งใหม่ เหมาะกับงานสอน ขาย คอนเทนต์ หรือศิลปะ",
+  "มองเรื่องผลลัพธ์และตัวเลขเป็น รู้คุณค่าของเงิน จับโอกาสเก่ง เหมาะกับงานธุรกิจและการขาย",
+  "มีวินัย รับผิดชอบสูง เคารพระบบ เหมาะกับงานบริหารหรือองค์กรที่มีโครงสร้างชัดเจน",
+  "ใฝ่รู้ เมตตา คิดลึก มีผู้ใหญ่คอยช่วย เหมาะกับงานวิชาการ ที่ปรึกษา จิตวิทยา หรือการสอน"
+];
 const GOD_2026=[
   "ปีแห่งเพื่อนและการแข่งขัน คนรอบตัวช่วยได้มาก แต่ระวังการเงินรั่วจากการให้ยืมหรือร่วมหุ้นโดยไม่มีสัญญา",
   "ปีแห่งการแสดงฝีมือ ผลงาน ไอเดียใหม่ และการสื่อสาร เหมาะทำคอนเทนต์ สอน หรือขายความคิด",
@@ -189,65 +252,149 @@ const GOD_2026=[
   "ปีแห่งความรับผิดชอบและตำแหน่ง มีแรงกดดันแต่เป็นโอกาสเลื่อนขั้น ดูแลสุขภาพเรื่องความเครียด",
   "ปีแห่งการเรียนรู้และผู้อุปถัมภ์ มีคนให้การสนับสนุน เหมาะเรียนต่อ สอบใบอนุญาต หรือศึกษาด้านจิตใจ"
 ];
+const LUCK_TEXT=[
+  "ทศวรรษแห่งการยืนด้วยตัวเอง มีเพื่อนและพันธมิตรเยอะ แต่ต้องแข่งขันและแบ่งผลประโยชน์",
+  "ทศวรรษแห่งการแสดงฝีมือ สร้างผลงานและไอเดียใหม่ เหมาะกับงานอิสระและงานสร้างสรรค์",
+  "ทศวรรษแห่งการสร้างฐานะ โอกาสหาเงินเด่น ความสัมพันธ์และครอบครัวมีบทบาทมาก",
+  "ทศวรรษแห่งหน้าที่และตำแหน่ง ความรับผิดชอบสูงขึ้น ได้รับการยอมรับในองค์กร",
+  "ทศวรรษแห่งการเรียนรู้และผู้อุปถัมภ์ เหมาะสะสมความรู้ ใบรับรอง และดูแลจิตใจ"
+];
+const MONTH_TEXT=[
+  "เครือข่ายช่วยได้ ระวังเงินรั่วจากการร่วมหุ้นหรือให้ยืม",
+  "เด่นเรื่องผลงาน การนำเสนอ ทำคอนเทนต์ และการขาย",
+  "เดือนการเงิน มีรายได้เข้า ปิดการขายได้ดี",
+  "งานกดดัน มีความรับผิดชอบใหม่ หัวหน้าจับตามอง",
+  "เรียนรู้ วางแผน ผู้ใหญ่สนับสนุน เหมาะพักใจ"
+];
 
 function tenGod(dm,other){
   const rel=(stemEl(other)-stemEl(dm)+5)%5;
-  const same=(dm%2)===(other%2);
-  return {rel,name:GOD_NAME[rel][same?0:1]};
+  return {rel,name:GOD_NAME[rel][(dm%2)===(other%2)?0:1]};
 }
 function jdn(y,m,d){const a=Math.floor((14-m)/12),yy=y+4800-a,mm=m+12*a-3;return d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045}
-// Approximate solar-term start (节) for each Gregorian month -> month branch index
-const TERM_DAY=[6,4,6,5,6,6,7,8,8,8,7,7];
+const TERM_DAY=[6,4,6,5,6,6,7,8,8,8,7,7]; // approximate 节 day for each Gregorian month
+const sexIdx=(s,b)=>{for(let n=0;n<60;n++) if(n%10===s&&n%12===b) return n;};
+const clash=(a,b)=>(a-b+12)%12===6;
+const LIUHE=[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
+const SANHE=[[8,0,4],[11,3,7],[2,6,10],[5,9,1]];
+const HAI=[[0,7],[1,6],[2,5],[3,4],[8,11],[9,10]];
+const XING=[[0,3],[2,5],[5,8],[2,8],[1,10],[10,7],[1,7]];
+const has=(list,a,b)=>list.some(p=>(p[0]===a&&p[1]===b)||(p[0]===b&&p[1]===a));
+
 function bazi(y,m,d,hour){
   const beforeLichun=(m<2)||(m===2&&d<4);
   const by=beforeLichun?y-1:y;
   const ys=((by-4)%10+10)%10, yb=((by-4)%12+12)%12;
-  // month index from 寅(0)
   let mi=m-2; if(d<TERM_DAY[m-1]) mi-=1; mi=(mi+12)%12;
   const ms=((ys%5)*2+2+mi)%10, mb=(mi+2)%12;
-  const di=(jdn(y,m,d)+49)%60; const ds=di%10, db=di%12;
-  let hs=null,hb=null;
-  if(hour!=null){hb=Math.floor((hour+1)/2)%12; hs=((ds%5)*2+hb)%10;}
-  return {year:[ys,yb],month:[ms,mb],day:[ds,db],hour:hour==null?null:[hs,hb],by};
-}
-const $=id=>document.getElementById(id);
-const elSpan=(e,txt)=>`<span class="el-${EL[e]}">${txt}</span>`;
-
-function renderPillars(b){
-  const cols=[["เสาปี",b.year],["เสาเดือน",b.month],["เสาวัน (ตัวเรา)",b.day],["เสายาม",b.hour]];
-  $("pillars").innerHTML=cols.map(([cap,p],i)=>{
-    if(!p) return `<div class="pillar off"><div class="cap">${cap}</div><div class="han">？</div><div class="han">？</div><div class="sub">ไม่ทราบเวลา</div></div>`;
-    const [s,br]=p; const se=stemEl(s), be=BR_EL[br];
-    const god=i===2?"日主 เจ้าชะตา":tenGod(b.day[0],s).name;
-    return `<div class="pillar${i===2?" dm":""}">
-      <div class="cap">${cap}</div>
-      <div class="god">${god}</div>
-      <div class="han el-${EL[se]}" title="${STEM_TH[s]}">${STEMS[s]}</div>
-      <div class="sub">${STEM_TH[s]} · ${elSpan(se,EL_TH[se]+yinyang(s))}</div>
-      <div class="han el-${EL[be]}">${BR[br]}</div>
-      <div class="sub">${BR_TH[br]} ${ANIMAL[br]} · ${elSpan(be,EL_TH[be])}</div>
-    </div>`;}).join("");
+  const di=(jdn(y,m,d)+49)%60;
+  let hp=null;
+  if(hour!=null){const hb=Math.floor((hour+1)/2)%12; hp=[((di%10%5)*2+hb)%10,hb];}
+  return {year:[ys,yb],month:[ms,mb],day:[di%10,di%12],hour:hp,by,y,m,d};
 }
 
 function analyse(b){
   const parts=[b.year,b.month,b.day,b.hour].filter(Boolean);
   const cnt=[0,0,0,0,0];
   parts.forEach(([s,br])=>{cnt[stemEl(s)]++;cnt[BR_EL[br]]++;});
-  const dmE=stemEl(b.day[0]);
-  const resE=(dmE+4)%5;
-  const support=cnt[dmE]+cnt[resE];
-  const total=parts.length*2;
+  const dmE=stemEl(b.day[0]), resE=(dmE+4)%5;
+  // month branch counts double (得令)
+  const w=[...cnt]; w[BR_EL[b.month[1]]]++;
+  const support=w[dmE]+w[resE], total=parts.length*2+1;
   const strong=support>total/2;
   const fav=strong?[(dmE+1)%5,(dmE+2)%5]:[resE,dmE];
   const unfav=strong?[resE,dmE]:[(dmE+3)%5,(dmE+2)%5];
-  return {cnt,dmE,support,total,strong,fav,unfav};
+  // ten-god profile: visible stems (not day master) + main hidden stem of every branch
+  const gods=[0,0,0,0,0];
+  parts.forEach(([s,br],i)=>{ if(!(parts[i]===b.day)) gods[tenGod(b.day[0],s).rel]++; gods[tenGod(b.day[0],HIDDEN[br][0]).rel]++; });
+  return {cnt,dmE,support,total,strong,fav,unfav,gods};
+}
+const elScore=(a,e)=>a.fav.includes(e)?1:a.unfav.includes(e)?-1:0;
+function rateOf(v){return v>=1.5?[3,"ดีมาก"]:v>=0.5?[2,"ดี"]:v>-0.5?[1,"กลางๆ"]:[0,"ระวัง"]}
+
+function luckPillars(b,male){
+  const yang=b.year[0]%2===0, fwd=(yang&&male)||(!yang&&!male);
+  const {y,m,d}=b; let ty,tm;
+  if(fwd){ if(d<TERM_DAY[m-1]){ty=y;tm=m;} else {tm=m%12+1;ty=m===12?y+1:y;} }
+  else { if(d>=TERM_DAY[m-1]){ty=y;tm=m;} else {tm=m===1?12:m-1;ty=m===1?y-1:y;} }
+  const days=Math.abs(jdn(ty,tm,TERM_DAY[tm-1])-jdn(y,m,d));
+  const start=Math.max(1,Math.round(days/3));
+  const base=sexIdx(b.month[0],b.month[1]);
+  const list=[];
+  for(let i=1;i<=8;i++){const n=((base+(fwd?i:-i))%60+60)%60; const age=start+10*(i-1); list.push({s:n%10,b:n%12,age,from:y+age,to:y+age+9});}
+  return {fwd,start,list};
+}
+
+function kua(by,male){
+  const r=by%9; let k=male?(11-r)%9:(r+4)%9; if(k===0)k=9; if(k===5)k=male?2:8; return k;
+}
+const DIRS={N:"เหนือ",NE:"ตอ.เฉียงเหนือ",E:"ตะวันออก",SE:"ตอ.เฉียงใต้",S:"ใต้",SW:"ตต.เฉียงใต้",W:"ตะวันตก",NW:"ตต.เฉียงเหนือ"};
+// [生气,天医,延年,伏位,祸害,五鬼,六煞,绝命]
+const KUA_DIR={1:["SE","E","S","N","W","NE","NW","SW"],2:["NE","W","NW","SW","E","SE","S","N"],3:["S","N","SE","E","SW","NW","NE","W"],4:["N","S","E","SE","NW","SW","W","NE"],6:["W","NE","SW","NW","SE","E","N","S"],7:["NW","SW","NE","W","N","S","SE","E"],8:["SW","NW","W","NE","S","N","E","SE"],9:["E","SE","N","S","NE","W","SW","NW"]};
+const KUA_NAME=[["生气","โชคลาภ ความสำเร็จ","หันโต๊ะทำงาน ประตูหลัก"],["天医","สุขภาพ ผู้อุปถัมภ์","หัวเตียง ห้องพักฟื้น"],["延年","ความรัก ความสัมพันธ์","มุมพักผ่อนของคู่ ห้องนั่งเล่น"],["伏位","ความสงบ สมาธิ","มุมสวดมนต์ อ่านหนังสือ"],["祸害","อุปสรรคเล็กน้อย","ห้องน้ำ ห้องเก็บของ"],["五鬼","ขัดแย้ง สูญเสีย","ห้องน้ำ ห้องเก็บของ"],["六煞","เรื่องวุ่นวาย ข่าวลือ","ห้องน้ำ ห้องครัว"],["绝命","หนักที่สุด ควรหลีกเลี่ยง","ไม่ควรหันหัวนอนหรือโต๊ะทำงาน"]];
+const KUA_EL={1:4,2:2,3:0,4:0,6:3,7:3,8:2,9:1};
+
+/* ===== premium ===== */
+let unlocked=false;
+try{unlocked=localStorage.getItem("bazi_unlocked")==="1";}catch(e){}
+const framed=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+
+const $=id=>document.getElementById(id);
+const elSpan=(e,txt)=>`<span class="el-${EL[e]}">${txt}</span>`;
+const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+function lockCard(title,items){
+  return `<div class="lock">
+    <h2>${title}</h2>
+    <p>ส่วนนี้อยู่ในรายงานฉบับเต็ม ประกอบด้วย</p>
+    <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
+    <div class="price">${CONFIG.price}</div>
+    <p class="note">ปลดล็อกครั้งเดียวได้ครบ: วัยจร 10 ปี ดวงรายเดือน การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์แบบละเอียด และรายงาน PDF<br>รับรหัสได้ที่: ${esc(CONFIG.contact)}</p>
+    <form class="row unlock" novalidate>
+      <input type="text" placeholder="ใส่รหัสปลดล็อก" aria-label="รหัสปลดล็อก" autocomplete="off">
+      <button class="go" type="submit">ปลดล็อก</button>
+    </form>
+    <p class="msg" aria-live="polite"></p>
+  </div>`;
+}
+document.addEventListener("submit",e=>{
+  if(!e.target.classList.contains("unlock")) return;
+  e.preventDefault();
+  const v=e.target.querySelector("input").value.trim().toUpperCase();
+  const msg=e.target.nextElementSibling;
+  if(CONFIG.codes.map(c=>c.toUpperCase()).includes(v)){
+    unlocked=true; try{localStorage.setItem("bazi_unlocked","1");}catch(_){}
+    msg.className="msg ok"; msg.textContent="ปลดล็อกแล้ว"; run();
+  } else { msg.className="msg err"; msg.textContent="รหัสไม่ถูกต้อง ตรวจตัวอักษรอีกครั้ง หรือติดต่อผู้ขายเพื่อรับรหัส"; }
+});
+
+/* ===== renderers ===== */
+function renderPillars(b){
+  const cols=[["เสาปี",b.year],["เสาเดือน",b.month],["เสาวัน (ตัวเรา)",b.day],["เสายาม",b.hour]];
+  $("pillars").innerHTML=cols.map(([cap,p],i)=>{
+    if(!p) return `<div class="pillar off"><div class="cap">${cap}</div><div class="god"></div><div class="han">？</div><div class="sub">&nbsp;</div><div class="han">？</div><div class="sub">ไม่ทราบเวลา</div></div>`;
+    const [s,br]=p, se=stemEl(s), be=BR_EL[br];
+    const god=i===2?"日主 เจ้าชะตา":tenGod(b.day[0],s).name;
+    const hid=HIDDEN[br].map(h=>`<b class="el-${EL[stemEl(h)]}">${STEMS[h]}</b> ${tenGod(b.day[0],h).name.split(" ")[0]}`).join("<br>");
+    return `<div class="pillar${i===2?" dm":""}">
+      <div class="cap">${cap}</div>
+      <div class="god">${god}</div>
+      <div class="han el-${EL[se]}">${STEMS[s]}</div>
+      <div class="sub">${STEM_TH[s]} · ${elSpan(se,EL_TH[se]+yinyang(s))}</div>
+      <div class="han el-${EL[be]}">${BR[br]}</div>
+      <div class="sub">${BR_TH[br]} ${ANIMAL[br]} · ${elSpan(be,EL_TH[be])}</div>
+      <div class="hidden-stems" title="ธาตุแฝงในกิ่ง (藏干)">${hid}</div>
+    </div>`;}).join("");
 }
 
 function renderRead(b,a){
   const dm=b.day[0], yb=b.year[1], max=Math.max(...a.cnt,1);
   const bars=a.cnt.map((c,e)=>`<div class="bar"><span>${elSpan(e,EL_HAN[e]+" "+EL_TH[e])}</span><div class="track"><div class="fill" style="width:${c/max*100}%;background:var(--${EL[e]})"></div></div><span class="num">${c}</span></div>`).join("");
   const missing=a.cnt.map((c,e)=>c===0?EL_TH[e]:null).filter(Boolean);
-  const f=a.fav[0];
+  const f=a.fav[0], y=Y2026[yb], g=tenGod(dm,2);
+  const stars="★".repeat(Math.floor(y.s))+(y.s%1?"½":"")+"☆".repeat(5-Math.ceil(y.s));
+  const gmax=Math.max(...a.gods,1), top=a.gods.indexOf(Math.max(...a.gods));
+  const godBars=a.gods.map((c,i)=>`<div class="bar"><span>${GROUP[i]}</span><div class="track"><div class="fill" style="width:${c/gmax*100}%;background:var(--gold)"></div></div><span class="num">${c}</span></div>`).join("");
   $("p-read").innerHTML=`
   <div class="card">
     <h2>เจ้าชะตา: ${elSpan(stemEl(dm),DM_TEXT[dm][0])} <span class="tag">${EL_TH[stemEl(dm)]}${yinyang(dm)}</span></h2>
@@ -257,69 +404,143 @@ function renderRead(b,a){
     <div class="card">
       <h3>สมดุลห้าธาตุ</h3>
       <div class="bars">${bars}</div>
-      <p class="note">ธาตุที่สนับสนุนตัวเรา ${a.support} จาก ${a.total} อักษร ดวงนี้จัดว่า <b>${a.strong?"เจ้าชะตาแข็ง":"เจ้าชะตาอ่อน"}</b>${missing.length?` · ขาดธาตุ${missing.join(" ")}`:""}</p>
+      <p class="note">กำลังหนุนเจ้าชะตา ${a.support} จาก ${a.total} (นับธาตุเดือนเกิดสองเท่า) จัดว่า <b>${a.strong?"เจ้าชะตาแข็ง":"เจ้าชะตาอ่อน"}</b>${missing.length?` · ขาดธาตุ${missing.join(" ")}`:""}</p>
     </div>
     <div class="card">
-      <h3>ธาตุให้คุณ / ธาตุให้โทษ</h3>
+      <h3>ธาตุให้คุณ / ธาตุควรลด</h3>
       <div class="chips">${a.fav.map(e=>`<span class="chip good">ให้คุณ · ${EL_HAN[e]} ${EL_TH[e]}</span>`).join("")}${a.unfav.map(e=>`<span class="chip bad">ควรลด · ${EL_HAN[e]} ${EL_TH[e]}</span>`).join("")}</div>
       <dl>
-        <dt>สีมงคล</dt><dd>${LUCK[f].color}, ${LUCK[a.fav[1]].color.split(" ")[0]}</dd>
+        <dt>สีมงคล</dt><dd>${LUCK[f].color}</dd>
         <dt>ทิศมงคล</dt><dd>${LUCK[f].dir}</dd>
         <dt>เลขมงคล</dt><dd>${LUCK[f].num}</dd>
         <dt>เสริมดวงด้วย</dt><dd>${LUCK[f].act}</dd>
       </dl>
     </div>
   </div>
-  <div class="card">
-    <h3>นักษัตรปีเกิด: ปี${BR_TH[yb]} (${ANIMAL[yb]}${EL_TH[stemEl(b.year[0])]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span></h3>
-    <p>${ANIMAL_TEXT[yb]} ปีนักษัตรเริ่มนับที่ลี่ชุน ถ้าเกิดก่อนประมาณ 4 ก.พ. จะนับเป็นปีนักษัตรก่อนหน้า</p>
-  </div>`;
-}
-
-function renderYear(b){
-  const yb=b.year[1], dm=b.day[0], y=Y2026[yb], g=tenGod(dm,2);
-  const stars="★".repeat(Math.floor(y.s))+(y.s%1?"½":"")+"☆".repeat(5-Math.ceil(y.s));
-  const rows=Y2026_ROWS(yb);
-  $("p-year").innerHTML=`
   <div class="grid2">
     <div class="card">
-      <h2>ปี${BR_TH[yb]} ใน ปีม้าไฟ <span class="hanS">丙午</span></h2>
-      <div><span class="stars" aria-label="${y.s} จาก 5 ดาว">${stars}</span> <span class="chip ${y.s>=4?"good":y.s<3?"bad":""}">${y.tag}</span></div>
-      <p>${y.t}</p>
+      <h3>โครงสร้างนิสัย (สิบเทพ)</h3>
+      ${unlocked?`<div class="bars">${godBars}</div><p>เด่นที่สุด: <b>${GROUP[top]}</b> ${GROUP_TRAIT[top]}</p>`:`<p class="note">ดูว่านิสัยของคุณหนักไปทางตัวตน ผลงาน ทรัพย์ อำนาจ หรือปัญญา ในรายงานฉบับเต็ม</p>`}
     </div>
     <div class="card">
-      <h3>ปี 2026 กับเจ้าชะตา ${STEMS[dm]}</h3>
-      <p><span class="chip">${g.name}</span></p>
-      <p>${GOD_2026[g.rel]}</p>
-      <p class="note">ดูจากความสัมพันธ์ของ 丙 (ไฟหยาง ประจำปี 2026) กับธาตุเจ้าชะตาของคุณ</p>
+      <h3>ปี${BR_TH[yb]} (${ANIMAL[yb]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span> ในปี 2026</h3>
+      <div><span class="stars" aria-label="${y.s} จาก 5 ดาว">${stars}</span> <span class="chip ${y.s>=4?"good":y.s<3?"bad":""}">${y.tag}</span></div>
+      <p>${ANIMAL_TEXT[yb]} · ${y.t}</p>
     </div>
-  </div>
-  <div class="card">
-    <h3>ดวงปี 2026 ทั้ง 12 นักษัตร</h3>
-    <div class="tblwrap"><table><thead><tr><th>นักษัตร</th><th>ดวง</th><th>สถานะ</th></tr></thead><tbody>${rows}</tbody></table></div>
   </div>`;
 }
-function Y2026_ROWS(mine){
-  return BR.map((h,i)=>{const y=Y2026[i];return `<tr class="${i===mine?"me":""}"><td><span class="hanS">${h}</span> ปี${BR_TH[i]} (${ANIMAL[i]})</td><td class="num" style="text-align:left">${y.s} / 5</td><td>${y.tag}</td></tr>`}).join("");
+
+function renderLuck(b,a,male){
+  if(!unlocked){$("p-luck").innerHTML=lockCard("วัยจร 10 ปี (大运)",["เสาวัยจร 8 ช่วง ตั้งแต่อายุเริ่มจรจนถึงวัยเกษียณ","ช่วงไหนดวงขึ้น ช่วงไหนควรตั้งรับ","ธีมชีวิตของแต่ละทศวรรษ และช่วงที่คุณอยู่ตอนนี้"]);return;}
+  const L=luckPillars(b,male), age=2026-b.y;
+  const rows=L.list.map(p=>{
+    const v=elScore(a,stemEl(p.s))+elScore(a,BR_EL[p.b])-(clash(p.b,b.day[1])?0.5:0);
+    const [r,lab]=rateOf(v), g=tenGod(b.day[0],p.s), now=age>=p.age&&age<p.age+10;
+    return `<tr class="${now?"me":""}"><td class="num" style="text-align:left">${p.age}–${p.age+9} ปี<br><span class="note">${p.from}–${p.to}</span></td><td><span class="hanS">${elSpan(stemEl(p.s),STEMS[p.s])}${elSpan(BR_EL[p.b],BR[p.b])}</span><br><span class="note">${ANIMAL[p.b]}</span></td><td><span class="rate r${r}">${lab}</span>${now?' <span class="tag">ตอนนี้</span>':""}</td><td>${g.name}<br>${LUCK_TEXT[g.rel]}${clash(p.b,b.day[1])?" · มีช่วงชงกับวันเกิด เตรียมรับการเปลี่ยนแปลง":""}</td></tr>`;}).join("");
+  $("p-luck").innerHTML=`
+  <div class="card">
+    <h2>วัยจร 10 ปี</h2>
+    <p>ดวงเดิน${L.fwd?"ไปข้างหน้า (順行)":"ถอยหลัง (逆行)"} เริ่มเข้าวัยจรราวอายุ ${L.start} ปี ช่วงที่ไฮไลต์คือทศวรรษที่คุณอยู่ในปี 2026</p>
+    <div class="tblwrap"><table><thead><tr><th>ช่วงอายุ</th><th>เสาจร</th><th>ดวง</th><th>ธีมของทศวรรษ</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <p class="note">อายุเริ่มจรคำนวณจากระยะห่างถึงวันเปลี่ยนสารท (3 วัน = 1 ปี) อาจคลาดได้ 1 ปี</p>
+  </div>`;
 }
 
-const LIUHE=[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
-const SANHE=[[8,0,4],[11,3,7],[2,6,10],[5,9,1]];
-const HAI=[[0,7],[1,6],[2,5],[3,4],[8,11],[9,10]];
-const XING=[[0,3],[2,5],[5,8],[2,8],[1,10],[10,7],[1,7]];
-const has=(list,a,b)=>list.some(p=>(p[0]===a&&p[1]===b)||(p[0]===b&&p[1]===a));
+function renderMonth(b,a){
+  if(!unlocked){$("p-month").innerHTML=lockCard("ดวงรายเดือน 2026",["คำทำนายครบ 12 เดือนจีน (ก.พ. 2026 – ม.ค. 2027)","เดือนไหนเหมาะเจรจา ปิดการขาย ลงทุน หรือควรพัก","เตือนเดือนที่ชงกับวันเกิดหรือปีเกิดของคุณ","ดวงปี 2026 กับเจ้าชะตาของคุณโดยเฉพาะ"]);return;}
+  const g=tenGod(b.day[0],2);
+  const rows=[];
+  for(let i=0;i<12;i++){
+    const s=(6+i)%10, br=(2+i)%12, gm=i+2>12?i-10:i+2, gy=i+2>12?2027:2026;
+    let v=elScore(a,stemEl(s))+elScore(a,BR_EL[br]); const flags=[];
+    if(clash(br,b.day[1])){v-=1;flags.push("ชงวันเกิด: ระวังความสัมพันธ์และการเปลี่ยนแปลงกะทันหัน");}
+    if(has(LIUHE,br,b.day[1])){v+=0.5;flags.push("ประสานวันเกิด: มีคนช่วย ความรักดี");}
+    if(clash(br,b.year[1])){v-=0.5;flags.push("ชงปีเกิด: ดูแลครอบครัวและการเดินทาง");}
+    const [r,lab]=rateOf(v), tg=tenGod(b.day[0],s);
+    rows.push(`<tr><td>${TERM_DAY[gm-1]} ${MON_TH[gm-1]} ${gy}<br><span class="note">เดือน${BR_TH[br]}</span></td><td><span class="hanS">${elSpan(stemEl(s),STEMS[s])}${elSpan(BR_EL[br],BR[br])}</span></td><td><span class="rate r${r}">${lab}</span></td><td>${MONTH_TEXT[tg.rel]}${flags.length?`<br><span class="note">${flags.join(" · ")}</span>`:""}</td></tr>`);
+  }
+  $("p-month").innerHTML=`
+  <div class="card">
+    <h2>ปี 2026 丙午 กับเจ้าชะตา ${STEMS[b.day[0]]}</h2>
+    <p><span class="chip">${g.name}</span></p>
+    <p>${GOD_2026[g.rel]}</p>
+  </div>
+  <div class="card">
+    <h3>ดวงรายเดือน (เริ่มนับตามวันเปลี่ยนเดือนจีน)</h3>
+    <div class="tblwrap"><table><thead><tr><th>เริ่ม</th><th>เสาเดือน</th><th>ดวง</th><th>เรื่องเด่น</th></tr></thead><tbody>${rows.join("")}</tbody></table></div>
+  </div>`;
+}
+
+function renderMoney(b,a){
+  if(!unlocked){$("p-money").innerHTML=lockCard("การเงินและอาชีพตามธาตุ",["สไตล์การหาเงินและการเก็บเงินของคุณ","อาชีพและอุตสาหกรรมที่ธาตุส่งเสริม","แนวทางวางแผนการเงิน ลงทุน และความคุ้มครองที่เข้ากับดวง","จังหวะการเงินปี 2026"]);return;}
+  const wE=(a.dmE+2)%5, wCnt=a.cnt[wE], wFav=a.fav.includes(wE), out=a.gods[1], res=a.gods[4], off=a.gods[3];
+  let style,plan;
+  if(a.strong&&wFav){style="นักล่าโอกาส: ดวงแข็งพอจะแบกความเสี่ยงและจัดการทรัพย์ก้อนใหญ่";plan="รับความเสี่ยงได้ปานกลางถึงสูง แต่ควรมีเงินสำรองฉุกเฉิน 6 เดือนและแผนคุ้มครองรายได้ก่อน แล้วค่อยกระจายลงทุนตามเป้าหมาย";}
+  else if(a.strong){style="นักสร้างผลงาน: เงินมาจากฝีมือและชื่อเสียงมากกว่าการเก็งกำไร";plan="ลงทุนในทักษะและแบรนด์ส่วนตัว ตั้งระบบออมอัตโนมัติ ลงทุนแบบสม่ำเสมอ (DCA) ดีกว่าจับจังหวะตลาด";}
+  else {style="นักสร้างฐาน: ทรัพย์โตจากความสม่ำเสมอและผู้อุปถัมภ์";plan="เน้นความมั่นคงก่อน: เงินสำรองฉุกเฉิน ประกันสุขภาพและชีวิต ออมระยะยาวหรือแผนเกษียณที่มีวินัย หลีกเลี่ยงการลงทุนที่ผันผวนสูงหรือค้ำประกันให้ผู้อื่น";}
+  const tips=[];
+  if(wCnt===0) tips.push("ดวงไม่มีธาตุทรัพย์ปรากฏ เงินไม่ค่อยอยู่กับตัว ควรใช้ระบบหักออมอัตโนมัติทันทีที่เงินเข้า");
+  if(wCnt>=3&&!a.strong) tips.push("ธาตุทรัพย์มากแต่เจ้าชะตาอ่อน เห็นโอกาสเยอะแต่แบกไม่ไหว เลือกทำทีละเรื่องและหาหุ้นส่วนที่ไว้ใจได้");
+  if(out>=2) tips.push("ดาวผลงานเด่น รายได้เสริมจากการสอน ขายความรู้ หรือทำคอนเทนต์จะไปได้ดี");
+  if(off>=2) tips.push("ดาวอำนาจเด่น เหมาะเติบโตในองค์กรหรือสายบริหาร รายได้มาจากตำแหน่ง");
+  if(res>=2) tips.push("ดาวปัญญาเด่น การลงทุนในใบรับรองหรือการเรียนต่อให้ผลตอบแทนคุ้มค่า");
+  if(a.gods[0]>=3) tips.push("ดาวเพื่อน/คู่แข่งเยอะ ระวังการร่วมหุ้นและให้ยืมเงิน ทำสัญญาเป็นลายลักษณ์อักษรเสมอ");
+  const g=tenGod(b.day[0],2);
+  $("p-money").innerHTML=`
+  <div class="card">
+    <h2>สไตล์การเงินของคุณ</h2>
+    <p><b>${style}</b></p>
+    <p>ธาตุทรัพย์ของคุณคือ ${elSpan(wE,EL_HAN[wE]+" "+EL_TH[wE])} (ธาตุที่เจ้าชะตาข่ม) พบ ${wCnt} อักษรในดวง${wFav?" และเป็นธาตุให้คุณ":""}</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>แนวทางวางแผนการเงิน</h3>
+      <p>${plan}</p>
+      ${tips.length?`<ul style="margin:0;padding-left:20px">${tips.map(t=>`<li>${t}</li>`).join("")}</ul>`:""}
+    </div>
+    <div class="card">
+      <h3>อาชีพที่ธาตุส่งเสริม</h3>
+      ${a.fav.map(e=>`<p>${elSpan(e,EL_HAN[e]+" "+EL_TH[e])}: ${LUCK[e].job}</p>`).join("")}
+      <h3>จังหวะการเงินปี 2026</h3>
+      <p>${g.name} · ${GOD_2026[g.rel]}</p>
+    </div>
+  </div>
+  <p class="cta">${CONFIG.consult}<br><span class="note">ติดต่อ: ${esc(CONFIG.contact)}</span></p>`;
+}
+
+function renderFS(b,male){
+  if(!unlocked){$("p-fs").innerHTML=lockCard("ฮวงจุ้ยเลขกัว (八宅)",["เลขกัวประจำตัวและกลุ่มทิศ ตะวันออก/ตะวันตก","4 ทิศมงคล: โชคลาภ สุขภาพ ความรัก ความสงบ","4 ทิศที่ควรเลี่ยง","วิธีจัดโต๊ะทำงานและหัวเตียง"]);return;}
+  const k=kua(b.by,male), D=KUA_DIR[k], east=[1,3,4,9].includes(k);
+  const at={}; D.forEach((d,i)=>at[d]=i);
+  const cell=d=>{const i=at[d];return `<div class="${i<4?"g":"b"}">${DIRS[d]}<small>${KUA_NAME[i][0]} ${KUA_NAME[i][1]}</small></div>`};
+  $("p-fs").innerHTML=`
+  <div class="grid2">
+    <div class="card">
+      <h2>เลขกัวของคุณ: ${k}</h2>
+      <p>กลุ่ม${east?"ทิศตะวันออก (东四命)":"ทิศตะวันตก (西四命)"} · ธาตุ${elSpan(KUA_EL[k],EL_TH[KUA_EL[k]])}</p>
+      <p class="note">คำนวณจากปีเกิดตามลี่ชุน (${b.by}) และเพศ${male?"ชาย":"หญิง"}</p>
+      <div class="compass" aria-label="เข็มทิศเลขกัว">${cell("NW")}${cell("N")}${cell("NE")}${cell("W")}<div class="c">${k}</div>${cell("E")}${cell("SW")}${cell("S")}${cell("SE")}</div>
+      <p class="note">ด้านบนคือทิศเหนือ</p>
+    </div>
+    <div class="card">
+      <h3>วิธีใช้</h3>
+      <div class="tblwrap"><table><thead><tr><th>ทิศ</th><th>ความหมาย</th><th>ใช้กับ</th></tr></thead><tbody>
+      ${D.map((d,i)=>`<tr><td class="${i<4?"el-wood":"el-fire"}" style="white-space:nowrap">${DIRS[d]}</td><td>${KUA_NAME[i][0]} ${KUA_NAME[i][1]}</td><td>${KUA_NAME[i][2]}</td></tr>`).join("")}
+      </tbody></table></div>
+    </div>
+  </div>`;
+}
+
 function matchScore(b1,b2){
-  const a=b1.year[1], c=b2.year[1];
-  let s,label,txt,kind;
+  const a=b1.year[1], c=b2.year[1]; let s,label,txt,kind;
   if(has(LIUHE,a,c)){s=92;label="หกประสาน 六合";kind="good";txt="คู่เกื้อหนุนกันโดยธรรมชาติ เข้าใจกันง่าย เหมาะเป็นคู่ชีวิตหรือคู่ธุรกิจระยะยาว";}
   else if(SANHE.some(g=>g.includes(a)&&g.includes(c))&&a!==c){s=86;label="สามประสาน 三合";kind="good";txt="มีเป้าหมายไปทางเดียวกัน ทำงานร่วมกันแล้วได้ผลมากกว่าทำคนเดียว";}
-  else if((a-c+12)%12===6){s=38;label="ชง 六冲";kind="bad";txt="มุมมองต่างกันชัดเจน ดึงดูดกันแรงแต่ปะทะง่าย ต้องตกลงบทบาทและเคารพพื้นที่ของกันและกัน";}
+  else if(clash(a,c)){s=38;label="ชง 六冲";kind="bad";txt="มุมมองต่างกันชัดเจน ดึงดูดกันแรงแต่ปะทะง่าย ต้องตกลงบทบาทและเคารพพื้นที่ของกันและกัน";}
   else if(has(HAI,a,c)){s=48;label="ทำลาย 六害";kind="bad";txt="มักขัดใจกันเรื่องเล็กๆ สะสม ควรสื่อสารตรงๆ ไม่เก็บไว้";}
   else if(has(XING,a,c)){s=52;label="เบียด 刑";kind="bad";txt="มีแรงเสียดทาน ต้องอดทนและให้อภัย ความสัมพันธ์จะช่วยขัดเกลาทั้งสองฝ่าย";}
   else if(a===c){s=70;label="นักษัตรเดียวกัน";kind="";txt="เข้าใจกันเพราะนิสัยคล้ายกัน แต่ข้อเสียก็ซ้ำกัน ต้องมีคนถอยเมื่อเห็นต่าง";}
   else {s=66;label="เป็นกลาง";kind="";txt="ไม่ส่งเสริมไม่ขัดแย้ง ความสัมพันธ์ขึ้นกับความตั้งใจของทั้งคู่";}
-  const e1=stemEl(b1.day[0]), e2=stemEl(b2.day[0]);
-  const r=(e2-e1+5)%5; let etxt, adj;
+  const e1=stemEl(b1.day[0]), e2=stemEl(b2.day[0]), r=(e2-e1+5)%5; let etxt,adj;
   if(r===0){adj=4;etxt=`เจ้าชะตาธาตุ${EL_TH[e1]}เหมือนกัน เป็นเพื่อนคู่คิด`;}
   else if(r===1){adj=6;etxt=`คุณ (${EL_TH[e1]}) หล่อเลี้ยงอีกฝ่าย (${EL_TH[e2]}) คุณเป็นฝ่ายให้`;}
   else if(r===4){adj=6;etxt=`อีกฝ่าย (${EL_TH[e2]}) หล่อเลี้ยงคุณ (${EL_TH[e1]}) คุณได้รับการดูแล`;}
@@ -333,10 +554,16 @@ function run(){
   const v=$("bd").value; if(!v) return;
   const [y,m,d]=v.split("-").map(Number);
   let hour=null;
-  if(!$("nohour").checked && $("bt").value){hour=Number($("bt").value.split(":")[0]);}
+  if(!$("nohour").checked && $("bt").value) hour=Number($("bt").value.split(":")[0]);
+  const male=$("sex").value==="m";
   const b=bazi(y,m,d,hour); current=b;
   const a=analyse(b);
-  renderPillars(b); renderRead(b,a); renderYear(b);
+  renderPillars(b); renderRead(b,a); renderLuck(b,a,male); renderMonth(b,a); renderMoney(b,a); renderFS(b,male);
+  document.querySelectorAll(".tabs .lk").forEach(x=>x.hidden=unlocked);
+  $("status").textContent=unlocked?"รายงานฉบับเต็ม":"ฉบับฟรี · แท็บที่มีจุดคือส่วนพรีเมียม";
+  $("pdfBtn").hidden=!(unlocked&&!framed);
+  const nm=$("nm").value.trim();
+  $("printHead").innerHTML=`<h2>รายงานดวงจีนแปดอักษร${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${d} ${MON_TH[m-1]} ${y}${hour!=null?" เวลา "+$("bt").value+" น.":""} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;
   if($("bd2").value) runMatch();
 }
 function runMatch(){
@@ -350,15 +577,16 @@ function runMatch(){
     <p><span class="chip ${r.kind}">${r.label}</span></p>
     <p>ปี${BR_TH[r.a]} <span class="hanS">${BR[r.a]}</span> กับ ปี${BR_TH[r.c]} <span class="hanS">${BR[r.c]}</span></p>
   </div>
-  <div class="card">
+  ${unlocked?`<div class="card">
     <h3>ความสัมพันธ์นักษัตร</h3><p>${r.txt}</p>
     <h3>ความสัมพันธ์ธาตุเจ้าชะตา</h3><p>${elSpan(stemEl(current.day[0]),STEMS[current.day[0]])} กับ ${elSpan(stemEl(b2.day[0]),STEMS[b2.day[0]])} · ${r.etxt}</p>
-  </div>`;
+  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["เหตุผลของคะแนนจากนักษัตรและธาตุเจ้าชะตา","ใครเป็นฝ่ายให้ ใครเป็นฝ่ายรับ","สิ่งที่ต้องระวังในความสัมพันธ์"])}`;
 }
 
 $("f").addEventListener("submit",e=>{e.preventDefault();$("exnote").hidden=true;run();});
 $("f2").addEventListener("submit",e=>{e.preventDefault();runMatch();});
 $("nohour").addEventListener("change",()=>{$("bt").disabled=$("nohour").checked;});
+$("pdfBtn").addEventListener("click",()=>window.print());
 document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll('[role=tab]').forEach(x=>{const on=x===t;x.setAttribute("aria-selected",on);$(x.getAttribute("aria-controls")).hidden=!on;});
 }));
