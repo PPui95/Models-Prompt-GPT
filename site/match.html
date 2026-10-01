@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>คู่สมพงษ์ | ดวงจีน แปดอักษร</title>
+<meta name="description" content="ดูคู่สมพงษ์ตามดวงจีน คู่นี้เหมาะเป็นคู่รัก หุ้นส่วนธุรกิจ ทีมงาน หัวหน้า–ลูกน้อง เพื่อน หรือครอบครัว">
+<meta property="og:title" content="คู่สมพงษ์ | ดวงจีน แปดอักษร">
+<meta property="og:description" content="ดูคู่สมพงษ์ตามดวงจีน คู่นี้เหมาะเป็นคู่รัก หุ้นส่วนธุรกิจ ทีมงาน หัวหน้า–ลูกน้อง เพื่อน หรือครอบครัว">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;900&family=Noto+Serif+Thai:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body data-page="match">
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="index.html"><span class="seal sm" aria-hidden="true"><span>八</span><span>字</span><span>命</span><span>理</span></span>ดวงจีน แปดอักษร</a>
+    <nav class="main" aria-label="เมนูหลัก"><a href="index.html">หน้าแรก</a><a href="daily.html">ดวงรายวัน</a><a href="chart.html">ผูกดวงฉบับเต็ม</a><a href="match.html" aria-current="page">คู่สมพงษ์</a><a href="fengshui.html">ฮวงจุ้ย</a><a href="consult.html">ปรึกษาส่วนตัว</a></nav>
+  </header>
+  <div class="pagehead"><h1>คู่สมพงษ์</h1><p>ดูจากนักษัตรปีเกิด ธาตุเจ้าชะตา และวังคู่ครองของทั้งสองคน แล้วบอกว่าคู่นี้เหมาะกับความสัมพันธ์แบบไหน</p></div>
+  <h2>ข้อมูลของคุณ</h2>
+  <form id="f">
+    <label for="nm">ชื่อ (ใส่ในรายงาน)<input type="text" id="nm" maxlength="40" placeholder="เช่น คุณมาลี"></label>
+    <label for="sex">เพศ<select id="sex"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
+    <fieldset class="dsel"><legend>วันเกิด (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd-d" aria-label="วันที่เกิด"></select><select id="bd-m" aria-label="เดือนเกิด"></select><select id="bd-y" aria-label="ปีเกิด พ.ศ."></select></div></fieldset>
+    <label for="bh">เวลาเกิด (ยามจีน)<select id="bh"></select></label>
+    <button class="go" type="submit">บันทึกข้อมูลของฉัน</button>
+  </form>
+  <p class="note" id="exnote">ข้อมูลตัวอย่าง: หญิง เกิด 15 สิงหาคม 2528 เวลา 10 นาฬิกา ใส่ข้อมูลของคุณแล้วกด “บันทึกข้อมูลของฉัน” ระบบจะจำข้อมูลไว้ในเครื่องนี้ให้ใช้ได้ทุกหน้า</p>
+  <span class="note" id="status"></span>
+  <h2>ข้อมูลของอีกฝ่าย</h2>
+  <form id="f2">
+    <label for="nm2">ชื่ออีกฝ่าย (ไม่ใส่ก็ได้)<input type="text" id="nm2" maxlength="40" placeholder="เช่น คุณเอ"></label>
+    <fieldset class="dsel"><legend>วันเกิดของอีกฝ่าย (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd2-d" aria-label="วันที่เกิดของอีกฝ่าย"></select><select id="bd2-m" aria-label="เดือนเกิดของอีกฝ่าย"></select><select id="bd2-y" aria-label="ปีเกิดของอีกฝ่าย พ.ศ."></select></div></fieldset>
+    <button class="go" type="submit">ดูคู่สมพงษ์</button>
+  </form>
+  <div id="matchOut" class="grid2"></div>
+  <footer class="sitefoot">
+    <nav aria-label="ลิงก์ท้ายเว็บ"><a href="index.html">หน้าแรก</a><a href="daily.html">ดวงรายวัน</a><a href="chart.html">ผูกดวงฉบับเต็ม</a><a href="match.html">คู่สมพงษ์</a><a href="fengshui.html">ฮวงจุ้ย</a><a href="consult.html">ปรึกษาส่วนตัว</a><a href="privacy.html">ความเป็นส่วนตัวและการคืนเงิน</a></nav>
+    <p>คำนวณตามปฏิทินสุริยคติจีน (ปีใหม่เริ่มที่ลี่ชุน ประมาณ 4 ก.พ.) วันเปลี่ยนสารทใช้ค่าประมาณ อาจคลาด ±1 วันสำหรับคนเกิดตรงรอยต่อ ใช้เพื่อความบันเทิงและเป็นแนวทางทบทวนตนเอง ไม่ใช่คำทำนายที่แน่นอน และไม่ใช่คำแนะนำการลงทุนเฉพาะบุคคล</p>
+  </footer>
+</div>
+<script src="assets/core.js"></script>
+</body>
+</html>

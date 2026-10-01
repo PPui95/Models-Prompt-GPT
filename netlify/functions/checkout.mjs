@@ -9,6 +9,8 @@ export default async (req) => {
   if (!KEY_RE.test(key || "")) return json({ error: "invalid_key" }, 400);
 
   const origin = process.env.SITE_URL || process.env.URL || new URL(req.url).origin;
+  // page the buyer returns to after paying (only pages that can show the full report)
+  const page = ["chart", "match", "fengshui"].includes(body?.page) ? body.page : "chart";
   const price = parseInt(process.env.PRICE_THB || "199", 10);
   try {
     const { ok, data } = await stripe("checkout/sessions", {
@@ -20,8 +22,8 @@ export default async (req) => {
         "line_items[0][price_data][unit_amount]": String(price * 100),
         "line_items[0][price_data][product_data][name]": process.env.PRODUCT_NAME || "รายงานดวงจีนแปดอักษร ฉบับเต็ม",
         "metadata[key]": key,
-        success_url: `${origin}/?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/?canceled=1`,
+        success_url: `${origin}/${page}.html?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/${page}.html?canceled=1`,
       },
     });
     if (!ok) { console.error("stripe checkout error", data?.error?.message); return json({ error: "payment_provider" }, 502); }

@@ -5,7 +5,15 @@
 - **Stripe** ใช้รับเงิน รองรับ PromptPay และบัตรเครดิตในไทย คิดค่าธรรมเนียมต่อรายการ ไม่มีค่ารายเดือน
 
 ไฟล์ที่เกี่ยวข้อง
-- `site/index.html` คือหน้าเว็บดูดวง
+- `site/index.html` หน้าแรก (แนะนำบริการ)
+- `site/daily.html` ดวงรายวัน (ฟรี เปลี่ยนทุกวัน)
+- `site/chart.html` ผูกดวงฉบับเต็ม (หน้าหลักที่ขายรายงาน)
+- `site/match.html` คู่สมพงษ์
+- `site/fengshui.html` ฮวงจุ้ยเลขกัว
+- `site/consult.html` บริการปรึกษาส่วนตัวและ Workshop
+- `site/privacy.html` นโยบายความเป็นส่วนตัวและการคืนเงิน
+- `site/assets/core.js` ระบบคำนวณ คำทำนาย และการตั้งค่าร้าน (`CONFIG`) ใช้ร่วมกันทุกหน้า
+- `site/assets/style.css` หน้าตาเว็บ ใช้ร่วมกันทุกหน้า
 - `netlify/functions/checkout.mjs` สร้างหน้าชำระเงินของ Stripe
 - `netlify/functions/verify.mjs` ตรวจว่าจ่ายเงินแล้วจริง และตรวจรหัสผู้ดูแล
 - `netlify.toml` เก็บการตั้งค่า Netlify
@@ -42,7 +50,7 @@
 
 ## ขั้นที่ 3: แก้ข้อมูลร้านในหน้าเว็บ
 
-เปิด `site/index.html` แล้วหาบล็อก `CONFIG` ด้านบนของสคริปต์
+เปิด `site/assets/core.js` แล้วหาบล็อก `CONFIG` ด้านบนสุดของไฟล์ (แก้ที่เดียว มีผลทุกหน้า)
 
 ```js
 const CONFIG={
