@@ -34,7 +34,8 @@ export default async (req) => {
     const t = data.metadata?.tier === "full" ? "full" : "year";
     const p = Number(data.metadata?.p) || (data.created ? data.created * 1000 : Date.now());
     const exp = p + EXP[t];
-    return json({ ok: true, key, t, p, exp, token: signToken({ k: key, t, p, exp, sid }, secret) });
+    const amount = typeof data.amount_total === "number" ? data.amount_total / 100 : undefined; // THB, for ad conversion value
+    return json({ ok: true, key, t, p, exp, amount, token: signToken({ k: key, t, p, exp, sid }, secret) });
   } catch (e) {
     console.error(e);
     return json({ error: "server" }, 500);

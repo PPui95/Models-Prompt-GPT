@@ -159,3 +159,9 @@ a.go{color:#fff}
 .ptable thead th{font-size:13px;color:var(--ink);vertical-align:bottom}
 .ptable .price{font-size:18px}
 .lock .row .go{flex:0 1 auto}
+/* ---- cookie consent ---- */
+.consent{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--sheet);border-top:1px solid var(--line);box-shadow:0 -6px 24px rgba(0,0,0,.12);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:center;font-size:13.5px}
+.consent p{margin:0;max-width:62ch}
+.consent-btns{display:flex;gap:8px}
+.consent-btns button{min-width:104px}
+@media print{.consent{display:none!important}}

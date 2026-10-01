@@ -3,6 +3,8 @@ const CONFIG={
   priceYear:299,                // แพ็กดวงปี (บาท) ต้องตรงกับ PRICE_YEAR_THB บน Netlify
   priceFull:690,                // แพ็กชีวิตฉบับสมบูรณ์ (บาท) ต้องตรงกับ PRICE_FULL_THB บน Netlify
   contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
+  metaPixelId:"",               // Meta (Facebook/Instagram) Pixel ID เช่น "1234567890123456" เว้นว่าง = ไม่ติดตาม
+  tiktokPixelId:"",             // TikTok Pixel ID เช่น "C1ABCDEF2GHIJK3LMNOP" เว้นว่าง = ไม่ติดตาม
   api:"/api",                   // Netlify functions (ชำระเงิน + ตรวจรหัส)
   previewCode:""        // ใช้ได้เฉพาะหน้าพรีวิวใน Claude; เว็บจริงตั้งเป็น "" และใช้ ADMIN_CODES บนเซิร์ฟเวอร์แทน
 };
@@ -489,6 +491,7 @@ document.addEventListener("click",async e=>{
   store.set("bazi_pending",{key:reportKey(),nm:$("nm").value.trim()});
   try{
     const tier=btn.dataset.tier||"year", acc=effAccess(reportKey());
+    track("InitiateCheckout",{tier,value:tierValue(tier)});
     const {status,data}=await api("/checkout",{key:reportKey(),page:document.body.dataset.page||"chart",tier,token:tier==="upgrade"&&acc?acc.yearTok:undefined});
     if(status===200&&data.url){location.href=data.url;return;}
     say(msg,"เปิดหน้าชำระเงินไม่สำเร็จ ลองใหม่อีกครั้ง หรือติดต่อ "+CONFIG.contact,"err");
@@ -987,6 +990,53 @@ function renderDaily(b,a){
   </div>`;
 }
 
+
+/* ===================== Pixel + ความยินยอมคุกกี้ (PDPA) ===================== */
+// Pixels load only after the visitor accepts. Only funnel events and amounts are sent, never birth data or names.
+const TRACKING_ON=!!(CONFIG.metaPixelId||CONFIG.tiktokPixelId);
+const consent=()=>{try{return localStorage.getItem("bazi_consent");}catch(e){return null;}};
+let pixelsLoaded=false;
+function loadPixels(){
+  if(pixelsLoaded||!TRACKING_ON) return; pixelsLoaded=true;
+  if(CONFIG.metaPixelId){
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init',CONFIG.metaPixelId); fbq('track','PageView');
+  }
+  if(CONFIG.tiktokPixelId){
+    !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=d.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=d.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};ttq.load(CONFIG.tiktokPixelId);ttq.page();}(window,document,'ttq');
+  }
+}
+// name: ViewContent | InitiateCheckout | Purchase ; data: {value, tier, page} ; eventId de-duplicates Purchase
+const TT_NAME={ViewContent:"ViewContent",InitiateCheckout:"InitiateCheckout",Purchase:"CompletePayment"};
+function track(name,data={},eventId){
+  if(!pixelsLoaded) return;
+  const p={content_name:data.tier?("แพ็ก"+(data.tier==="year"?"ดวงปี":data.tier==="upgrade"?"อัปเกรด":"สมบูรณ์")):(data.page||PAGE),content_type:"product"};
+  if(data.value!=null){p.value=data.value;p.currency="THB";}
+  if(window.fbq) eventId?fbq('track',name,p,{eventID:eventId}):fbq('track',name,p);
+  if(window.ttq) ttq.track(TT_NAME[name],p,eventId?{event_id:eventId}:undefined);
+  try{const L=JSON.parse(sessionStorage.getItem("bazi_tlog")||"[]");L.push([name,p.value??null,eventId||null]);sessionStorage.setItem("bazi_tlog",JSON.stringify(L.slice(-20)));}catch(e){}
+}
+const tierValue=t=>t==="year"?CONFIG.priceYear:t==="upgrade"?CONFIG.priceFull-CONFIG.priceYear:CONFIG.priceFull;
+function showConsent(){
+  if(!TRACKING_ON) return;
+  let bar=$("consentBar");
+  if(!bar){bar=document.createElement("div");bar.id="consentBar";bar.className="consent";bar.setAttribute("role","region");bar.setAttribute("aria-label","การใช้คุกกี้");
+    bar.innerHTML=`<p>เว็บนี้ใช้คุกกี้ของ Meta และ TikTok เพื่อวัดผลโฆษณาเท่านั้น ไม่ส่งวันเกิด ชื่อ หรือคำทำนายของคุณ ดูได้ที่ <a href="privacy.html">นโยบายความเป็นส่วนตัว</a></p>
+      <div class="consent-btns"><button type="button" class="ghost" data-consent="no">ไม่ยอมรับ</button><button type="button" class="go" data-consent="yes">ยอมรับ</button></div>`;
+    document.body.appendChild(bar);}
+  bar.hidden=false;
+}
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-consent]");
+  if(c){const prev=consent(), v=c.dataset.consent;try{localStorage.setItem("bazi_consent",v);}catch(_){}
+    $("consentBar").hidden=true;
+    if(v==="yes") loadPixels(); else if(prev==="yes"&&pixelsLoaded) location.reload(); // stop pixels already running
+    return;}
+  if(e.target.closest("[data-consent-open]")){e.preventDefault();showConsent();}
+});
+if(TRACKING_ON){ if(consent()==="yes") loadPixels(); else if(!consent()) showConsent(); }
+document.querySelectorAll("[data-consent-open]").forEach(a=>a.hidden=!TRACKING_ON);
+
 /* ===================== หน้าเว็บ: ตัวควบคุมกลาง ===================== */
 let current=null, currentA=null;
 const PAGE=document.body.dataset.page||"chart";
@@ -1029,8 +1079,8 @@ async function boot(){
   if($("bd-y")){ setDate("bd","1985-08-15"); if($("bh")) $("bh").value="10"; }
   if($("bd2-y")) setDate("bd2","1987-03-21");
   if($("dd-y")){const T=todayParts();setDate("dd",`${T.y}-${pad(T.m)}-${pad(T.d)}`);}
-  if($("f")) $("f").addEventListener("submit",e=>{e.preventDefault();if($("exnote"))$("exnote").hidden=true;saveMe();run();});
-  if($("f2")) $("f2").addEventListener("submit",e=>{e.preventDefault();runMatch();});
+  if($("f")) $("f").addEventListener("submit",e=>{e.preventDefault();if($("exnote"))$("exnote").hidden=true;saveMe();run();track("ViewContent",{page:PAGE});});
+  if($("f2")) $("f2").addEventListener("submit",e=>{e.preventDefault();runMatch();track("ViewContent",{page:"match-pair"});});
   if($("pdfBtn")) $("pdfBtn").addEventListener("click",()=>window.print());
   if($("dayPick")) $("dayPick").addEventListener("change",run);
   ["dd-d","dd-m","dd-y"].forEach(id=>$(id)&&$(id).addEventListener("change",run));
@@ -1044,7 +1094,8 @@ async function boot(){
     $("status")&&($("status").textContent="กำลังยืนยันการชำระเงิน...");
     try{
       const {status,data}=await api("/verify",{session_id:sid});
-      if(status===200&&data.ok){restoreForm(data.key);store.set("bazi_pending",null);saveMe();addAccess(accFrom(data));$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]);return;}
+      if(status===200&&data.ok){restoreForm(data.key);store.set("bazi_pending",null);saveMe();addAccess(accFrom(data));
+        track("Purchase",{value:data.amount??(data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]);return;}
       const p=store.get("bazi_pending"); if(p) restoreForm(p.key); run();
       $("status")&&($("status").textContent=status===202?"ยังไม่ได้รับยืนยันการชำระเงิน รอสักครู่แล้วรีเฟรชหน้านี้":"ยืนยันการชำระเงินไม่สำเร็จ กรุณาติดต่อ "+CONFIG.contact);
     }catch(_){run();$("status")&&($("status").textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ รีเฟรชหน้านี้อีกครั้ง");}

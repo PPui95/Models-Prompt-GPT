@@ -107,6 +107,33 @@ const CONFIG={
 5. ทดสอบจ่ายเงินด้วยบัตรทดสอบอีกครั้งบนโดเมนใหม่
 6. ตอนจะยิงแอด ให้ยืนยันโดเมนใน Meta Business Suite (Brand safety → Domains) ด้วย
 
+## ขั้นที่ 6: ใส่ Pixel ID (ก่อนยิงแอด)
+
+ระบบ Pixel และแบนเนอร์คุกกี้ติดตั้งในเว็บแล้ว แค่ใส่ ID ก็เริ่มทำงาน
+
+1. **Meta Pixel:** Meta Business Suite → Events Manager → Connect data sources → Web → สร้าง Pixel แล้วคัดลอก Pixel ID (ตัวเลขประมาณ 15–16 หลัก)
+2. **TikTok Pixel:** TikTok Ads Manager → Tools → Events → Web Events → สร้าง Pixel แบบ “Manually install pixel code” แล้วคัดลอก Pixel ID
+3. เปิด `site/assets/core.js` ใส่ใน `CONFIG`
+   ```js
+   metaPixelId:"1234567890123456",
+   tiktokPixelId:"C1ABCDEF2GHIJK3LMNOP",
+   ```
+4. บันทึกไฟล์บน GitHub แล้ว Netlify จะเอาขึ้นเว็บให้เอง
+
+**ระบบทำงานอย่างไร**
+- แบนเนอร์คุกกี้จะขึ้นเฉพาะเมื่อมี Pixel ID อย่างน้อย 1 ตัว และ Pixel ทำงานหลังผู้เข้าชมกด “ยอมรับ” เท่านั้น
+- เหตุการณ์ที่ส่ง: เข้าเว็บ (PageView), ดูดวง (ViewContent), กดชำระเงิน (InitiateCheckout พร้อมราคา), ซื้อสำเร็จ (Meta: Purchase / TikTok: CompletePayment พร้อมยอดเงินจริงจาก Stripe)
+- การซื้อแต่ละครั้งส่งเลขรายการไปด้วย ระบบโฆษณาจะไม่นับซ้ำ
+- ไม่ส่งชื่อ วันเกิด เวลาเกิด หรือคำทำนายของลูกค้า
+
+**ทดสอบ:** ติดตั้งส่วนขยาย Chrome “Meta Pixel Helper” และ “TikTok Pixel Helper” เปิดเว็บ กดยอมรับคุกกี้ แล้วดูว่ามี PageView ขึ้น หรือใช้เมนู Test events ใน Events Manager
+
+## สำหรับคนแก้เว็บรอบหน้า
+
+- หน้าเว็บทุกหน้าสร้างจาก `tools/build_site.py` แก้เมนู ส่วนท้ายเว็บ หรือเนื้อหาหน้าในไฟล์นั้น แล้วรัน `python3 tools/build_site.py`
+- ระบบคำนวณและคำทำนายอยู่ที่ `site/assets/core.js` แก้ได้ตรงๆ
+- ชุดทดสอบทั้งระบบ (จ่ายเงินจำลอง แพ็ก อัปเกรด เปลี่ยนปี Pixel คุกกี้): `node tools/e2e-test.mjs` ต้องมี Playwright ติดตั้งในเครื่อง
+
 ## แพ็กและการปลดล็อก
 
 | | แพ็กดวงปี | แพ็กชีวิตฉบับสมบูรณ์ |
