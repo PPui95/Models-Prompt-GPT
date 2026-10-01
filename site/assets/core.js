@@ -2,7 +2,6 @@
 const CONFIG={
   price:"199 บาท / รายงาน",
   contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
-  consult:"อยากวางแผนการเงินและประกันให้เข้ากับดวง ปรึกษาแบบตัวต่อตัวได้",
   api:"/api",                   // Netlify functions (ชำระเงิน + ตรวจรหัส)
   previewCode:""        // ใช้ได้เฉพาะหน้าพรีวิวใน Claude; เว็บจริงตั้งเป็น "" และใช้ ADMIN_CODES บนเซิร์ฟเวอร์แทน
 };
@@ -396,11 +395,11 @@ function lockCard(title,items){
     <p>ส่วนนี้อยู่ในรายงานฉบับเต็ม ประกอบด้วย</p>
     <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
     <div class="price">${CONFIG.price}</div>
-    <p class="note">จ่ายครั้งเดียวต่อวันเดือนปีเกิด ได้ครบทุกส่วน: พื้นดวงเชิงลึก วัยจร 10 ปี ดวงปีและรายเดือน 2026 การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์แบบละเอียด และรายงาน PDF · ชำระด้วย PromptPay หรือบัตร</p>
+    <p class="note">จ่ายครั้งเดียวต่อวันเดือนปีเกิด ได้ครบทุกส่วน: พื้นดวงเชิงลึก วัยจร 10 ปี ดวงปีและรายเดือน 2569 การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์แบบละเอียด และรายงาน PDF · ชำระด้วย PromptPay หรือบัตร</p>
     <div class="row"><button class="go pay" type="button">ชำระเงินและปลดล็อกรายงานนี้</button></div>
     <p class="msg" aria-live="polite"></p>
     <form class="row unlock" novalidate>
-      <input type="text" placeholder="มีรหัสผู้ดูแลหรือที่ปรึกษา? ใส่ที่นี่" aria-label="รหัสผู้ดูแล" autocomplete="off">
+      <input type="text" placeholder="มีรหัสผู้ดูแล? ใส่ที่นี่" aria-label="รหัสผู้ดูแล" autocomplete="off">
       <button class="ghost" type="submit">ใช้รหัส</button>
     </form>
   </div>`;
@@ -477,9 +476,9 @@ function renderRead(b,a,male){
     </div>
   </div>
   <div class="card">
-    <h3>ปี${BR_TH[yb]} (${ANIMAL[yb]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span> ในปี 2026</h3>
+    <h3>ปี${BR_TH[yb]} (${ANIMAL[yb]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span> ในปี 2569</h3>
     <div><span class="stars" aria-label="${y.s} จาก 5 ดาว">${stars}</span> <span class="chip ${y.s>=4?"good":y.s<3?"bad":""}">${y.tag}</span></div>
-    <p>${y.t} รายละเอียดเรื่องงาน เงิน ความรัก สุขภาพ อยู่ในแท็บดวงปี/เดือน 2026</p>
+    <p>${y.t} รายละเอียดเรื่องงาน เงิน ความรัก สุขภาพ อยู่ในแท็บดวงปี/เดือน 2569</p>
   </div>`;
   if(!unlocked){
     html+=lockCard("วิเคราะห์พื้นดวงเชิงลึก",["นิสัยด้านความรัก การงาน สุขภาพ และคำแนะนำเฉพาะเจ้าชะตาของคุณ","อ่านดวงทีละเสา: วัยเด็ก วัยทำงาน คู่ครอง และบั้นปลาย","โครงสร้างนิสัยจากสิบเทพ ดาวที่เด่นและดาวที่ขาด","ดาวพิเศษ: ผู้อุปถัมภ์ เสน่ห์ ม้าเดินทาง ปัญญา จิตวิญญาณ","วังคู่ครองและดาวคู่ครอง","สุขภาพตามธาตุที่ขาดหรือเกิน พร้อมวิธีปรับสมดุล"]);
@@ -562,7 +561,7 @@ function renderLuck(b,a,male){
 }
 
 function renderMonth(b,a){
-  if(!unlocked){$("p-month").innerHTML=lockCard("ดวงปีและรายเดือน 2026",["ดวงนักษัตรของคุณปี 2026 แยกงาน เงิน ความรัก สุขภาพ","ปี 2026 กับเจ้าชะตาของคุณโดยเฉพาะ","คำทำนายครบ 12 เดือนจีน (ก.พ. 2026 – ม.ค. 2027) พร้อมสิ่งที่ควรทำและควรเลี่ยง","สรุปเดือนเด่นและเดือนที่ต้องระวัง"]);return;}
+  if(!unlocked){$("p-month").innerHTML=lockCard("ดวงปีและรายเดือน 2569",["ดวงนักษัตรของคุณปี 2569 แยกงาน เงิน ความรัก สุขภาพ","ปี 2569 กับเจ้าชะตาของคุณโดยเฉพาะ","คำทำนายครบ 12 เดือนจีน (ก.พ. 2569 – ม.ค. 2570) พร้อมสิ่งที่ควรทำและควรเลี่ยง","สรุปเดือนเด่นและเดือนที่ต้องระวัง"]);return;}
   const yb=b.year[1], Y=Y2026[yb], g=tenGod(b.day[0],2), M=months2026(b,a);
   const mlabel=x=>`${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}`;
   const T=todayParts(), tb=bazi(T.y,T.m,T.d,null), curMonthBr=tb.month[1], curInYear=tb.by===2026;
@@ -579,7 +578,7 @@ function renderMonth(b,a){
   </div>
   <div class="grid2">
     <div class="card">
-      <h3>ปี 2026 丙 กับเจ้าชะตา ${STEMS[b.day[0]]}</h3>
+      <h3>ปี 2569 丙 กับเจ้าชะตา ${STEMS[b.day[0]]}</h3>
       <p><span class="chip">${g.name}</span></p>
       <p>${GOD_2026[g.rel]}</p>
       <p>${godLine(g)}</p>
@@ -596,7 +595,7 @@ function renderMonth(b,a){
 }
 
 function renderMoney(b,a){
-  if(!unlocked){$("p-money").innerHTML=lockCard("การเงินและอาชีพตามธาตุ",["สไตล์การหาเงิน การใช้เงิน และการเก็บเงินของคุณ","แผนการเงินตามช่วงวัย: ออม ลงทุน ความคุ้มครอง เกษียณ","อาชีพและอุตสาหกรรมที่ธาตุส่งเสริม","กลุ่มการลงทุนที่ธาตุสอดคล้อง","เดือนการเงินดีของปี 2026"]);return;}
+  if(!unlocked){$("p-money").innerHTML=lockCard("การเงินและอาชีพตามธาตุ",["สไตล์การหาเงิน การใช้เงิน และการเก็บเงินของคุณ","แผนการเงินตามช่วงวัย: ออม ลงทุน ความคุ้มครอง เกษียณ","อาชีพและอุตสาหกรรมที่ธาตุส่งเสริม","กลุ่มการลงทุนที่ธาตุสอดคล้อง","เดือนการเงินดีของปี 2569"]);return;}
   const wE=(a.dmE+2)%5, wCnt=a.cnt[wE], wFav=a.fav.includes(wE), out=a.gods[1], res=a.gods[4], off=a.gods[3];
   let style,plan;
   if(a.strong&&wFav){style="นักล่าโอกาส: ดวงแข็งพอจะแบกความเสี่ยงและจัดการทรัพย์ก้อนใหญ่";plan="รับความเสี่ยงได้ปานกลางถึงสูง แต่ควรมีเงินสำรองฉุกเฉิน 6 เดือนและแผนคุ้มครองรายได้ก่อน แล้วค่อยกระจายลงทุนตามเป้าหมาย";}
@@ -636,11 +635,10 @@ function renderMoney(b,a){
       ${a.fav.map(e=>`<p>${elSpan(e,EL_TH[e])}: ${LUCK[e].invest}</p>`).join("")}
       <p class="note">ใช้ประกอบการคิดเท่านั้น ไม่ใช่คำแนะนำการลงทุน ควรดูเป้าหมาย ระยะเวลา และความเสี่ยงที่รับได้ร่วมด้วย</p></div>
   </div>
-  <div class="card"><h3>จังหวะการเงินปี 2026</h3>
+  <div class="card"><h3>จังหวะการเงินปี 2569</h3>
     <p>${g.name} · ${GOD_2026[g.rel]}</p>
     ${kv([["เดือนการเงินเด่น",M.length?M.join(", "):"ไม่มีเดือนเด่นชัด เน้นออมสม่ำเสมอทั้งปี"]])}
-  </div>
-  <p class="cta">${CONFIG.consult}<br><span class="note">ติดต่อ: ${esc(CONFIG.contact)}</span></p>`;
+  </div>`;
 }
 
 function renderFS(b,a,male){
