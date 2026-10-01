@@ -108,6 +108,18 @@ tr.me td{background:color-mix(in srgb,var(--cinnabar) 9%,transparent)}
 .lrow{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
 .card.now{border-color:var(--cinnabar)}
 section.panel>h2{margin-top:6px}
+.dsel{grid-column:1/-1;border:0;margin:0;padding:0;min-width:0}
+.dsel legend{font-size:13px;color:var(--muted);font-weight:500;padding:0;margin-bottom:4px}
+.dsel-row{display:grid;grid-template-columns:minmax(64px,.8fr) minmax(110px,1.4fr) minmax(110px,1.3fr);gap:8px}
+.dircard{display:grid;gap:6px}
+.dircard .dh{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.dircard .dn{font-family:var(--f-display);font-size:18px;font-weight:700}
+.dircard.g .dn{color:var(--jade)}.dircard.b .dn{color:var(--cinnabar)}
+.steps{margin:0;padding-left:22px;display:grid;gap:6px}
+.rtype{display:grid;grid-template-columns:minmax(120px,max-content) auto 1fr;gap:4px 12px;align-items:baseline;padding-block:8px;border-bottom:1px solid var(--line)}
+.rtype:last-child{border-bottom:0}
+.rtype .stars{font-size:14px;white-space:nowrap}
+@media (max-width:520px){.rtype{grid-template-columns:1fr auto}.rtype p{grid-column:1/-1}}
 footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
 @media (max-width:460px){.pillars{gap:6px}.pillar{padding:8px 2px}.sub{font-size:11px}.bar{grid-template-columns:80px 1fr 24px}}
 @media (prefers-reduced-motion:no-preference){.han{transition:transform .25s}.pillar:hover .han{transform:translateY(-2px)}}
@@ -136,12 +148,11 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
   <form id="f">
     <label for="nm">ชื่อ (ใส่ในรายงาน)<input type="text" id="nm" maxlength="40" placeholder="เช่น คุณมาลี"></label>
     <label for="sex">เพศ<select id="sex"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
-    <label for="bd">วันเกิด (ค.ศ.)<input type="date" id="bd" min="1900-01-01" max="2100-12-31" required></label>
-    <label for="bt">เวลาเกิด<input type="time" id="bt"></label>
-    <label class="chk" for="nohour"><input type="checkbox" id="nohour"> ไม่ทราบเวลาเกิด</label>
+    <fieldset class="dsel"><legend>วันเกิด (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd-d" aria-label="วันที่เกิด"></select><select id="bd-m" aria-label="เดือนเกิด"></select><select id="bd-y" aria-label="ปีเกิด พ.ศ."></select></div></fieldset>
+    <label for="bh">เวลาเกิด (ยามจีน)<select id="bh"></select></label>
     <button class="go" type="submit">ผูกดวง</button>
   </form>
-  <p class="note" id="exnote">ข้อมูลตัวอย่าง: หญิง เกิด 15 ส.ค. 1985 เวลา 10:30 น. ใส่ข้อมูลของคุณแล้วกด “ผูกดวง”</p>
+  <p class="note" id="exnote">ข้อมูลตัวอย่าง: หญิง เกิด 15 สิงหาคม 2528 เวลา 10 นาฬิกา ใส่ข้อมูลของคุณแล้วกด “ผูกดวง”</p>
 
   <div class="print-head" id="printHead"></div>
   <div class="pillars" id="pillars" aria-label="สี่เสาดวงชะตา"></div>
@@ -154,7 +165,7 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
   <div class="tabs" role="tablist">
     <button role="tab" id="t-read" aria-selected="true" aria-controls="p-read">พื้นดวง</button>
     <button role="tab" id="t-luck" aria-selected="false" aria-controls="p-luck">วัยจร 10 ปี<span class="lk">●</span></button>
-    <button role="tab" id="t-month" aria-selected="false" aria-controls="p-month">ดวงปี/เดือน 2026<span class="lk">●</span></button>
+    <button role="tab" id="t-month" aria-selected="false" aria-controls="p-month">ดวงปี/เดือน 2569<span class="lk">●</span></button>
     <button role="tab" id="t-money" aria-selected="false" aria-controls="p-money">การเงิน & อาชีพ<span class="lk">●</span></button>
     <button role="tab" id="t-fs" aria-selected="false" aria-controls="p-fs">ฮวงจุ้ย<span class="lk">●</span></button>
     <button role="tab" id="t-match" aria-selected="false" aria-controls="p-match">คู่สมพงษ์</button>
@@ -167,7 +178,8 @@ footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);paddin
   <section class="panel" id="p-fs" role="tabpanel" aria-labelledby="t-fs" hidden></section>
   <section class="panel" id="p-match" role="tabpanel" aria-labelledby="t-match" hidden>
     <form id="f2">
-      <label for="bd2">วันเกิดของอีกฝ่าย<input type="date" id="bd2" min="1900-01-01" max="2100-12-31" required></label>
+      <label for="nm2">ชื่ออีกฝ่าย (ไม่ใส่ก็ได้)<input type="text" id="nm2" maxlength="40" placeholder="เช่น คุณเอ"></label>
+      <fieldset class="dsel"><legend>วันเกิดของอีกฝ่าย (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd2-d" aria-label="วันที่เกิดของอีกฝ่าย"></select><select id="bd2-m" aria-label="เดือนเกิดของอีกฝ่าย"></select><select id="bd2-y" aria-label="ปีเกิดของอีกฝ่าย พ.ศ."></select></div></fieldset>
       <button class="go" type="submit">ดูคู่สมพงษ์</button>
     </form>
     <div id="matchOut" class="grid2"></div>
@@ -200,6 +212,10 @@ const EL=["wood","fire","earth","metal","water"];
 const EL_TH=["ไม้","ไฟ","ดิน","ทอง","น้ำ"];
 const EL_HAN="木火土金水".split("");
 const MON_TH=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const MON_FULL=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+const BE=y=>y+543; // พ.ศ.
+const pad=n=>String(n).padStart(2,"0");
+const thaiDate=(y,m,d)=>`${d} ${MON_FULL[m-1]} ${BE(y)}`;
 const stemEl=s=>Math.floor(s/2);
 const BR_EL=[4,2,0,0,2,1,1,2,3,3,2,4];
 const HIDDEN=[[9],[5,9,7],[0,2,4],[1],[4,1,9],[2,4,6],[3,5],[5,3,1],[6,8,4],[7],[4,7,3],[8,0]]; // 藏干, main qi first
@@ -278,6 +294,8 @@ const DM=[
   health:"ไต ระบบสืบพันธุ์ ฮอร์โมน อาการหนาวง่ายและนอนไม่หลับ",
   advice:"ฝนเล็กๆ รวมกันได้เป็นแม่น้ำ เชื่อมั่นในพลังเงียบของตัวเอง และแบ่งปันความรู้สึกกับคนที่ไว้ใจ"}
 ];
+
+const ANIMAL_TEXT=["ไหวพริบดี หาโอกาสเก่ง ประหยัดและรู้จักเก็บ","ขยัน อดทน ซื่อตรง ทำอะไรทำจริง","กล้าหาญ มั่นใจ ชอบความท้าทาย","สุภาพ มีศิลปะ รักสงบ","ทะเยอทะยาน มีบารมี คิดการใหญ่","ฉลาดลึก รอบคอบ มีเสน่ห์","รักอิสระ กระตือรือร้น ชอบเคลื่อนไหว","ใจดี อ่อนโยน มีศิลปะ","หัวไว แก้ปัญหาเก่ง สนุกสนาน","ละเอียด ตรงเวลา มีระเบียบ","ซื่อสัตย์ จริงใจ รักความยุติธรรม","ใจกว้าง ใจบุญ จริงใจ มีโชคลาภ"];
 
 /* ---------- ห้าธาตุ ---------- */
 const EL_INFO=[
@@ -408,7 +426,18 @@ const MONTH_GROUP=[
 const DIRS={N:"เหนือ",NE:"ตะวันออกเฉียงเหนือ",E:"ตะวันออก",SE:"ตะวันออกเฉียงใต้",S:"ใต้",SW:"ตะวันตกเฉียงใต้",W:"ตะวันตก",NW:"ตะวันตกเฉียงเหนือ"};
 const DIRS_S={N:"เหนือ",NE:"ตอ.เฉียงเหนือ",E:"ตะวันออก",SE:"ตอ.เฉียงใต้",S:"ใต้",SW:"ตต.เฉียงใต้",W:"ตะวันตก",NW:"ตต.เฉียงเหนือ"};
 const KUA_DIR={1:["SE","E","S","N","W","NE","NW","SW"],2:["NE","W","NW","SW","E","SE","S","N"],3:["S","N","SE","E","SW","NW","NE","W"],4:["N","S","E","SE","NW","SW","W","NE"],6:["W","NE","SW","NW","SE","E","N","S"],7:["NW","SW","NE","W","N","S","SE","E"],8:["SW","NW","W","NE","S","N","E","SE"],9:["E","SE","N","S","NE","W","SW","NW"]};
-const KUA_NAME=[["生气","โชคลาภ ความสำเร็จ","หันโต๊ะทำงาน หันหน้าตอนเจรจา ประตูหลัก"],["天医","สุขภาพ ผู้อุปถัมภ์","หัวเตียง ห้องพักผ่อน ห้องผู้สูงอายุ"],["延年","ความรัก ความสัมพันธ์","ห้องนอนคู่ ห้องนั่งเล่น มุมครอบครัว"],["伏位","ความสงบ สมาธิ","มุมสวดมนต์ มุมอ่านหนังสือ ห้องทำสมาธิ"],["祸害","อุปสรรคเล็กน้อย","ห้องน้ำ ห้องเก็บของ"],["五鬼","ขัดแย้ง สูญเสีย","ห้องน้ำ ห้องเก็บของ"],["六煞","เรื่องวุ่นวาย ข่าวลือ","ห้องน้ำ ห้องครัว"],["绝命","หนักที่สุด ควรหลีกเลี่ยง","ไม่ควรหันหัวนอนหรือโต๊ะทำงาน"]];
+const KUA_NAME=[["生气","โชคลาภ ความสำเร็จ"],["天医","สุขภาพ ผู้อุปถัมภ์"],["延年","ความรัก ความสัมพันธ์"],["伏位","ความสงบ สมาธิ"],["祸害","อุปสรรคเล็กน้อย"],["五鬼","ขัดแย้ง สูญเสีย"],["六煞","เรื่องวุ่นวาย ข่าวลือ"],["绝命","บั่นทอนที่สุด"]];
+// {read: Thai reading of the Chinese name, energy, uses: concrete how-to}
+const KUA_DETAIL=[
+ {read:"เซิงชี่ (พลังชีวิตรุ่งเรือง)",energy:"ทิศที่ดีที่สุดของคุณ เป็นพลังแห่งการเติบโต ความสำเร็จ ชื่อเสียง และเงินทอง",uses:["<b>นั่งทำงานหันหน้าไปทิศนี้</b> หมายถึงตอนนั่งที่โต๊ะ ใบหน้าและหน้าจอของคุณหันไปทางทิศนี้ ส่วนหลังพิงผนังฝั่งตรงข้าม","<b>เวลาเจรจา สัมภาษณ์งาน หรือปิดการขาย</b> เลือกเก้าอี้ที่ทำให้คุณหันหน้าไปทิศนี้","<b>ถ้ากำลังเลือกบ้านหรือคอนโด</b> ประตูหลักที่เปิดออกไปทางทิศนี้ถือว่าดีที่สุดสำหรับคุณ","<b>โซนทิศนี้ของบ้าน</b> เหมาะวางต้นไม้ ตู้เซฟ หรือของมงคลด้านการเงิน และรักษาให้สะอาด สว่าง ไม่รก"]},
+ {read:"เทียนอี (หมอจากสวรรค์)",energy:"พลังรักษาและฟื้นฟูร่างกาย ช่วยเรื่องสุขภาพ และดึงคนดีมีเมตตาเข้ามาช่วย",uses:["<b>หัวเตียงชี้ไปทิศนี้</b> หมายถึงตอนนอน ศีรษะของคุณอยู่ฝั่งทิศนี้ ปลายเท้าชี้ไปทิศตรงข้าม","<b>ห้องนอนของผู้ป่วยหรือผู้สูงอายุ</b> ควรอยู่โซนทิศนี้ของบ้าน","<b>เวลากินยาหรือทำกายภาพ</b> นั่งหันหน้าไปทิศนี้","<b>ถ้าจัดครัวได้</b> ให้ปุ่มเตาหรือด้านที่เสียบปลั๊กหม้อหุงข้าวหันไปทิศนี้ เชื่อว่าช่วยให้อาหารบำรุงร่างกาย"]},
+ {read:"เหยียนเหนียน (อายุยืน กลมเกลียว)",energy:"พลังของความรัก ความสามัคคีในครอบครัว มิตรภาพ และอายุยืน",uses:["<b>คนโสดที่อยากมีคู่ หรือคู่ที่อยากให้รักแน่นแฟ้น</b> ให้หัวเตียงชี้ไปทิศนี้","<b>ห้องนั่งเล่นหรือโต๊ะกินข้าวของครอบครัว</b> วางไว้โซนทิศนี้ของบ้าน","<b>คุยเรื่องสำคัญกับคนรักหรือคนในบ้าน</b> นั่งหันหน้าไปทิศนี้","<b>งานที่ต้องพึ่งทีมหรือความสัมพันธ์</b> เช่น งานขาย HR การดูแลลูกค้า ใช้ทิศนี้เป็นทิศหันหน้าทำงานได้"]},
+ {read:"ฝูเว่ย (มั่นคงภายใน)",energy:"พลังแห่งความสงบ สมาธิ ความมั่นคงในใจ และการพัฒนาตัวเอง",uses:["<b>หิ้งพระ มุมสวดมนต์ นั่งสมาธิ</b> นั่งหันหน้าไปทิศนี้","<b>โต๊ะอ่านหนังสือหรือติวสอบ</b> ทั้งของคุณและของลูกที่ต้องการสมาธิ","<b>ใช้แทนทิศอื่นได้เสมอ</b> ถ้าจัดบ้านให้หันไปทิศดีอันดับ 1–3 ไม่ได้ ทิศนี้เป็นทางสายกลางที่ปลอดภัย"]},
+ {read:"ฮั่วไห่ (เภทภัยเล็ก)",energy:"พลังที่ทำให้เรื่องสะดุด ทะเลาะเรื่องเล็ก เจ็บป่วยเล็กน้อย",uses:["<b>เหมาะเป็นห้องน้ำ ห้องเก็บของ หรือที่ซักล้าง</b> เพราะห้องพวกนี้ช่วยกดพลังไม่ดีไว้","<b>ไม่ควรนั่งหันหน้าไปทิศนี้นานๆ</b> เช่น ตอนทำงานทั้งวัน"]},
+ {read:"อู่กุ่ย (ห้าผี)",energy:"พลังของความขัดแย้ง ของหาย ไฟไหม้ และการถูกนินทา",uses:["<b>เหมาะเป็นห้องน้ำหรือห้องเก็บของ</b>","<b>ไม่วางเตียงหรือโต๊ะทำงานไว้โซนนี้</b>","<b>ไม่เก็บเงินหรือของมีค่าไว้ทิศนี้</b>"]},
+ {read:"ลิ่วซา (หกภัย)",energy:"พลังของเรื่องวุ่นวาย ข่าวลือ ปัญหาความสัมพันธ์ และเรื่องกฎหมายเล็กๆ",uses:["<b>เหมาะเป็นห้องน้ำ ห้องครัว หรือห้องเก็บของ</b>","<b>ไม่ควรเป็นทิศหัวเตียงของคู่รัก</b>","<b>เลี่ยงหันหน้าไปทิศนี้ตอนเซ็นสัญญาหรือเจรจา</b>"]},
+ {read:"เจวี๋ยมิ่ง (ตัดชีวิต)",energy:"ทิศที่บั่นทอนที่สุด เกี่ยวกับความเจ็บป่วยหนัก การสูญเสียก้อนใหญ่ และความเหนื่อยล้า",uses:["<b>ห้ามหันหัวนอนหรือนั่งทำงานหันไปทิศนี้</b>","<b>เป็นห้องน้ำหรือห้องเก็บของจะดีที่สุด</b> เพราะช่วยกดพลังร้าย","<b>ถ้าประตูหลักของบ้านหันไปทิศนี้และเปลี่ยนไม่ได้</b> ให้วางฉากกั้นหรือต้นไม้ใหญ่ด้านในประตู และใช้ทิศดีภายในห้องแทน"]}
+];
 const KUA_EL={1:4,2:2,3:0,4:0,6:3,7:3,8:2,9:1};
 // 2026 annual flying stars (center 1)
 const STAR2026=[["E",8,"good","ดาว 8 ความมั่งคั่ง","ทิศการเงินของปี วางของมงคล ต้นไม้ หรือโต๊ะทำงานด้านนี้"],["SE",9,"good","ดาว 9 ความยินดี","งานมงคล ความสำเร็จ ชื่อเสียง เปิดไฟให้สว่าง"],["N",6,"good","ดาว 6 ผู้มีอำนาจ","การเลื่อนตำแหน่งและผู้ใหญ่ช่วยเหลือ"],["NE",4,"good","ดาว 4 การเรียนและความรัก","เหมาะมุมอ่านหนังสือ การสอบ และความรัก"],["S",5,"bad","ดาว 5 เหลือง (อุปสรรค)","ไม่ควรต่อเติม เจาะ หรือทุบด้านนี้ ลดเสียงดัง วางโลหะช่วยลดพลัง"],["NW",2,"bad","ดาว 2 ดำ (เจ็บป่วย)","ดูแลสุขภาพ ไม่ควรนอนด้านนี้ถ้าเลี่ยงได้ วางโลหะหรือน้ำเต้าทองเหลือง"],["W",3,"bad","ดาว 3 (ทะเลาะ)","ระวังการโต้เถียง ใช้สีแดงหรือแสงไฟอุ่นช่วยลดพลัง"],["SW",7,"bad","ดาว 7 (สูญเสีย)","ระวังทรัพย์สิน ล็อกประตูหน้าต่างให้ดี ใช้น้ำนิ่งช่วยลดพลัง"]];
@@ -523,9 +552,29 @@ async function api(path,body){
   let data={}; try{data=await r.json()}catch(e){}
   return {status:r.status,data};
 }
+function getDate(p){const d=$(p+"-d").value,m=$(p+"-m").value,y=$(p+"-y").value;return y&&m&&d?`${y}-${pad(m)}-${pad(d)}`:"";}
+function setDate(p,iso){const [y,m,d]=iso.split("-").map(Number);$(p+"-y").value=y;$(p+"-m").value=m;fillDays(p);$(p+"-d").value=d;}
+function fillDays(p){
+  const y=+$(p+"-y").value, m=+$(p+"-m").value, sel=$(p+"-d"), cur=+sel.value||1;
+  const n=new Date(y,m,0).getDate();
+  sel.innerHTML=Array.from({length:n},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+  sel.value=Math.min(cur,n);
+}
+function buildDate(p){
+  $(p+"-m").innerHTML=MON_FULL.map((t,i)=>`<option value="${i+1}">${t}</option>`).join("");
+  let ys=""; for(let y=2100;y>=1900;y--) ys+=`<option value="${y}">${BE(y)} (${y})</option>`;
+  $(p+"-y").innerHTML=ys;
+  [p+"-m",p+"-y"].forEach(id=>$(id).addEventListener("change",()=>fillDays(p)));
+}
+function buildHours(){
+  let o='<option value="">ไม่ทราบเวลาเกิด</option>';
+  for(let h=0;h<24;h++){const br=Math.floor((h+1)/2)%12;o+=`<option value="${h}">${pad(h)}:00–${pad(h)}:59 ยาม${BR_TH[br]}</option>`;}
+  $("bh").innerHTML=o;
+}
+const getHour=()=>$("bh").value===""?null:Number($("bh").value);
 function reportKey(){
-  const h=!$("nohour").checked&&$("bt").value?$("bt").value.slice(0,2):"";
-  return `${$("bd").value}|${h}|${$("sex").value}`;
+  const h=getHour();
+  return `${getDate("bd")}|${h==null?"":pad(h)}|${$("sex").value}`;
 }
 function setAccess(a){access=a; store.set("bazi_access",a); run();}
 
@@ -556,7 +605,7 @@ document.addEventListener("click",async e=>{
   const msg=btn.parentElement.nextElementSibling;
   if(framed){say(msg,"การชำระเงินใช้ได้บนเว็บจริงเท่านั้น หน้านี้เป็นพรีวิว","err");return;}
   btn.disabled=true; say(msg,"กำลังเปิดหน้าชำระเงิน...");
-  store.set("bazi_pending",{key:reportKey(),bt:$("bt").value,nm:$("nm").value.trim()});
+  store.set("bazi_pending",{key:reportKey(),nm:$("nm").value.trim()});
   try{
     const {status,data}=await api("/checkout",{key:reportKey()});
     if(status===200&&data.url){location.href=data.url;return;}
@@ -690,7 +739,7 @@ function renderLuck(b,a,male){
   const cur=items.find(x=>x.now);
   const card=x=>`<div class="card${x.now?" now":""}">
     <div class="lrow"><span class="hanS">${elSpan(stemEl(x.p.s),STEMS[x.p.s])}${elSpan(BR_EL[x.p.b],BR[x.p.b])}</span>
-    <span><b>อายุ ${x.p.age}–${x.p.age+9} ปี</b> <span class="note">(${x.p.from}–${x.p.to})</span></span>
+    <span><b>อายุ ${x.p.age}–${x.p.age+9} ปี</b> <span class="note">(พ.ศ. ${BE(x.p.from)}–${BE(x.p.to)})</span></span>
     <span class="rate r${x.r}">${x.lab}</span>${x.now?'<span class="tag">ตอนนี้</span>':""}</div>
     <p><b>${x.T.theme}</b></p>
     ${kv([["ดาวก้าน",x.g.name],["ดาวกิ่ง",x.bg.name+" · "+ANIMAL[x.p.b]],["การงาน",x.T.work],["การเงิน",x.T.money],["ความรัก",x.T.love],["ระวัง",x.T.caution+(clash(x.p.b,b.day[1])?" · ช่วงนี้กิ่งจรชงกิ่งวันเกิด เตรียมรับการเปลี่ยนแปลงเรื่องบ้านหรือคู่ครอง":"")]])}
@@ -709,14 +758,14 @@ function renderLuck(b,a,male){
 function renderMonth(b,a){
   if(!unlocked){$("p-month").innerHTML=lockCard("ดวงปีและรายเดือน 2026",["ดวงนักษัตรของคุณปี 2026 แยกงาน เงิน ความรัก สุขภาพ","ปี 2026 กับเจ้าชะตาของคุณโดยเฉพาะ","คำทำนายครบ 12 เดือนจีน (ก.พ. 2026 – ม.ค. 2027) พร้อมสิ่งที่ควรทำและควรเลี่ยง","สรุปเดือนเด่นและเดือนที่ต้องระวัง"]);return;}
   const yb=b.year[1], Y=Y2026[yb], g=tenGod(b.day[0],2), M=months2026(b,a);
-  const mlabel=x=>`${MON_TH[x.gm-1]} ${x.gy===2027?"27":"26"}`;
+  const mlabel=x=>`${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}`;
   const best=M.filter(x=>x.r>=2).map(mlabel), bad=M.filter(x=>x.r===0).map(mlabel);
   const rows=M.map(x=>{const G=MONTH_GROUP[x.tg.rel];
     const hl=a.unfav.includes(BR_EL[x.br])?`<br><span class="note">ธาตุ${EL_TH[BR_EL[x.br]]}แรงในเดือนนี้ ดูแล${EL_INFO[BR_EL[x.br]].organs}</span>`:"";
-    return `<tr><td>${TERM_DAY[x.gm-1]} ${MON_TH[x.gm-1]} ${x.gy}<br><span class="note">เดือน${BR_TH[x.br]}</span></td><td><span class="hanS">${elSpan(stemEl(x.s),STEMS[x.s])}${elSpan(BR_EL[x.br],BR[x.br])}</span><br><span class="rate r${x.r}">${x.lab}</span></td><td><b>${G.focus}</b> <span class="note">(${x.tg.name})</span><br>ควรทำ: ${G.do}<br>ควรเลี่ยง: ${G.avoid}${x.flags.length?`<br><span class="note">${x.flags.join(" · ")}</span>`:""}${hl}</td></tr>`;}).join("");
+    return `<tr><td>${TERM_DAY[x.gm-1]} ${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}<br><span class="note">เดือน${BR_TH[x.br]}</span></td><td><span class="hanS">${elSpan(stemEl(x.s),STEMS[x.s])}${elSpan(BR_EL[x.br],BR[x.br])}</span><br><span class="rate r${x.r}">${x.lab}</span></td><td><b>${G.focus}</b> <span class="note">(${x.tg.name})</span><br>ควรทำ: ${G.do}<br>ควรเลี่ยง: ${G.avoid}${x.flags.length?`<br><span class="note">${x.flags.join(" · ")}</span>`:""}${hl}</td></tr>`;}).join("");
   $("p-month").innerHTML=`
   <div class="card">
-    <h2>ปี${BR_TH[yb]} (${ANIMAL[yb]}) ในปีม้าไฟ 2026 <span class="chip ${Y.s>=4?"good":Y.s<3?"bad":""}">${Y.tag}</span></h2>
+    <h2>ปี${BR_TH[yb]} (${ANIMAL[yb]}) ในปีม้าไฟ 2569 (ค.ศ. 2026) <span class="chip ${Y.s>=4?"good":Y.s<3?"bad":""}">${Y.tag}</span></h2>
     <p>${Y.t}</p>
     ${kv([["การงาน",Y.work],["การเงิน",Y.money],["ความรัก",Y.love],["สุขภาพ",Y.health],["คำแนะนำ",Y.tip]])}
   </div>
@@ -759,7 +808,7 @@ function renderMoney(b,a){
     :age<45?["ช่วงสร้างทรัพย์","กระจายการลงทุนตามเป้าหมาย คุ้มครองรายได้ด้วยประกันชีวิตให้คนที่พึ่งพาคุณ วางแผนการศึกษาบุตรและเริ่มแผนเกษียณจริงจัง"]
     :age<60?["ช่วงเตรียมเกษียณ","ลดความเสี่ยงของพอร์ตทีละขั้น คำนวณเงินที่ต้องใช้หลังเกษียณ วางแผนบำนาญและประกันสุขภาพระยะยาวที่คุ้มครองถึงวัยสูงอายุ"]
     :["ช่วงรักษาทรัพย์","สร้างกระแสเงินสดสม่ำเสมอ เก็บเงินค่ารักษาพยาบาลแยกไว้ และวางแผนส่งต่อทรัพย์สินให้ชัดเจน"];
-  const M=months2026(b,a).filter(x=>x.tg.rel===2||x.r===3).map(x=>`${MON_TH[x.gm-1]} ${x.gy}`);
+  const M=months2026(b,a).filter(x=>x.tg.rel===2||x.r===3).map(x=>`${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}`);
   const g=tenGod(b.day[0],2);
   $("p-money").innerHTML=`
   <div class="card">
@@ -769,7 +818,7 @@ function renderMoney(b,a){
   </div>
   <div class="grid2">
     <div class="card"><h3>ข้อสังเกตจากดวง</h3>${tips.length?`<ul class="list">${tips.map(t=>`<li>${t}</li>`).join("")}</ul>`:"<p>โครงสร้างการเงินสมดุล ไม่มีจุดที่ต้องระวังเป็นพิเศษ</p>"}</div>
-    <div class="card"><h3>แผนการเงินตามช่วงวัย (อายุ ${age} ปีในปี 2026)</h3><p><b>${stage[0]}</b></p><p>${stage[1]}</p></div>
+    <div class="card"><h3>แผนการเงินตามช่วงวัย (อายุ ${age} ปีในปี 2569)</h3><p><b>${stage[0]}</b></p><p>${stage[1]}</p></div>
   </div>
   <div class="grid2">
     <div class="card"><h3>อาชีพที่ธาตุส่งเสริม</h3>
@@ -787,51 +836,93 @@ function renderMoney(b,a){
 }
 
 function renderFS(b,a,male){
-  if(!unlocked){$("p-fs").innerHTML=lockCard("ฮวงจุ้ยเลขกัว (八宅)",["เลขกัวประจำตัวและกลุ่มทิศตะวันออกหรือตะวันตก","4 ทิศมงคล: โชคลาภ สุขภาพ ความรัก ความสงบ และ 4 ทิศที่ควรเลี่ยง","ทิศพลังงานประจำปี 2026","การแต่งบ้านตามธาตุให้คุณ และวิธีจัดแต่ละห้อง"]);return;}
+  if(!unlocked){$("p-fs").innerHTML=lockCard("ฮวงจุ้ยเลขกัว (八宅)",["เลขกัวประจำตัว และวิธีหาทิศในบ้านด้วยมือถือ","4 ทิศมงคลพร้อมวิธีใช้ทีละข้อ: โชคลาภ สุขภาพ ความรัก ความสงบ","4 ทิศที่ควรเลี่ยง และควรวางห้องอะไรไว้ตรงนั้น","ตัวอย่างจัดห้องนอนและโต๊ะทำงานเฉพาะของคุณ","ทิศพลังงานประจำปี 2569 และการแต่งบ้านตามธาตุ"]);return;}
   const k=kua(b.by,male), D=KUA_DIR[k], east=[1,3,4,9].includes(k);
   const at={}; D.forEach((d,i)=>at[d]=i);
   const cell=d=>{const i=at[d];return `<div class="${i<4?"g":"b"}">${DIRS_S[d]}<small>${KUA_NAME[i][0]} ${KUA_NAME[i][1]}</small></div>`};
   const sc=d=>{const s=STAR2026.find(x=>x[0]===d);return `<div class="${s[2]==="good"?"g":"b"}">${DIRS_S[d]}<small>ดาว ${s[1]}</small></div>`};
-  const fe=a.fav[0];
+  const dirCard=(d,i)=>{const K=KUA_DETAIL[i];return `<div class="card dircard ${i<4?"g":"b"}">
+      <div class="dh"><span class="dn">ทิศ${DIRS[d]}</span><span class="chip ${i<4?"good":"bad"}">${i<4?"ทิศดีอันดับ "+(i+1):"ทิศควรเลี่ยง"}</span></div>
+      <p><b>${KUA_NAME[i][0]} ${K.read}</b> · ${KUA_NAME[i][1]}</p>
+      <p>${K.energy}</p>
+      <h3>วิธีใช้ในบ้าน</h3>
+      <ul class="list">${K.uses.map(u=>`<li>${u}</li>`).join("")}</ul></div>`};
   $("p-fs").innerHTML=`
-  <div class="grid2">
-    <div class="card">
-      <h2>เลขกัวของคุณ: ${k}</h2>
-      <p>กลุ่ม${east?"ทิศตะวันออก (东四命) ทิศดีของคุณคือ เหนือ ใต้ ตะวันออก ตะวันออกเฉียงใต้":"ทิศตะวันตก (西四命) ทิศดีของคุณคือ ตะวันตก ตะวันตกเฉียงเหนือ ตะวันตกเฉียงใต้ ตะวันออกเฉียงเหนือ"} · ธาตุกัว${elSpan(KUA_EL[k],EL_TH[KUA_EL[k]])}</p>
-      <div class="compass" aria-label="เข็มทิศเลขกัว">${cell("NW")}${cell("N")}${cell("NE")}${cell("W")}<div class="c">${k}</div>${cell("E")}${cell("SW")}${cell("S")}${cell("SE")}</div>
-      <p class="note">ด้านบนคือทิศเหนือ คำนวณจากปีเกิดตามลี่ชุน (${b.by}) และเพศ${male?"ชาย":"หญิง"}</p>
-    </div>
-    <div class="card">
-      <h3>ความหมายของแต่ละทิศ</h3>
-      <div class="tblwrap"><table><thead><tr><th>ทิศ</th><th>ความหมาย</th><th>ใช้กับ</th></tr></thead><tbody>
-      ${D.map((d,i)=>`<tr><td style="white-space:nowrap" class="${i<4?"el-wood":"el-fire"}">${DIRS[d]}</td><td>${KUA_NAME[i][0]} ${KUA_NAME[i][1]}</td><td>${KUA_NAME[i][2]}</td></tr>`).join("")}
-      </tbody></table></div>
-    </div>
+  <div class="card">
+    <h2>ฮวงจุ้ยเลขกัวคืออะไร</h2>
+    <p>เลขกัว (命卦) คือเลขประจำตัวที่คำนวณจากปีเกิดและเพศ แต่ละคนมี <b>4 ทิศที่พลังงานส่งเสริม</b> และ <b>4 ทิศที่บั่นทอน</b> ไม่เหมือนกัน คนในบ้านเดียวกันจึงอาจมีทิศดีต่างกัน ให้ใช้ทิศของเจ้าของห้องหรือคนที่นั่งโต๊ะนั้นเป็นหลัก</p>
+    <h3>“ใช้ทิศ” ทำได้ 3 แบบ</h3>
+    <ol class="steps">
+      <li><b>หันหน้าไปทิศนั้น</b> เช่น ตอนนั่งทำงาน เจรจา หรือสวดมนต์ ให้ใบหน้าหันไปทางทิศนั้น</li>
+      <li><b>ให้หัวเตียงชี้ไปทิศนั้น</b> คือตอนนอน ศีรษะอยู่ฝั่งทิศนั้น (หัวเตียงชิดผนังฝั่งนั้น)</li>
+      <li><b>ใช้โซนทิศนั้นของบ้าน</b> คือแบ่งบ้านเป็น 9 ช่องเหมือนผังด้านล่าง แล้ววางห้องหรือมุมที่เหมาะไว้ในช่องนั้น</li>
+    </ol>
+    <h3>วิธีหาทิศในบ้านด้วยมือถือ</h3>
+    <ol class="steps">
+      <li>ยืนตรงกลางบ้านหรือกลางห้อง ห่างจากตู้เย็น ทีวี และโครงเหล็ก</li>
+      <li>เปิดแอปเข็มทิศ (iPhone ใช้แอป “เข็มทิศ” ที่มากับเครื่อง Android ค้นหา “เข็มทิศ” หรือดูใน Google Maps)</li>
+      <li>วางมือถือราบกับฝ่ามือ หมุนตัวจนลูกศรชี้ N (เหนือ) แล้วจำไว้ว่าทิศเหนือคือฝั่งไหนของบ้าน</li>
+      <li>เทียบกับผังด้านล่าง ซึ่งด้านบนของผังคือทิศเหนือ</li>
+    </ol>
   </div>
   <div class="grid2">
     <div class="card">
-      <h3>วิธีจัดบ้านตามเลขกัว</h3>
-      <ul class="list">
-        <li><b>โต๊ะทำงาน:</b> นั่งหันหน้าไปทิศ${DIRS[D[0]]} (生气) หลังพิงผนัง มองเห็นประตูได้</li>
-        <li><b>เตียงนอน:</b> หัวเตียงชี้ไปทิศ${DIRS[D[1]]} (天医) ช่วยเรื่องการนอนและสุขภาพ</li>
-        <li><b>ความรักและครอบครัว:</b> ใช้ทิศ${DIRS[D[2]]} (延年) เป็นมุมพักผ่อนของคู่หรือห้องนั่งเล่น</li>
-        <li><b>มุมสงบ:</b> ทิศ${DIRS[D[3]]} (伏位) เหมาะสวดมนต์ อ่านหนังสือ ทำสมาธิ</li>
-        <li><b>ห้องน้ำ ห้องเก็บของ:</b> อยู่ทิศไม่ดีได้ เช่น ${DIRS[D[7]]} (绝命) เพราะช่วยกดพลังร้าย</li>
-        <li>ถ้าหันทิศดีไม่ได้เลย ให้เลือกทิศ ${DIRS[D[3]]} (伏位) เป็นทางสายกลาง</li>
-      </ul>
+      <h2>เลขกัวของคุณ: ${k}</h2>
+      <p>กลุ่ม${east?"ทิศตะวันออก (东四命)":"ทิศตะวันตก (西四命)"} · ธาตุกัว${elSpan(KUA_EL[k],EL_TH[KUA_EL[k]])}</p>
+      <div class="compass" aria-label="ผังทิศตามเลขกัว">${cell("NW")}${cell("N")}${cell("NE")}${cell("W")}<div class="c">${k}</div>${cell("E")}${cell("SW")}${cell("S")}${cell("SE")}</div>
+      <p class="note">ช่องสีเขียวคือทิศดี ช่องสีแดงคือทิศควรเลี่ยง ด้านบนคือทิศเหนือ คำนวณจากปีเกิดตามปฏิทินจีน (พ.ศ. ${BE(b.by)}) และเพศ${male?"ชาย":"หญิง"}</p>
     </div>
     <div class="card">
-      <h3>ทิศพลังงานประจำปี 2026</h3>
-      <div class="compass" aria-label="ดาวประจำปี 2026">${sc("NW")}${sc("N")}${sc("NE")}${sc("W")}<div class="c">1</div>${sc("E")}${sc("SW")}${sc("S")}${sc("SE")}</div>
-      <ul class="list">${STAR2026.map(s=>`<li><b class="${s[2]==="good"?"el-wood":"el-fire"}">${DIRS[s[0]]}: ${s[3]}</b> ${s[4]}</li>`).join("")}</ul>
+      <h3>ตัวอย่างจัดบ้านสำหรับคุณ</h3>
+      <ul class="list">
+        <li><b>โต๊ะทำงาน:</b> นั่งให้ใบหน้าหันไปทิศ${DIRS[D[0]]} หลังพิงผนัง มองเห็นประตูห้องได้</li>
+        <li><b>เตียงนอน:</b> วางเตียงให้หัวเตียงชิดผนังฝั่งทิศ${DIRS[D[1]]} เพื่อสุขภาพ หรือฝั่งทิศ${DIRS[D[2]]} ถ้าอยากเสริมความรัก</li>
+        <li><b>มุมพระหรือมุมสมาธิ:</b> นั่งหันหน้าไปทิศ${DIRS[D[3]]}</li>
+        <li><b>ห้องน้ำและห้องเก็บของ:</b> ถ้าอยู่ทิศ${DIRS[D[7]]} ${DIRS[D[5]]} ${DIRS[D[6]]} หรือ${DIRS[D[4]]} ถือว่าดี เพราะช่วยกดพลังไม่ดี</li>
+        <li><b>ถ้าจัดตามนี้ไม่ได้เลย:</b> ไม่ต้องกังวล ให้หลีกเลี่ยงแค่ทิศ${DIRS[D[7]]} (绝命) และใช้ทิศ${DIRS[D[3]]} แทน</li>
+      </ul>
+    </div>
+  </div>
+  <h2>4 ทิศมงคลของคุณ</h2>
+  <div class="grid2">${D.slice(0,4).map((d,i)=>dirCard(d,i)).join("")}</div>
+  <h2>4 ทิศที่ควรเลี่ยง</h2>
+  <div class="grid2">${D.slice(4).map((d,i)=>dirCard(d,i+4)).join("")}</div>
+  <div class="grid2">
+    <div class="card">
+      <h3>ทิศพลังงานประจำปี 2569</h3>
+      <p>พลังงานประจำปีเปลี่ยนทุกปีและมีผลกับ<b>ทุกคนในบ้าน</b> ต่างจากเลขกัวที่เป็นของแต่ละคน ดูจาก<b>โซนของบ้าน</b> ไม่ใช่ทิศที่หันหน้า</p>
+      <div class="compass" aria-label="ดาวประจำปี 2569">${sc("NW")}${sc("N")}${sc("NE")}${sc("W")}<div class="c">1</div>${sc("E")}${sc("SW")}${sc("S")}${sc("SE")}</div>
+    </div>
+    <div class="card">
+      <h3>ความหมายของแต่ละโซนปีนี้</h3>
+      <ul class="list">${STAR2026.map(s=>`<li><b class="${s[2]==="good"?"el-wood":"el-fire"}">โซน${DIRS[s[0]]}: ${s[3]}</b><br>${s[4]}</li>`).join("")}</ul>
     </div>
   </div>
   <div class="card">
     <h3>แต่งบ้านเสริมธาตุให้คุณ</h3>
+    <p>ธาตุให้คุณจากดวงปาจื้อของคุณคือ ${a.fav.map(e=>elSpan(e,EL_TH[e])).join(" และ ")} ใช้ของตกแต่งเหล่านี้ในห้องนอนและมุมทำงาน</p>
     ${kv(a.fav.map(e=>[elSpan(e,"ธาตุ"+EL_TH[e]),LUCK[e].decor+" · สี "+LUCK[e].color]))}
     <p class="note">ลดของแต่งบ้านที่เป็นธาตุ${a.unfav.map(e=>EL_TH[e]).join(" และ ")} โดยเฉพาะในห้องนอนและมุมทำงาน</p>
   </div>`;
 }
+
+/* ---------- คู่สมพงษ์: เหมาะกับความสัมพันธ์แบบไหน ---------- */
+const RTYPES=[
+ {key:"love",name:"คู่รัก / คู่ชีวิต",hi:"เหมาะเป็นคู่ชีวิต อยู่ด้วยกันแล้วเติมเต็มกัน มีโอกาสไปได้ยาว",mid:"เป็นคู่รักได้ถ้าทั้งคู่ตั้งใจสื่อสารและปรับตัว ความสัมพันธ์จะมั่นคงขึ้นตามเวลา",lo:"ความรักต้องใช้ความพยายามมาก จังหวะชีวิตต่างกัน ถ้าคบกันควรคุยความคาดหวังให้ชัดตั้งแต่ต้น"},
+ {key:"biz",name:"หุ้นส่วนธุรกิจ",hi:"เหมาะเป็นหุ้นส่วน มองเป้าหมายไปทางเดียวกันและเสริมจุดแข็งกัน",mid:"ร่วมธุรกิจได้ถ้าแบ่งหน้าที่และผลประโยชน์ชัดเจน และทำสัญญาเป็นลายลักษณ์อักษร",lo:"ไม่แนะนำให้ลงทุนก้อนใหญ่ร่วมกัน ถ้าจำเป็นให้มีคนกลางและสัญญาที่รัดกุม"},
+ {key:"team",name:"เพื่อนร่วมงาน / ทีม",hi:"ทำงานเป็นทีมได้ดีมาก เข้าใจจังหวะกัน ส่งงานต่อกันลื่นไหล",mid:"ทำงานร่วมกันได้ ควรกำหนดบทบาทชัดและสรุปงานกันสม่ำเสมอ",lo:"วิธีทำงานต่างกันมาก แยกความรับผิดชอบให้ชัด และคุยกันด้วยเป้าหมายกับข้อมูล"},
+ {key:"boss",name:"หัวหน้า–ลูกน้อง / ครู–ศิษย์",hi:"เหมาะเป็นหัวหน้ากับลูกน้องหรือพี่เลี้ยงกับน้อง ฝ่ายหนึ่งชี้ทาง อีกฝ่ายเติบโต",mid:"ทำงานแบบมีลำดับขั้นได้ ถ้าเคารพบทบาทกันและให้ฟีดแบ็กอย่างให้เกียรติ",lo:"เสี่ยงขัดแย้งเรื่องอำนาจ ควรตกลงขอบเขตการตัดสินใจให้ชัด"},
+ {key:"friend",name:"เพื่อน",hi:"เป็นเพื่อนสนิทได้ คุยกันถูกคอ อยู่ด้วยกันแล้วสบายใจ",mid:"เป็นเพื่อนที่ดีได้ ยิ่งมีกิจกรรมร่วมกันยิ่งสนิท",lo:"เป็นเพื่อนแบบห่างๆ จะสบายใจกว่า ให้พื้นที่ส่วนตัวกัน"},
+ {key:"family",name:"ครอบครัว (พ่อแม่–ลูก พี่–น้อง)",hi:"ครอบครัวอบอุ่น ดูแลกันโดยธรรมชาติ",mid:"รักกันแต่มีมุมมองต่างบ้าง ต้องฟังกันมากขึ้น",lo:"เห็นต่างกันบ่อย ใช้ความเข้าใจแบบผู้ใหญ่ ไม่ต้องพยายามเปลี่ยนอีกฝ่าย"}
+];
+const RTYPE_BASE={liuhe:[5,4,4,4,5,5],sanhe:[4,5,5,4,5,4],chong:[2,3,3,2,3,2],hai:[2,2,3,2,3,3],xing:[2,3,3,3,3,2],same:[3,3,4,3,4,4],neutral:[3,3,3,3,4,3]};
+const MONEY_PAIR=[
+ "ธาตุเดียวกันมักใช้เงินสไตล์เดียวกัน ถ้าทั้งคู่ใช้เก่งต้องตั้งคนดูแลงบ ถ้าทั้งคู่เก็บเก่งจะสร้างฐานะได้เร็ว",
+ "คุณมักเป็นฝ่ายจ่ายหรือดูแลเรื่องเงิน ควรตกลงสัดส่วนค่าใช้จ่ายร่วมให้ชัด จะได้ไม่เหนื่อยฝ่ายเดียว",
+ "คุณมักเป็นฝ่ายคุมงบและตัดสินใจเรื่องเงิน ให้อีกฝ่ายมีส่วนร่วม จะได้ไม่รู้สึกถูกควบคุม",
+ "อีกฝ่ายมักเป็นคนคุมงบ ถ้าคุณไม่สบายใจ ควรบอกตรงๆ และทำบัญชีร่วมที่โปร่งใส",
+ "อีกฝ่ายมักเป็นฝ่ายจ่ายหรือดูแลคุณ แสดงความขอบคุณและช่วยรับผิดชอบบางส่วนให้สมดุล"
+];
 
 function matchScore(b1,b2){
   const a=b1.year[1], c=b2.year[1]; let key;
@@ -843,25 +934,89 @@ function matchScore(b1,b2){
   else if(a===c) key="same";
   else key="neutral";
   const R=REL_TXT[key];
-  const e1=stemEl(b1.day[0]), e2=stemEl(b2.day[0]), r=(e2-e1+5)%5; let etxt,adj;
-  if(r===0){adj=4;etxt=`เจ้าชะตาธาตุ${EL_TH[e1]}เหมือนกัน เป็นเพื่อนคู่คิด เข้าใจวิธีคิดกัน แต่ต้องระวังแข่งกันเอง`;}
-  else if(r===1){adj=6;etxt=`คุณ (${EL_TH[e1]}) หล่อเลี้ยงอีกฝ่าย (${EL_TH[e2]}) คุณเป็นฝ่ายให้และดูแล อย่าลืมบอกเมื่อคุณต้องการการดูแลบ้าง`;}
-  else if(r===4){adj=6;etxt=`อีกฝ่าย (${EL_TH[e2]}) หล่อเลี้ยงคุณ (${EL_TH[e1]}) คุณได้รับการดูแล แสดงความขอบคุณให้อีกฝ่ายรู้สม่ำเสมอ`;}
-  else if(r===2){adj=-6;etxt=`คุณ (${EL_TH[e1]}) ข่มอีกฝ่าย (${EL_TH[e2]}) คุณมักเป็นฝ่ายนำ ระวังการควบคุมมากเกินไป`;}
-  else {adj=-6;etxt=`อีกฝ่าย (${EL_TH[e2]}) ข่มคุณ (${EL_TH[e1]}) อีกฝ่ายมักเป็นฝ่ายนำ คุณต้องกล้าพูดความต้องการของตัวเอง`;}
+  const e1=stemEl(b1.day[0]), e2=stemEl(b2.day[0]), r=(e2-e1+5)%5; let etxt,adj,lead,bridge;
+  if(r===0){adj=4;bridge=e1;lead="ทั้งคู่มีพลังเท่ากัน ไม่มีใครนำชัดเจน ผลัดกันนำตามเรื่องที่ถนัดจะดีที่สุด";etxt=`เจ้าชะตาธาตุ${EL_TH[e1]}เหมือนกัน เป็นเพื่อนคู่คิด เข้าใจวิธีคิดกัน แต่ต้องระวังแข่งกันเอง`;}
+  else if(r===1){adj=6;bridge=e2;lead="คุณเป็นฝ่ายให้ ดูแล และสนับสนุน อีกฝ่ายเติบโตได้เพราะคุณ";etxt=`คุณ (${EL_TH[e1]}) หล่อเลี้ยงอีกฝ่าย (${EL_TH[e2]}) คุณเป็นฝ่ายให้ อย่าลืมบอกเมื่อคุณต้องการการดูแลบ้าง`;}
+  else if(r===4){adj=6;bridge=e1;lead="อีกฝ่ายเป็นฝ่ายให้ ดูแล และสนับสนุนคุณ";etxt=`อีกฝ่าย (${EL_TH[e2]}) หล่อเลี้ยงคุณ (${EL_TH[e1]}) คุณได้รับการดูแล แสดงความขอบคุณให้อีกฝ่ายรู้สม่ำเสมอ`;}
+  else if(r===2){adj=-6;bridge=(e1+1)%5;lead="คุณมักเป็นฝ่ายนำและตัดสินใจ";etxt=`คุณ (${EL_TH[e1]}) ข่มอีกฝ่าย (${EL_TH[e2]}) ระวังการควบคุมมากเกินไป`;}
+  else {adj=-6;bridge=(e2+1)%5;lead="อีกฝ่ายมักเป็นฝ่ายนำและตัดสินใจ";etxt=`อีกฝ่าย (${EL_TH[e2]}) ข่มคุณ (${EL_TH[e1]}) คุณต้องกล้าพูดความต้องการของตัวเอง`;}
   const d1=b1.day[1], d2=b2.day[1]; let dadj=0,dtxt="วังคู่ครองของทั้งสองไม่ชงไม่ประสานกัน ชีวิตประจำวันอยู่ร่วมกันได้ปกติ";
   if(has(LIUHE,d1,d2)){dadj=5;dtxt="วังคู่ครองประสานกัน (六合) อยู่ด้วยกันแล้วสบายใจ ชีวิตประจำวันลงตัว";}
   else if(clash(d1,d2)){dadj=-5;dtxt="วังคู่ครองชงกัน จังหวะชีวิตประจำวันต่างกัน ต้องตกลงเรื่องบ้าน เวลา และการใช้ชีวิตร่วมกันให้ชัด";}
   else if(d1===d2){dadj=2;dtxt="วังคู่ครองเหมือนกัน มีมุมมองต่อชีวิตคู่คล้ายกัน";}
-  return {s:Math.max(10,Math.min(99,R.s+adj+dadj)),base:R.s,adj,dadj,R,etxt,dtxt,a,c,d1,d2};
+  // suitability per relationship type (1–5)
+  const types=RTYPE_BASE[key].map((v,i)=>{
+    const k=RTYPES[i].key;
+    if(r===1||r===4){ if(k==="love"||k==="family"||k==="boss") v++; }
+    else if(r===0){ if(k==="friend"||k==="team") v++; if(k==="biz") v--; }
+    else { if(k==="boss") v++; if(k==="love") v--; }
+    if(dadj>0&&k==="love") v++;
+    if(dadj<0&&(k==="love"||k==="family")) v--;
+    return Math.max(1,Math.min(5,v));
+  });
+  return {s:Math.max(10,Math.min(99,R.s+adj+dadj)),base:R.s,adj,dadj,R,key,etxt,dtxt,lead,bridge,r,types,a,c,d1,d2};
+}
+
+function runMatch(){
+  const iso=getDate("bd2"); if(!current||!iso) return;
+  const [y,m,d]=iso.split("-").map(Number);
+  const b2=bazi(y,m,d,null), r=matchScore(current,b2), R=r.R;
+  const nm1=$("nm").value.trim()||"คุณ", nm2=$("nm2").value.trim()||"อีกฝ่าย";
+  const sign=n=>n>0?"+"+n:String(n);
+  const st=n=>"★".repeat(n)+"☆".repeat(5-n);
+  const lv=n=>n>=4?"hi":n===3?"mid":"lo";
+  const order=r.types.map((v,i)=>[v,i]).sort((x,z)=>z[0]-x[0]);
+  const best=order.filter(x=>x[0]===order[0][0]).map(x=>RTYPES[x[1]].name);
+  const Y1=Y2026[r.a], Y2=Y2026[r.c];
+  $("matchOut").innerHTML=`
+  <div class="card">
+    <h3>คะแนนคู่สมพงษ์ ${esc(nm1)} กับ ${esc(nm2)}</h3>
+    <div class="score">${r.s}</div>
+    <p><span class="chip ${R.kind}">${R.label}</span></p>
+    <p>ปี${BR_TH[r.a]} <span class="hanS">${BR[r.a]}</span> (${ANIMAL[r.a]}) กับ ปี${BR_TH[r.c]} <span class="hanS">${BR[r.c]}</span> (${ANIMAL[r.c]})</p>
+    <p>${R.txt}</p>
+    <p><b>เหมาะที่สุดกับความสัมพันธ์แบบ:</b> ${best.join(", ")}</p>
+  </div>
+  ${unlocked?`<div class="card">
+    <h3>คู่นี้เหมาะกับความสัมพันธ์แบบไหน</h3>
+    <div>${RTYPES.map((t,i)=>{const v=r.types[i];return `<div class="rtype"><b>${t.name}</b><span class="stars" aria-label="${v} จาก 5">${st(v)}</span><p>${t[lv(v)]}</p></div>`}).join("")}</div>
+  </div>
+  <div class="card">
+    <h3>ที่มาของคะแนน</h3>
+    ${kv([["นักษัตรปีเกิด",`${r.base} (${R.label})`],["ธาตุเจ้าชะตา",sign(r.adj)],["วังคู่ครอง (กิ่งวัน)",sign(r.dadj)],["รวม",String(r.s)]])}
+    <h3>บทบาทในความสัมพันธ์</h3>
+    <p><b>ใครนำ ใครตาม:</b> ${r.lead}</p>
+    <p>${elSpan(stemEl(current.day[0]),DM[current.day[0]].name)} (${esc(nm1)}) กับ ${elSpan(stemEl(b2.day[0]),DM[b2.day[0]].name)} (${esc(nm2)}) · ${r.etxt}</p>
+  </div>
+  <div class="card">
+    <h3>รู้จัก${esc(nm2)}ให้มากขึ้น</h3>
+    <p>${DM[b2.day[0]].core}</p>
+    ${kv([["จุดแข็ง",DM[b2.day[0]].strength],["จุดอ่อนไหว",DM[b2.day[0]].weak],["ในความรัก",DM[b2.day[0]].love],["นิสัยตามนักษัตร",ANIMAL_TEXT[r.c]]])}
+    <p class="note">วันเกิดอีกฝ่ายไม่มีเวลาเกิด จึงอ่านจากเสาปีและเสาวันเป็นหลัก</p>
+  </div>
+  <div class="card">
+    <h3>จุดแข็งของคู่นี้</h3><p>${R.plus}</p>
+    <h3>สิ่งที่ต้องระวัง</h3><p>${R.minus}</p>
+    <h3>วังคู่ครอง ${BR[r.d1]} กับ ${BR[r.d2]}</h3><p>${r.dtxt}</p>
+  </div>
+  <div class="card">
+    <h3>เรื่องเงินเมื่ออยู่ด้วยกัน</h3><p>${MONEY_PAIR[r.r]}</p>
+    <h3>ธาตุประสานความสัมพันธ์: ${elSpan(r.bridge,EL_HAN[r.bridge]+" "+EL_TH[r.bridge])}</h3>
+    <p>ธาตุนี้ช่วยเชื่อมพลังของทั้งคู่ ทำกิจกรรมร่วมกันที่เกี่ยวกับ${LUCK[r.bridge].act} หรือใช้สี${LUCK[r.bridge].color.split(" ")[0]}ในบ้านและวันสำคัญ</p>
+    <h3>ทั้งคู่ในปี 2569</h3>
+    <p>${esc(nm1)} ปี${BR_TH[r.a]}: ${Y1.tag} · ${esc(nm2)} ปี${BR_TH[r.c]}: ${Y2.tag}${(Y1.s<3||Y2.s<3)?" · ปีนี้มีฝ่ายหนึ่งดวงผันผวน อีกฝ่ายควรเป็นหลักให้พิงและใจเย็นเป็นพิเศษ":" · ปีนี้ดวงของทั้งคู่ไม่ขัดกัน เหมาะวางแผนเรื่องสำคัญร่วมกัน"}</p>
+  </div>
+  <div class="card">
+    <h3>คำแนะนำสำหรับความสัมพันธ์</h3><p>${R.adv}</p>
+    <p class="note">คู่ไหนก็ไปได้ดีถ้าเข้าใจกันและพูดคุยกันสม่ำเสมอ คะแนนนี้บอกจุดที่ง่ายและจุดที่ต้องใส่ใจ ไม่ได้ตัดสินความสัมพันธ์</p>
+  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปี 2569"])}`;
 }
 
 let current=null, currentA=null;
 function run(){
-  const v=$("bd").value; if(!v) return;
+  const v=getDate("bd"); if(!v) return;
   const [y,m,d]=v.split("-").map(Number);
-  let hour=null;
-  if(!$("nohour").checked && $("bt").value) hour=Number($("bt").value.split(":")[0]);
+  const hour=getHour();
   const male=$("sex").value==="m";
   unlocked=!!access&&access.exp>Date.now()&&(access.k==="*"||access.k===reportKey());
   const b=bazi(y,m,d,hour); current=b;
@@ -871,55 +1026,22 @@ function run(){
   $("status").textContent=unlocked?(access.k==="*"?"รายงานฉบับเต็ม · โหมดผู้ดูแล":"รายงานฉบับเต็ม"):"ฉบับฟรี · แท็บที่มีจุดคือส่วนพรีเมียม";
   $("pdfBtn").hidden=!(unlocked&&!framed);
   const nm=$("nm").value.trim();
-  $("printHead").innerHTML=`<h2>รายงานดวงจีนแปดอักษร${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${d} ${MON_TH[m-1]} ${y}${hour!=null?" เวลา "+$("bt").value+" น.":""} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;
-  if($("bd2").value) runMatch();
+  $("printHead").innerHTML=`<h2>รายงานดวงจีนแปดอักษร${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${thaiDate(y,m,d)} (ค.ศ. ${y})${hour!=null?` เวลา ${pad(hour)}:00–${pad(hour)}:59 น.`:" · ไม่ทราบเวลาเกิด"} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;
+  if(getDate("bd2")) runMatch();
 }
-function runMatch(){
-  if(!current||!$("bd2").value) return;
-  const [y,m,d]=$("bd2").value.split("-").map(Number);
-  const b2=bazi(y,m,d,null), r=matchScore(current,b2), R=r.R;
-  const sign=n=>n>0?"+"+n:String(n);
-  $("matchOut").innerHTML=`
-  <div class="card">
-    <h3>คะแนนคู่สมพงษ์</h3>
-    <div class="score">${r.s}</div>
-    <p><span class="chip ${R.kind}">${R.label}</span></p>
-    <p>ปี${BR_TH[r.a]} <span class="hanS">${BR[r.a]}</span> (${ANIMAL[r.a]}) กับ ปี${BR_TH[r.c]} <span class="hanS">${BR[r.c]}</span> (${ANIMAL[r.c]})</p>
-    <p>${R.txt}</p>
-  </div>
-  ${unlocked?`<div class="card">
-    <h3>ที่มาของคะแนน</h3>
-    ${kv([["นักษัตรปีเกิด",String(r.base)],["ธาตุเจ้าชะตา",sign(r.adj)],["วังคู่ครอง",sign(r.dadj)]])}
-    <h3>เจ้าชะตาของทั้งคู่</h3>
-    <p>${elSpan(stemEl(current.day[0]),DM[current.day[0]].name)} กับ ${elSpan(stemEl(b2.day[0]),DM[b2.day[0]].name)}</p>
-    <p>${r.etxt}</p>
-  </div>
-  <div class="card">
-    <h3>จุดแข็งของคู่นี้</h3><p>${R.plus}</p>
-    <h3>สิ่งที่ต้องระวัง</h3><p>${R.minus}</p>
-    <h3>วังคู่ครอง ${BR[r.d1]} กับ ${BR[r.d2]}</h3><p>${r.dtxt}</p>
-  </div>
-  <div class="card">
-    <h3>คำแนะนำสำหรับความสัมพันธ์</h3><p>${R.adv}</p>
-    <p>อีกฝ่าย: ${DM[b2.day[0]].love}</p>
-    <p class="note">คู่ไหนก็ไปได้ดีถ้าเข้าใจกันและพูดคุยกันสม่ำเสมอ คะแนนนี้บอกจุดที่ง่ายและจุดที่ต้องใส่ใจ ไม่ได้ตัดสินความสัมพันธ์</p>
-  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["ที่มาของคะแนน: นักษัตร ธาตุเจ้าชะตา และวังคู่ครอง","ใครเป็นฝ่ายให้ ใครเป็นฝ่ายรับ","จุดแข็งและสิ่งที่ต้องระวังของคู่นี้","คำแนะนำสำหรับความสัมพันธ์"])}`;
-}
-
 $("f").addEventListener("submit",e=>{e.preventDefault();$("exnote").hidden=true;run();});
 $("f2").addEventListener("submit",e=>{e.preventDefault();runMatch();});
-$("nohour").addEventListener("change",()=>{$("bt").disabled=$("nohour").checked;});
 $("pdfBtn").addEventListener("click",()=>window.print());
 document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener("click",()=>{
   document.querySelectorAll('[role=tab]').forEach(x=>{const on=x===t;x.setAttribute("aria-selected",on);$(x.getAttribute("aria-controls")).hidden=!on;});
 }));
 
-$("bd").value="1985-08-15"; $("bt").value="10:30"; $("bd2").value="1987-03-21";
+buildDate("bd"); buildDate("bd2"); buildHours();
+setDate("bd","1985-08-15"); $("bh").value="10"; setDate("bd2","1987-03-21");
 
 function restoreForm(key){
   const [bd,h,sex]=key.split("|"), p=store.get("bazi_pending");
-  $("bd").value=bd; $("sex").value=sex; $("nohour").checked=!h; $("bt").disabled=!h;
-  $("bt").value=h?(p&&p.key===key&&p.bt?p.bt:h+":00"):"";
+  setDate("bd",bd); $("sex").value=sex; $("bh").value=h?String(Number(h)):"";
   if(p&&p.key===key&&p.nm) $("nm").value=p.nm;
   $("exnote").hidden=true;
 }
