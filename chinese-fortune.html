@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ดวงจีน แปดอักษร</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;900&family=Noto+Serif+Thai:wght@500;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: one reading column; the four pillars sit as vertical ink tiles under a seal-stamped header, tabs switch reading / year 2026 / compatibility */
+:root{
+  --paper:#ECEFEA; --sheet:#F7F8F5; --ink:#1B2421; --muted:#5B6862; --line:#CDD5CF;
+  --cinnabar:#B3342B; --jade:#2E6A58; --gold:#9A7428;
+  --wood:#3F7F4E; --fire:#C0412F; --earth:#A07A2E; --metal:#7D8790; --water:#2D5C8C;
+  --f-display:"Noto Serif Thai","Noto Serif TC",Georgia,serif;
+  --f-han:"Noto Serif TC","Noto Serif SC","Songti TC",serif;
+  --f-body:"IBM Plex Sans Thai","Leelawadee UI",Tahoma,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#101614; --sheet:#18201D; --ink:#E5EAE5; --muted:#9AA8A1; --line:#2C3833;
+  --cinnabar:#E0645A; --jade:#6DB59E; --gold:#D3AA5C;
+  --wood:#77B987; --fire:#EE7563; --earth:#D3AE63; --metal:#B4BDC4; --water:#78A9DB; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#101614; --sheet:#18201D; --ink:#E5EAE5; --muted:#9AA8A1; --line:#2C3833;
+  --cinnabar:#E0645A; --jade:#6DB59E; --gold:#D3AA5C;
+  --wood:#77B987; --fire:#EE7563; --earth:#D3AE63; --metal:#B4BDC4; --water:#78A9DB; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.65}
+.wrap{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:28px 56px;display:grid;gap:22px}
+header{display:flex;gap:16px;align-items:center}
+.seal{flex:none;width:58px;height:58px;border:2px solid var(--cinnabar);color:var(--cinnabar);border-radius:6px;display:grid;grid-template-columns:1fr 1fr;place-items:center;font-family:var(--f-han);font-weight:900;font-size:21px;line-height:1;padding:4px;transform:rotate(-4deg)}
+h1{font-family:var(--f-display);font-size:clamp(24px,5vw,32px);line-height:1.2;margin:0;text-wrap:balance}
+header p{margin:2px 0 0;color:var(--muted);font-size:14px}
+form{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end}
+label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:500}
+input[type=date],input[type=time]{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%;min-width:0}
+.chk{display:flex;gap:8px;align-items:center;flex-direction:row;color:var(--ink);font-size:14px;padding-bottom:9px}
+button{font:inherit;cursor:pointer}
+.go{background:var(--cinnabar);color:#fff;border:0;border-radius:6px;padding:9px 14px;font-weight:600}
+.go:hover{filter:brightness(1.08)}
+:focus-visible{outline:2px solid var(--jade);outline-offset:2px}
+.note{font-size:12.5px;color:var(--muted);margin:0}
+.tag{display:inline-block;font-size:11px;letter-spacing:.06em;color:var(--gold);border:1px solid var(--gold);border-radius:99px;padding:0 8px;margin-left:6px;vertical-align:2px}
+
+.pillars{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.pillar{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:10px 6px 12px;text-align:center;display:grid;gap:4px;min-width:0}
+.pillar.dm{border-color:var(--cinnabar);box-shadow:0 0 0 1px var(--cinnabar) inset}
+.pillar .cap{font-size:12px;color:var(--muted);letter-spacing:.04em}
+.han{font-family:var(--f-han);font-weight:900;font-size:clamp(34px,9vw,52px);line-height:1.05}
+.sub{font-size:12px;line-height:1.35}
+.god{font-size:11.5px;color:var(--gold);min-height:1.3em}
+.pillar.off{opacity:.45}
+.el-wood{color:var(--wood)}.el-fire{color:var(--fire)}.el-earth{color:var(--earth)}.el-metal{color:var(--metal)}.el-water{color:var(--water)}
+
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{background:none;border:0;border-bottom:2px solid transparent;color:var(--muted);padding:8px 12px;font-weight:500;white-space:nowrap}
+.tabs button[aria-selected=true]{color:var(--ink);border-bottom-color:var(--cinnabar)}
+section.panel{display:grid;gap:18px}
+h2{font-family:var(--f-display);font-size:20px;margin:0;line-height:1.3}
+h3{font-size:15px;margin:0 0 4px;font-weight:600}
+.card{background:var(--sheet);border:1px solid var(--line);border-radius:10px;padding:16px;display:grid;gap:10px;min-width:0}
+.card p{margin:0;max-width:65ch}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:72px 1fr 28px;gap:10px;align-items:center;font-size:13.5px}
+.track{height:10px;border-radius:5px;background:var(--line);overflow:hidden}
+.fill{height:100%;border-radius:5px}
+.num{font-variant-numeric:tabular-nums;text-align:right;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;border:1px solid var(--line);border-radius:99px;padding:2px 10px;background:var(--paper)}
+.chip.good{border-color:var(--jade);color:var(--jade)}
+.chip.bad{border-color:var(--cinnabar);color:var(--cinnabar)}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:0;font-size:14px}
+dt{color:var(--muted)}dd{margin:0}
+.stars{color:var(--gold);letter-spacing:2px;font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+.tblwrap{overflow-x:auto}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em}
+tr.me td{background:color-mix(in srgb,var(--cinnabar) 9%,transparent)}
+.hanS{font-family:var(--f-han);font-weight:900;font-size:18px}
+.score{font-family:var(--f-han);font-size:46px;font-weight:900;line-height:1;color:var(--cinnabar);font-variant-numeric:tabular-nums}
+.pill{display:inline-block;font-size:12px;font-weight:600;border-radius:4px;padding:1px 8px;color:#fff}
+footer{font-size:12px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px}
+@media (max-width:460px){.pillars{gap:6px}.pillar{padding:8px 2px}.sub{font-size:11px}}
+@media (prefers-reduced-motion:no-preference){.han{transition:transform .25s}.pillar:hover .han{transform:translateY(-2px)}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="seal" aria-hidden="true"><span>八</span><span>字</span><span>命</span><span>理</span></div>
+    <div>
+      <h1>ดวงจีน แปดอักษร</h1>
+      <p>ผูกดวงสี่เสา (ปาจื้อ 八字) ธาตุประจำตัว ดวงปี 2026 ม้าไฟ และคู่สมพงษ์</p>
+    </div>
+  </header>
+
+  <form id="f">
+    <label for="bd">วันเกิด (ค.ศ.)<input type="date" id="bd" min="1900-01-01" max="2100-12-31" required></label>
+    <label for="bt">เวลาเกิด<input type="time" id="bt"></label>
+    <label class="chk" for="nohour"><input type="checkbox" id="nohour"> ไม่ทราบเวลาเกิด</label>
+    <button class="go" type="submit">ผูกดวง</button>
+  </form>
+  <p class="note" id="exnote">ตัวอย่างที่กรอกไว้: เกิด 15 ส.ค. 1985 เวลา 10:30 น. ใส่วันเกิดของคุณแล้วกด “ผูกดวง”</p>
+
+  <div class="pillars" id="pillars" aria-label="สี่เสาดวงชะตา"></div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="t-read" aria-selected="true" aria-controls="p-read">พื้นดวง</button>
+    <button role="tab" id="t-year" aria-selected="false" aria-controls="p-year">ดวงปี 2026</button>
+    <button role="tab" id="t-match" aria-selected="false" aria-controls="p-match">คู่สมพงษ์</button>
+  </div>
+
+  <section class="panel" id="p-read" role="tabpanel" aria-labelledby="t-read"></section>
+  <section class="panel" id="p-year" role="tabpanel" aria-labelledby="t-year" hidden></section>
+  <section class="panel" id="p-match" role="tabpanel" aria-labelledby="t-match" hidden>
+    <form id="f2" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+      <label for="bd2">วันเกิดของอีกฝ่าย<input type="date" id="bd2" min="1900-01-01" max="2100-12-31" required></label>
+      <button class="go" type="submit">ดูคู่สมพงษ์</button>
+    </form>
+    <div id="matchOut" class="grid2"></div>
+  </section>
+
+  <footer>
+    คำนวณเสาปีและเสาเดือนตามปฏิทินสุริยคติจีน (ปีใหม่เริ่มที่ลี่ชุน ประมาณ 4 ก.พ.) วันเปลี่ยนสารทใช้ค่าประมาณ อาจคลาด ±1 วันสำหรับคนเกิดตรงรอยต่อ
+    เสาวันนับตามวันปฏิทิน ส่วนคนเกิด 23:00–23:59 ได้ยามชวดของคืนนั้น ใช้เพื่อความบันเทิงและเป็นแนวทางทบทวนตนเอง ไม่ใช่คำทำนายที่แน่นอน
+  </footer>
+</div>
+
+<script>
+const STEMS="甲乙丙丁戊己庚辛壬癸".split("");
+const STEM_TH=["กะ","อิก","เปี้ย","เต็ง","โบ่ว","กี้","แก","ซิง","หยิม","กุ่ย"];
+const BR="子丑寅卯辰巳午未申酉戌亥".split("");
+const BR_TH=["ชวด","ฉลู","ขาล","เถาะ","มะโรง","มะเส็ง","มะเมีย","มะแม","วอก","ระกา","จอ","กุน"];
+const ANIMAL=["หนู","วัว","เสือ","กระต่าย","มังกร","งู","ม้า","แพะ","ลิง","ไก่","สุนัข","หมู"];
+const EL=["wood","fire","earth","metal","water"];
+const EL_TH=["ไม้","ไฟ","ดิน","ทอง","น้ำ"];
+const EL_HAN="木火土金水".split("");
+const stemEl=s=>Math.floor(s/2);
+const BR_EL=[4,2,0,0,2,1,1,2,3,3,2,4];
+const yinyang=i=>i%2===0?"หยาง":"หยิน";
+
+const LUCK={
+  0:{color:"เขียว ฟ้าอมเขียว",dir:"ตะวันออก",num:"3, 8",act:"ต้นไม้ งานสร้างสรรค์ การเรียนรู้"},
+  1:{color:"แดง ชมพู ม่วง ส้ม",dir:"ใต้",num:"2, 7",act:"แสงแดด การออกงาน การพูดในที่สาธารณะ"},
+  2:{color:"เหลือง น้ำตาล ครีม",dir:"ศูนย์กลาง ตะวันออกเฉียงเหนือ",num:"5, 0",act:"อสังหาฯ งานที่ต้องอดทน สร้างความน่าเชื่อถือ"},
+  3:{color:"ขาว ทอง เงิน เทา",dir:"ตะวันตก",num:"4, 9",act:"ระบบ ระเบียบ การเงิน เครื่องประดับโลหะ"},
+  4:{color:"ดำ น้ำเงิน กรมท่า",dir:"เหนือ",num:"1, 6",act:"การเดินทาง การสื่อสาร งานที่ใช้ปัญญา"}
+};
+
+const DM_TEXT=[
+ ["甲 ไม้ใหญ่","ตั้งตรงเหมือนต้นไม้ใหญ่ มีหลักการ ชอบเป็นผู้นำและปกป้องคนอื่น จุดที่ต้องระวังคือความดื้อและไม่ยอมงอ เมื่อเจอแรงกดดันให้ฝึกยืดหยุ่นบ้าง"],
+ ["乙 ไม้เลื้อย","อ่อนโยน ปรับตัวเก่ง เข้าคนง่ายเหมือนเถาวัลย์ที่หาทางขึ้นสู่แสงได้เสมอ เก่งเรื่องเครือข่าย แต่บางครั้งพึ่งพาคนอื่นมากเกินไป"],
+ ["丙 ไฟดวงอาทิตย์","อบอุ่น เปิดเผย มีพลังดึงดูดคน ใจกว้างและให้โดยไม่หวังผล ระวังความใจร้อนและการทุ่มจนหมดแรง"],
+ ["丁 ไฟเทียน","ละเอียดอ่อน ช่างสังเกต ให้แสงสว่างกับคนใกล้ตัวแบบลึกซึ้ง เหมาะกับงานที่ใช้ความคิดและการดูแลคน ระวังคิดมากจนกังวล"],
+ ["戊 ภูเขา","มั่นคง หนักแน่น น่าไว้วางใจ คนรอบตัวพึ่งพาได้ ข้อควรระวังคือความเชื่องช้าในการเปลี่ยนแปลงและการเก็บความรู้สึก"],
+ ["己 ดินสวน","เลี้ยงดูเก่ง มีความอดทน ใส่ใจรายละเอียด เหมาะกับงานบริการและงานพัฒนาคน ระวังการแบกรับปัญหาของคนอื่นจนลืมตัวเอง"],
+ ["庚 เหล็กกล้า","เด็ดขาด ตรงไปตรงมา รักความยุติธรรม ลงมือทำจริง ระวังคำพูดที่แข็งจนคนรอบข้างเจ็บ"],
+ ["辛 อัญมณี","ประณีต มีรสนิยม รักความสวยงามและความสมบูรณ์แบบ อ่อนไหวต่อคำวิจารณ์ ควรเลือกสภาพแวดล้อมที่ขัดเกลาให้ตัวเองเปล่งประกาย"],
+ ["壬 มหาสมุทร","ฉลาด คิดกว้าง ชอบอิสระและการผจญภัย ปรับตัวได้ทุกสถานการณ์ ระวังความไม่อยู่นิ่งและการเปลี่ยนใจบ่อย"],
+ ["癸 น้ำค้าง/ฝน","ลึกซึ้ง มีญาณหยั่งรู้ เข้าใจจิตใจคนเก่ง เหมาะกับงานให้คำปรึกษาหรืองานเบื้องหลัง ระวังอารมณ์แปรปรวนและเก็บตัวมากเกิน"]
+];
+
+const ANIMAL_TEXT=["ไหวพริบดี หาโอกาสเก่ง ประหยัดและรู้จักเก็บ","ขยัน อดทน ซื่อตรง ทำอะไรทำจริง","กล้าหาญ มั่นใจ ชอบความท้าทาย","สุภาพ มีศิลปะ รักสงบ","ทะเยอทะยาน มีบารมี คิดการใหญ่","ฉลาดลึก รอบคอบ มีเสน่ห์","รักอิสระ กระตือรือร้น ชอบเคลื่อนไหว","ใจดี อ่อนโยน มีศิลปะ","หัวไว แก้ปัญหาเก่ง สนุกสนาน","ละเอียด ตรงเวลา มีระเบียบ","ซื่อสัตย์ จริงใจ รักความยุติธรรม","ใจกว้าง ใจบุญ จริงใจ มีโชคลาภ"];
+
+// 2026 丙午 (ม้าไฟ) outlook by birth-year branch
+const Y2026={
+  0:{s:2,tag:"ชง (冲太岁)",t:"ปีแห่งการเปลี่ยนแปลงใหญ่ อาจย้ายงาน ย้ายบ้าน หรือเปลี่ยนทิศชีวิต ระวังการลงทุนเสี่ยงและสุขภาพ ใช้ความนิ่งเป็นจุดแข็ง ทำบุญเสริมดวงต้นปีจะช่วยได้"},
+  1:{s:2.5,tag:"害太岁",t:"ระวังเรื่องคนรอบข้างและการถูกเข้าใจผิด เซ็นสัญญาให้รอบคอบ งานยังเดินได้ถ้าทำแบบมีหลักฐานและระบบชัดเจน"},
+  2:{s:4.5,tag:"สามประสาน (三合)",t:"ปีที่มีผู้ใหญ่อุปถัมภ์ งานเติบโต เหมาะเริ่มโปรเจกต์ใหม่หรือขยายธุรกิจ พลังสูงแต่อย่าเร่งจนสุขภาพเสีย"},
+  3:{s:3,tag:"破太岁",t:"มีอุปสรรคเล็กๆ ระหว่างทาง แผนอาจต้องปรับกลางคัน ค่อยๆ ไปจะถึง เน้นเก็บเงินสำรองและดูแลความสัมพันธ์ในบ้าน"},
+  4:{s:3.5,tag:"ปีกลาง",t:"ดวงทรงตัว ได้ผลจากสิ่งที่ลงแรงไว้ปีก่อน เหมาะพัฒนาทักษะและจัดระบบชีวิตให้แน่นขึ้น"},
+  5:{s:3.5,tag:"ไฟหนุน",t:"ชื่อเสียงและการได้รับการยอมรับเด่น โอกาสมาจากการสื่อสารและการออกสื่อ ระวังใช้จ่ายตามอารมณ์"},
+  6:{s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน ระวังความใจร้อนและอุบัติเหตุ ทำสิ่งใหม่ได้แต่ต้องมีแผนสำรอง ไหว้ไท่ส่วยต้นปีตามความเชื่อ"},
+  7:{s:4.5,tag:"หกประสาน (六合)",t:"ปีที่ดีมาก มีคนช่วย ความรักและการเงินสดใส เหมาะเจรจา ร่วมทุน แต่งงาน หรือเปิดตลาดใหม่"},
+  8:{s:3.5,tag:"ปีกลาง",t:"งานมีโอกาสใหม่จากการเดินทางหรือคนต่างถิ่น การเงินต้องจัดสรรดีๆ เพราะรายจ่ายสูงขึ้นตามโอกาส"},
+  9:{s:3.5,tag:"ปีกลาง",t:"เหมาะกับการเรียนรู้และสร้างความเชี่ยวชาญ งานละเอียดได้ผลดี ระวังความเครียดสะสมจากความสมบูรณ์แบบ"},
+  10:{s:4.5,tag:"สามประสาน (三合)",t:"ปีแห่งความร่วมมือ ทีมงานดี เพื่อนช่วยเหลือ โอกาสก้าวหน้าในตำแหน่ง ความรักมีคนอุปถัมภ์"},
+  11:{s:3,tag:"ปีกลาง",t:"น้ำกับไฟปะทะเบาๆ อารมณ์อาจขึ้นลง เลือกงานที่ถนัดและอย่ารับปากเกินตัว ครึ่งปีหลังดีขึ้น"}
+};
+
+const GOD_NAME=[["比肩 เพื่อน","劫财 คู่แข่ง"],["食神 ฝีมือ","伤官 ความคิดสร้างสรรค์"],["偏财 ลาภลอย","正财 รายได้ประจำ"],["七杀 อำนาจกดดัน","正官 ตำแหน่ง"],["偏印 ปัญญาแปลก","正印 ผู้อุปถัมภ์"]];
+const GOD_2026=[
+  "ปีแห่งเพื่อนและการแข่งขัน คนรอบตัวช่วยได้มาก แต่ระวังการเงินรั่วจากการให้ยืมหรือร่วมหุ้นโดยไม่มีสัญญา",
+  "ปีแห่งการแสดงฝีมือ ผลงาน ไอเดียใหม่ และการสื่อสาร เหมาะทำคอนเทนต์ สอน หรือขายความคิด",
+  "ปีแห่งการเงิน มีช่องทางรายได้ใหม่ ต้องลงแรงไล่ตามโอกาส วางแผนลงทุนอย่างมีระบบ",
+  "ปีแห่งความรับผิดชอบและตำแหน่ง มีแรงกดดันแต่เป็นโอกาสเลื่อนขั้น ดูแลสุขภาพเรื่องความเครียด",
+  "ปีแห่งการเรียนรู้และผู้อุปถัมภ์ มีคนให้การสนับสนุน เหมาะเรียนต่อ สอบใบอนุญาต หรือศึกษาด้านจิตใจ"
+];
+
+function tenGod(dm,other){
+  const rel=(stemEl(other)-stemEl(dm)+5)%5;
+  const same=(dm%2)===(other%2);
+  return {rel,name:GOD_NAME[rel][same?0:1]};
+}
+function jdn(y,m,d){const a=Math.floor((14-m)/12),yy=y+4800-a,mm=m+12*a-3;return d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045}
+// Approximate solar-term start (节) for each Gregorian month -> month branch index
+const TERM_DAY=[6,4,6,5,6,6,7,8,8,8,7,7];
+function bazi(y,m,d,hour){
+  const beforeLichun=(m<2)||(m===2&&d<4);
+  const by=beforeLichun?y-1:y;
+  const ys=((by-4)%10+10)%10, yb=((by-4)%12+12)%12;
+  // month index from 寅(0)
+  let mi=m-2; if(d<TERM_DAY[m-1]) mi-=1; mi=(mi+12)%12;
+  const ms=((ys%5)*2+2+mi)%10, mb=(mi+2)%12;
+  const di=(jdn(y,m,d)+49)%60; const ds=di%10, db=di%12;
+  let hs=null,hb=null;
+  if(hour!=null){hb=Math.floor((hour+1)/2)%12; hs=((ds%5)*2+hb)%10;}
+  return {year:[ys,yb],month:[ms,mb],day:[ds,db],hour:hour==null?null:[hs,hb],by};
+}
+const $=id=>document.getElementById(id);
+const elSpan=(e,txt)=>`<span class="el-${EL[e]}">${txt}</span>`;
+
+function renderPillars(b){
+  const cols=[["เสาปี",b.year],["เสาเดือน",b.month],["เสาวัน (ตัวเรา)",b.day],["เสายาม",b.hour]];
+  $("pillars").innerHTML=cols.map(([cap,p],i)=>{
+    if(!p) return `<div class="pillar off"><div class="cap">${cap}</div><div class="han">？</div><div class="han">？</div><div class="sub">ไม่ทราบเวลา</div></div>`;
+    const [s,br]=p; const se=stemEl(s), be=BR_EL[br];
+    const god=i===2?"日主 เจ้าชะตา":tenGod(b.day[0],s).name;
+    return `<div class="pillar${i===2?" dm":""}">
+      <div class="cap">${cap}</div>
+      <div class="god">${god}</div>
+      <div class="han el-${EL[se]}" title="${STEM_TH[s]}">${STEMS[s]}</div>
+      <div class="sub">${STEM_TH[s]} · ${elSpan(se,EL_TH[se]+yinyang(s))}</div>
+      <div class="han el-${EL[be]}">${BR[br]}</div>
+      <div class="sub">${BR_TH[br]} ${ANIMAL[br]} · ${elSpan(be,EL_TH[be])}</div>
+    </div>`;}).join("");
+}
+
+function analyse(b){
+  const parts=[b.year,b.month,b.day,b.hour].filter(Boolean);
+  const cnt=[0,0,0,0,0];
+  parts.forEach(([s,br])=>{cnt[stemEl(s)]++;cnt[BR_EL[br]]++;});
+  const dmE=stemEl(b.day[0]);
+  const resE=(dmE+4)%5;
+  const support=cnt[dmE]+cnt[resE];
+  const total=parts.length*2;
+  const strong=support>total/2;
+  const fav=strong?[(dmE+1)%5,(dmE+2)%5]:[resE,dmE];
+  const unfav=strong?[resE,dmE]:[(dmE+3)%5,(dmE+2)%5];
+  return {cnt,dmE,support,total,strong,fav,unfav};
+}
+
+function renderRead(b,a){
+  const dm=b.day[0], yb=b.year[1], max=Math.max(...a.cnt,1);
+  const bars=a.cnt.map((c,e)=>`<div class="bar"><span>${elSpan(e,EL_HAN[e]+" "+EL_TH[e])}</span><div class="track"><div class="fill" style="width:${c/max*100}%;background:var(--${EL[e]})"></div></div><span class="num">${c}</span></div>`).join("");
+  const missing=a.cnt.map((c,e)=>c===0?EL_TH[e]:null).filter(Boolean);
+  const f=a.fav[0];
+  $("p-read").innerHTML=`
+  <div class="card">
+    <h2>เจ้าชะตา: ${elSpan(stemEl(dm),DM_TEXT[dm][0])} <span class="tag">${EL_TH[stemEl(dm)]}${yinyang(dm)}</span></h2>
+    <p>${DM_TEXT[dm][1]}</p>
+  </div>
+  <div class="grid2">
+    <div class="card">
+      <h3>สมดุลห้าธาตุ</h3>
+      <div class="bars">${bars}</div>
+      <p class="note">ธาตุที่สนับสนุนตัวเรา ${a.support} จาก ${a.total} อักษร ดวงนี้จัดว่า <b>${a.strong?"เจ้าชะตาแข็ง":"เจ้าชะตาอ่อน"}</b>${missing.length?` · ขาดธาตุ${missing.join(" ")}`:""}</p>
+    </div>
+    <div class="card">
+      <h3>ธาตุให้คุณ / ธาตุให้โทษ</h3>
+      <div class="chips">${a.fav.map(e=>`<span class="chip good">ให้คุณ · ${EL_HAN[e]} ${EL_TH[e]}</span>`).join("")}${a.unfav.map(e=>`<span class="chip bad">ควรลด · ${EL_HAN[e]} ${EL_TH[e]}</span>`).join("")}</div>
+      <dl>
+        <dt>สีมงคล</dt><dd>${LUCK[f].color}, ${LUCK[a.fav[1]].color.split(" ")[0]}</dd>
+        <dt>ทิศมงคล</dt><dd>${LUCK[f].dir}</dd>
+        <dt>เลขมงคล</dt><dd>${LUCK[f].num}</dd>
+        <dt>เสริมดวงด้วย</dt><dd>${LUCK[f].act}</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="card">
+    <h3>นักษัตรปีเกิด: ปี${BR_TH[yb]} (${ANIMAL[yb]}${EL_TH[stemEl(b.year[0])]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span></h3>
+    <p>${ANIMAL_TEXT[yb]} ปีนักษัตรเริ่มนับที่ลี่ชุน ถ้าเกิดก่อนประมาณ 4 ก.พ. จะนับเป็นปีนักษัตรก่อนหน้า</p>
+  </div>`;
+}
+
+function renderYear(b){
+  const yb=b.year[1], dm=b.day[0], y=Y2026[yb], g=tenGod(dm,2);
+  const stars="★".repeat(Math.floor(y.s))+(y.s%1?"½":"")+"☆".repeat(5-Math.ceil(y.s));
+  const rows=Y2026_ROWS(yb);
+  $("p-year").innerHTML=`
+  <div class="grid2">
+    <div class="card">
+      <h2>ปี${BR_TH[yb]} ใน ปีม้าไฟ <span class="hanS">丙午</span></h2>
+      <div><span class="stars" aria-label="${y.s} จาก 5 ดาว">${stars}</span> <span class="chip ${y.s>=4?"good":y.s<3?"bad":""}">${y.tag}</span></div>
+      <p>${y.t}</p>
+    </div>
+    <div class="card">
+      <h3>ปี 2026 กับเจ้าชะตา ${STEMS[dm]}</h3>
+      <p><span class="chip">${g.name}</span></p>
+      <p>${GOD_2026[g.rel]}</p>
+      <p class="note">ดูจากความสัมพันธ์ของ 丙 (ไฟหยาง ประจำปี 2026) กับธาตุเจ้าชะตาของคุณ</p>
+    </div>
+  </div>
+  <div class="card">
+    <h3>ดวงปี 2026 ทั้ง 12 นักษัตร</h3>
+    <div class="tblwrap"><table><thead><tr><th>นักษัตร</th><th>ดวง</th><th>สถานะ</th></tr></thead><tbody>${rows}</tbody></table></div>
+  </div>`;
+}
+function Y2026_ROWS(mine){
+  return BR.map((h,i)=>{const y=Y2026[i];return `<tr class="${i===mine?"me":""}"><td><span class="hanS">${h}</span> ปี${BR_TH[i]} (${ANIMAL[i]})</td><td class="num" style="text-align:left">${y.s} / 5</td><td>${y.tag}</td></tr>`}).join("");
+}
+
+const LIUHE=[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
+const SANHE=[[8,0,4],[11,3,7],[2,6,10],[5,9,1]];
+const HAI=[[0,7],[1,6],[2,5],[3,4],[8,11],[9,10]];
+const XING=[[0,3],[2,5],[5,8],[2,8],[1,10],[10,7],[1,7]];
+const has=(list,a,b)=>list.some(p=>(p[0]===a&&p[1]===b)||(p[0]===b&&p[1]===a));
+function matchScore(b1,b2){
+  const a=b1.year[1], c=b2.year[1];
+  let s,label,txt,kind;
+  if(has(LIUHE,a,c)){s=92;label="หกประสาน 六合";kind="good";txt="คู่เกื้อหนุนกันโดยธรรมชาติ เข้าใจกันง่าย เหมาะเป็นคู่ชีวิตหรือคู่ธุรกิจระยะยาว";}
+  else if(SANHE.some(g=>g.includes(a)&&g.includes(c))&&a!==c){s=86;label="สามประสาน 三合";kind="good";txt="มีเป้าหมายไปทางเดียวกัน ทำงานร่วมกันแล้วได้ผลมากกว่าทำคนเดียว";}
+  else if((a-c+12)%12===6){s=38;label="ชง 六冲";kind="bad";txt="มุมมองต่างกันชัดเจน ดึงดูดกันแรงแต่ปะทะง่าย ต้องตกลงบทบาทและเคารพพื้นที่ของกันและกัน";}
+  else if(has(HAI,a,c)){s=48;label="ทำลาย 六害";kind="bad";txt="มักขัดใจกันเรื่องเล็กๆ สะสม ควรสื่อสารตรงๆ ไม่เก็บไว้";}
+  else if(has(XING,a,c)){s=52;label="เบียด 刑";kind="bad";txt="มีแรงเสียดทาน ต้องอดทนและให้อภัย ความสัมพันธ์จะช่วยขัดเกลาทั้งสองฝ่าย";}
+  else if(a===c){s=70;label="นักษัตรเดียวกัน";kind="";txt="เข้าใจกันเพราะนิสัยคล้ายกัน แต่ข้อเสียก็ซ้ำกัน ต้องมีคนถอยเมื่อเห็นต่าง";}
+  else {s=66;label="เป็นกลาง";kind="";txt="ไม่ส่งเสริมไม่ขัดแย้ง ความสัมพันธ์ขึ้นกับความตั้งใจของทั้งคู่";}
+  const e1=stemEl(b1.day[0]), e2=stemEl(b2.day[0]);
+  const r=(e2-e1+5)%5; let etxt, adj;
+  if(r===0){adj=4;etxt=`เจ้าชะตาธาตุ${EL_TH[e1]}เหมือนกัน เป็นเพื่อนคู่คิด`;}
+  else if(r===1){adj=6;etxt=`คุณ (${EL_TH[e1]}) หล่อเลี้ยงอีกฝ่าย (${EL_TH[e2]}) คุณเป็นฝ่ายให้`;}
+  else if(r===4){adj=6;etxt=`อีกฝ่าย (${EL_TH[e2]}) หล่อเลี้ยงคุณ (${EL_TH[e1]}) คุณได้รับการดูแล`;}
+  else if(r===2){adj=-6;etxt=`คุณ (${EL_TH[e1]}) ข่มอีกฝ่าย (${EL_TH[e2]}) ระวังการควบคุมมากเกินไป`;}
+  else {adj=-6;etxt=`อีกฝ่าย (${EL_TH[e2]}) ข่มคุณ (${EL_TH[e1]}) ต้องกล้าพูดความต้องการของตัวเอง`;}
+  return {s:Math.max(10,Math.min(99,s+adj)),label,txt,kind,etxt,a,c};
+}
+
+let current=null;
+function run(){
+  const v=$("bd").value; if(!v) return;
+  const [y,m,d]=v.split("-").map(Number);
+  let hour=null;
+  if(!$("nohour").checked && $("bt").value){hour=Number($("bt").value.split(":")[0]);}
+  const b=bazi(y,m,d,hour); current=b;
+  const a=analyse(b);
+  renderPillars(b); renderRead(b,a); renderYear(b);
+  if($("bd2").value) runMatch();
+}
+function runMatch(){
+  if(!current||!$("bd2").value) return;
+  const [y,m,d]=$("bd2").value.split("-").map(Number);
+  const b2=bazi(y,m,d,null), r=matchScore(current,b2);
+  $("matchOut").innerHTML=`
+  <div class="card">
+    <h3>คะแนนคู่สมพงษ์</h3>
+    <div class="score">${r.s}</div>
+    <p><span class="chip ${r.kind}">${r.label}</span></p>
+    <p>ปี${BR_TH[r.a]} <span class="hanS">${BR[r.a]}</span> กับ ปี${BR_TH[r.c]} <span class="hanS">${BR[r.c]}</span></p>
+  </div>
+  <div class="card">
+    <h3>ความสัมพันธ์นักษัตร</h3><p>${r.txt}</p>
+    <h3>ความสัมพันธ์ธาตุเจ้าชะตา</h3><p>${elSpan(stemEl(current.day[0]),STEMS[current.day[0]])} กับ ${elSpan(stemEl(b2.day[0]),STEMS[b2.day[0]])} · ${r.etxt}</p>
+  </div>`;
+}
+
+$("f").addEventListener("submit",e=>{e.preventDefault();$("exnote").hidden=true;run();});
+$("f2").addEventListener("submit",e=>{e.preventDefault();runMatch();});
+$("nohour").addEventListener("change",()=>{$("bt").disabled=$("nohour").checked;});
+document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener("click",()=>{
+  document.querySelectorAll('[role=tab]').forEach(x=>{const on=x===t;x.setAttribute("aria-selected",on);$(x.getAttribute("aria-controls")).hidden=!on;});
+}));
+
+$("bd").value="1985-08-15"; $("bt").value="10:30"; $("bd2").value="1987-03-21";
+run();
+</script>
+</body>
+</html>
