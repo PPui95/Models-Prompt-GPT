@@ -180,7 +180,8 @@ const CONFIG={
   price:"199 บาท / รายงาน",
   contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
   consult:"อยากวางแผนการเงินและประกันให้เข้ากับดวง ปรึกษาแบบตัวต่อตัวได้",
-  codes:["PUEY2026"]            // รหัสปลดล็อก (เปลี่ยนเป็นของคุณ)
+  api:"/api",                   // Netlify functions (ชำระเงิน + ตรวจรหัส)
+  previewCode:""        // ใช้ได้เฉพาะหน้าพรีวิวใน Claude; เว็บจริงตั้งเป็น "" และใช้ ADMIN_CODES บนเซิร์ฟเวอร์แทน
 };
 /* ============================================ */
 
@@ -335,9 +336,20 @@ const KUA_NAME=[["生气","โชคลาภ ความสำเร็จ","�
 const KUA_EL={1:4,2:2,3:0,4:0,6:3,7:3,8:2,9:1};
 
 /* ===== premium ===== */
-let unlocked=false;
-try{unlocked=localStorage.getItem("bazi_unlocked")==="1";}catch(e){}
+let unlocked=false, access=null; // access = {k: report key or "*", exp, token}
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+access=store.get("bazi_access"); if(!access||!(access.exp>Date.now())) access=null;
 const framed=(()=>{try{return window.self!==window.top}catch(e){return true}})();
+async function api(path,body){
+  const r=await fetch(CONFIG.api+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  let data={}; try{data=await r.json()}catch(e){}
+  return {status:r.status,data};
+}
+function reportKey(){
+  const h=!$("nohour").checked&&$("bt").value?$("bt").value.slice(0,2):"";
+  return `${$("bd").value}|${h}|${$("sex").value}`;
+}
+function setAccess(a){access=a; store.set("bazi_access",a); run();}
 
 const $=id=>document.getElementById(id);
 const elSpan=(e,txt)=>`<span class="el-${EL[e]}">${txt}</span>`;
@@ -349,23 +361,41 @@ function lockCard(title,items){
     <p>ส่วนนี้อยู่ในรายงานฉบับเต็ม ประกอบด้วย</p>
     <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
     <div class="price">${CONFIG.price}</div>
-    <p class="note">ปลดล็อกครั้งเดียวได้ครบ: วัยจร 10 ปี ดวงรายเดือน การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์แบบละเอียด และรายงาน PDF<br>รับรหัสได้ที่: ${esc(CONFIG.contact)}</p>
-    <form class="row unlock" novalidate>
-      <input type="text" placeholder="ใส่รหัสปลดล็อก" aria-label="รหัสปลดล็อก" autocomplete="off">
-      <button class="go" type="submit">ปลดล็อก</button>
-    </form>
+    <p class="note">จ่ายครั้งเดียวต่อวันเดือนปีเกิด ได้ครบทุกส่วน: วัยจร 10 ปี ดวงรายเดือน การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์แบบละเอียด และรายงาน PDF · ชำระด้วย PromptPay หรือบัตร</p>
+    <div class="row"><button class="go pay" type="button">ชำระเงินและปลดล็อกรายงานนี้</button></div>
     <p class="msg" aria-live="polite"></p>
+    <form class="row unlock" novalidate>
+      <input type="text" placeholder="มีรหัสผู้ดูแลหรือที่ปรึกษา? ใส่ที่นี่" aria-label="รหัสผู้ดูแล" autocomplete="off">
+      <button class="ghost" type="submit">ใช้รหัส</button>
+    </form>
   </div>`;
 }
-document.addEventListener("submit",e=>{
+const say=(el,txt,cls)=>{el.className="msg "+(cls||"");el.textContent=txt;};
+document.addEventListener("click",async e=>{
+  const btn=e.target.closest(".pay"); if(!btn) return;
+  const msg=btn.parentElement.nextElementSibling;
+  if(framed){say(msg,"การชำระเงินใช้ได้บนเว็บจริงเท่านั้น หน้านี้เป็นพรีวิว","err");return;}
+  btn.disabled=true; say(msg,"กำลังเปิดหน้าชำระเงิน...");
+  store.set("bazi_pending",{key:reportKey(),bt:$("bt").value,nm:$("nm").value.trim()});
+  try{
+    const {status,data}=await api("/checkout",{key:reportKey()});
+    if(status===200&&data.url){location.href=data.url;return;}
+    say(msg,"เปิดหน้าชำระเงินไม่สำเร็จ ลองใหม่อีกครั้ง หรือติดต่อ "+CONFIG.contact,"err");
+  }catch(_){say(msg,"เชื่อมต่อระบบชำระเงินไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่","err");}
+  btn.disabled=false;
+});
+document.addEventListener("submit",async e=>{
   if(!e.target.classList.contains("unlock")) return;
   e.preventDefault();
-  const v=e.target.querySelector("input").value.trim().toUpperCase();
-  const msg=e.target.nextElementSibling;
-  if(CONFIG.codes.map(c=>c.toUpperCase()).includes(v)){
-    unlocked=true; try{localStorage.setItem("bazi_unlocked","1");}catch(_){}
-    msg.className="msg ok"; msg.textContent="ปลดล็อกแล้ว"; run();
-  } else { msg.className="msg err"; msg.textContent="รหัสไม่ถูกต้อง ตรวจตัวอักษรอีกครั้ง หรือติดต่อผู้ขายเพื่อรับรหัส"; }
+  const v=e.target.querySelector("input").value.trim();
+  const msg=e.target.previousElementSibling;
+  if(!v){say(msg,"ใส่รหัสก่อนกด “ใช้รหัส”","err");return;}
+  if(framed&&CONFIG.previewCode&&v.toUpperCase()===CONFIG.previewCode.toUpperCase()){setAccess({k:"*",exp:Date.now()+864e5});return;}
+  try{
+    const {status,data}=await api("/verify",{code:v});
+    if(status===200&&data.ok){setAccess({k:data.key,exp:data.exp,token:data.token});return;}
+    say(msg,"รหัสไม่ถูกต้อง ตรวจตัวอักษรอีกครั้ง","err");
+  }catch(_){say(msg,framed?"รหัสนี้ใช้ไม่ได้ในหน้าพรีวิว":"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง","err");}
 });
 
 /* ===== renderers ===== */
@@ -556,11 +586,12 @@ function run(){
   let hour=null;
   if(!$("nohour").checked && $("bt").value) hour=Number($("bt").value.split(":")[0]);
   const male=$("sex").value==="m";
+  unlocked=!!access&&access.exp>Date.now()&&(access.k==="*"||access.k===reportKey());
   const b=bazi(y,m,d,hour); current=b;
   const a=analyse(b);
   renderPillars(b); renderRead(b,a); renderLuck(b,a,male); renderMonth(b,a); renderMoney(b,a); renderFS(b,male);
   document.querySelectorAll(".tabs .lk").forEach(x=>x.hidden=unlocked);
-  $("status").textContent=unlocked?"รายงานฉบับเต็ม":"ฉบับฟรี · แท็บที่มีจุดคือส่วนพรีเมียม";
+  $("status").textContent=unlocked?(access.k==="*"?"รายงานฉบับเต็ม · โหมดผู้ดูแล":"รายงานฉบับเต็ม"):"ฉบับฟรี · แท็บที่มีจุดคือส่วนพรีเมียม";
   $("pdfBtn").hidden=!(unlocked&&!framed);
   const nm=$("nm").value.trim();
   $("printHead").innerHTML=`<h2>รายงานดวงจีนแปดอักษร${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${d} ${MON_TH[m-1]} ${y}${hour!=null?" เวลา "+$("bt").value+" น.":""} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;
@@ -592,7 +623,35 @@ document.querySelectorAll('[role=tab]').forEach(t=>t.addEventListener("click",()
 }));
 
 $("bd").value="1985-08-15"; $("bt").value="10:30"; $("bd2").value="1987-03-21";
-run();
+
+function restoreForm(key){
+  const [bd,h,sex]=key.split("|"), p=store.get("bazi_pending");
+  $("bd").value=bd; $("sex").value=sex; $("nohour").checked=!h; $("bt").disabled=!h;
+  $("bt").value=h?(p&&p.key===key&&p.bt?p.bt:h+":00"):"";
+  if(p&&p.key===key&&p.nm) $("nm").value=p.nm;
+  $("exnote").hidden=true;
+}
+async function boot(){
+  const q=new URLSearchParams(location.search), sid=q.get("session_id");
+  if(sid||q.has("canceled")) history.replaceState(null,"",location.pathname);
+  if(sid){
+    $("status").textContent="กำลังยืนยันการชำระเงิน...";
+    try{
+      const {status,data}=await api("/verify",{session_id:sid});
+      if(status===200&&data.ok){restoreForm(data.key);store.set("bazi_pending",null);setAccess({k:data.key,exp:data.exp,token:data.token});$("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · รายงานฉบับเต็ม";return;}
+      const p=store.get("bazi_pending"); if(p) restoreForm(p.key); run();
+      $("status").textContent=status===202?"ยังไม่ได้รับยืนยันการชำระเงิน รอสักครู่แล้วรีเฟรชหน้านี้":"ยืนยันการชำระเงินไม่สำเร็จ กรุณาติดต่อ "+CONFIG.contact;
+    }catch(_){run();$("status").textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ รีเฟรชหน้านี้อีกครั้ง";}
+    return;
+  }
+  if(access&&access.k!=="*") restoreForm(access.k); // returning buyer: reopen their paid report
+  run();
+  if(q.has("canceled")) $("status").textContent="ยกเลิกการชำระเงินแล้ว ยังไม่มีการตัดเงิน";
+  if(access&&access.token&&!framed){
+    try{const {status}=await api("/verify",{token:access.token}); if(status===401) setAccess(null);}catch(_){}
+  }
+}
+boot();
 </script>
 </body>
 </html>
