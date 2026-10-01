@@ -154,3 +154,8 @@ a.go{color:#fff}
 .prose h2{margin-top:8px}
 .prose p,.prose ul{margin:0}
 @media print{.top,.sitefoot nav{display:none!important}}
+.ptable th,.ptable td{text-align:center}
+.ptable th:first-child,.ptable td:first-child{text-align:left}
+.ptable thead th{font-size:13px;color:var(--ink);vertical-align:bottom}
+.ptable .price{font-size:18px}
+.lock .row .go{flex:0 1 auto}

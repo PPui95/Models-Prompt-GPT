@@ -1,6 +1,7 @@
 /* ===== ตั้งค่าร้าน: แก้ตรงนี้ก่อนขายจริง (ใช้ร่วมกันทุกหน้า) ===== */
 const CONFIG={
-  price:"199 บาท / รายงาน",
+  priceYear:299,                // แพ็กดวงปี (บาท) ต้องตรงกับ PRICE_YEAR_THB บน Netlify
+  priceFull:690,                // แพ็กชีวิตฉบับสมบูรณ์ (บาท) ต้องตรงกับ PRICE_FULL_THB บน Netlify
   contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
   api:"/api",                   // Netlify functions (ชำระเงิน + ตรวจรหัส)
   previewCode:""        // ใช้ได้เฉพาะหน้าพรีวิวใน Claude; เว็บจริงตั้งเป็น "" และใช้ ADMIN_CODES บนเซิร์ฟเวอร์แทน
@@ -206,6 +207,50 @@ const GOD_2026=[
   "ปีแห่งการเรียนรู้และผู้อุปถัมภ์ มีคนให้การสนับสนุน เหมาะเรียนต่อ สอบใบอนุญาต หรือศึกษาด้านจิตใจ"
 ];
 
+
+/* ---------- ดวงปี 2570 丁未 (แพะไฟ) ตามนักษัตร ---------- */
+const Y2027=[
+ {s:2.5,tag:"害太岁",t:"ปีที่ต้องระวังคนรอบข้างและความเข้าใจผิด",work:"ระวังเพื่อนร่วมงานที่ไม่จริงใจ ทำงานให้มีหลักฐานและสื่อสารเป็นลายลักษณ์อักษร งานที่ทำเองจะเสร็จไวกว่างานกลุ่ม",money:"รายได้ทรงตัว ไม่ควรค้ำประกันหรือให้ยืมก้อนใหญ่ เก็บเงินสำรองให้ได้ 6 เดือน",love:"มีเรื่องน้อยใจสะสมได้ง่าย พูดกันตรงๆ แต่นุ่มนวล คนโสดอย่ารีบผูกมัด",health:"ระบบทางเดินปัสสาวะ ไต และการนอน",tip:"เลือกคนที่ไว้ใจได้ให้น้อยแต่แน่น ปีนี้คุณภาพของความสัมพันธ์สำคัญกว่าจำนวน"},
+ {s:2,tag:"ชง (冲太岁)",t:"ปีชง การเปลี่ยนแปลงใหญ่มาหา ทั้งงาน บ้าน หรือความสัมพันธ์",work:"อาจย้ายงาน เปลี่ยนตำแหน่ง หรือโครงสร้างองค์กรเปลี่ยน วางแผนล่วงหน้าและอัปเดตประวัติการทำงานไว้",money:"รายจ่ายไม่คาดคิด เลี่ยงการลงทุนเสี่ยงสูง เน้นสภาพคล่อง",love:"ความสัมพันธ์ถูกทดสอบ คู่ที่ผ่านปีนี้ไปได้จะมั่นคงขึ้นมาก",health:"กระเพาะ ระบบย่อย และอุบัติเหตุ ขับรถระมัดระวัง",tip:"การเปลี่ยนแปลงที่เราเลือกเองดีกว่าการเปลี่ยนแปลงที่ถูกบังคับ เริ่มปรับตัวก่อนเรื่องจะมาถึง"},
+ {s:3.5,tag:"ปีกลาง",t:"ปีที่ค่อยเป็นค่อยไป สร้างฐานให้มั่นคง",work:"เหมาะพัฒนาทักษะและวางระบบงาน ผลลัพธ์ชัดเจนช่วงครึ่งปีหลัง",money:"การเงินสม่ำเสมอ เหมาะออมและลงทุนระยะยาวแบบสม่ำเสมอ (DCA)",love:"ความสัมพันธ์เรียบง่าย ใช้เวลาคุณภาพร่วมกันมากขึ้น",health:"ตับ ความเครียด และการออกกำลังกายที่ขาดหาย",tip:"ไม่ต้องรีบ ปีนี้คือปีวางเสาเข็มให้ปีถัดไป"},
+ {s:4.5,tag:"สามประสาน (三合)",t:"ปีที่ดีมาก มีผู้อุปถัมภ์และโอกาสเติบโต",work:"มีคนเห็นฝีมือ ได้รับมอบหมายงานสำคัญ เหมาะเริ่มโปรเจกต์ใหม่ เปิดธุรกิจ หรือขอเลื่อนตำแหน่ง",money:"รายได้เพิ่มจากผลงานและเครือข่าย เหมาะลงทุนในตัวเองและสินทรัพย์ระยะยาว",love:"มีเสน่ห์ คนโสดเจอคนถูกใจผ่านเพื่อนหรือผู้ใหญ่แนะนำ คู่รักเหมาะวางแผนอนาคต",health:"สุขภาพดี ระวังทำงานหนักจนพักผ่อนไม่พอ",tip:"ตอบรับโอกาสและคำชวน ความสำเร็จปีนี้มาจากคนรอบตัว"},
+ {s:3.5,tag:"ปีกลาง",t:"ปีกลาง ได้ผลจากความตั้งใจที่สม่ำเสมอ",work:"งานเดินหน้าได้แต่ต้องอาศัยความอดทน เหมาะสอบใบอนุญาตหรือเรียนเพิ่ม",money:"การเงินพอดี วางแผนภาษีและเกษียณให้เป็นระบบ",love:"ความรักมั่นคง คนโสดเจอคนผ่านกิจกรรมหรือการเรียน",health:"กระเพาะ ผิวหนัง และการกินไม่ตรงเวลา",tip:"ทำสิ่งเล็กๆ ทุกวัน ผลจะสะสมเป็นสิ่งใหญ่"},
+ {s:3.5,tag:"ไฟหนุน",t:"ชื่อเสียงและการยอมรับยังเด่นต่อเนื่อง",work:"โอกาสมาจากการนำเสนอ การพูด และการออกสื่อ เหมาะสร้างแบรนด์ส่วนตัว",money:"รายได้ดี แต่ต้องคุมรายจ่ายตามอารมณ์และการเข้าสังคม",love:"มีคนเข้าหาเยอะ เลือกคนที่จริงใจ คู่รักควรมีเวลาเฉพาะกันสองคน",health:"หัวใจ ความดัน และการนอน",tip:"ใช้ชื่อเสียงสร้างสิ่งที่ยั่งยืน ไม่ใช่แค่กระแส"},
+ {s:4.5,tag:"หกประสาน (六合)",t:"ปีที่ดีมาก มีคนช่วย ความรักและการร่วมมือโดดเด่น",work:"การเจรจาและการทำงานกับพาร์ทเนอร์สำเร็จ หลังจากปีชงตัวเอง ปีนี้ได้หายใจและเดินหน้าเต็มที่",money:"การเงินฟื้นตัว มีรายได้เสริม เหมาะซื้อทรัพย์สินหรือวางแผนระยะยาว",love:"ปีแห่งความรัก คนโสดมีโอกาสพบคู่ คู่รักเหมาะแต่งงาน",health:"สุขภาพดีขึ้น ระวังกินเลี้ยงบ่อย",tip:"ปีนี้อย่าเก็บตัว ตอบรับคนที่ยื่นมือมาช่วย"},
+ {s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน",work:"อยากเปลี่ยนหลายเรื่อง ทำได้แต่ทีละอย่างและมีแผนสำรอง ระวังตัดสินใจตอนเหนื่อยหรือน้อยใจ",money:"เงินเข้าออกเร็ว ทำงบประมาณและเลี่ยงการลงทุนตามกระแส",love:"อารมณ์อ่อนไหวง่าย บอกความต้องการตรงๆ แทนการรอให้อีกฝ่ายเดา",health:"กระเพาะ ม้าม และความเครียดสะสม",tip:"ปีนักษัตรตัวเองคือปีทบทวนตัวตน ตั้งเป้าหมาย 12 ปีข้างหน้าให้ชัด"},
+ {s:3.5,tag:"ปีกลาง",t:"ปีแห่งการเดินทางและโอกาสใหม่",work:"งานที่เกี่ยวกับต่างถิ่น ออนไลน์ หรือเทคโนโลยีไปได้ดี ปรับตัวเร็วคือจุดแข็ง",money:"รายได้มีหลายทาง แต่รายจ่ายเพิ่มตาม จดบันทึกรายรับรายจ่าย",love:"ความสัมพันธ์ต้องมีเรื่องใหม่ทำด้วยกัน คนโสดเจอคนจากการเดินทางหรือกิจกรรม",health:"ปอด ระบบหายใจ และการพักผ่อนน้อย",tip:"ลองสิ่งใหม่ทีละน้อย แล้วจะเจอโอกาสที่ไม่คาดคิด"},
+ {s:3.5,tag:"ปีกลาง",t:"ปีที่ความละเอียดได้รับผลตอบแทน",work:"งานที่ต้องการความแม่นยำได้รับคำชม เหมาะเป็นผู้เชี่ยวชาญเฉพาะด้าน ระวังแบกงานคนเดียว",money:"การเงินมั่นคง เหมาะปิดหนี้และปรับพอร์ตให้สมดุล",love:"ชมกันให้มากกว่าติ ความสัมพันธ์จะอบอุ่นขึ้น",health:"ผิวหนัง ปอด และความเครียดจากความสมบูรณ์แบบ",tip:"ดีพอแล้วก็คือดี ปล่อยวางเรื่องเล็กบ้าง"},
+ {s:2.5,tag:"破+刑太岁",t:"ปีที่แผนอาจสะดุดและมีแรงเสียดทาน",work:"ระวังความขัดแย้งกับเพื่อนร่วมงานหรือหัวหน้า ตรวจเอกสารและสัญญาให้รอบคอบ แผนต้องยืดหยุ่น",money:"มีรายจ่ายซ่อมแซมหรือเรื่องครอบครัว กันงบสำรองไว้",love:"เลี่ยงคำพูดแรง ใจเย็นแล้วค่อยคุย",health:"กระเพาะ ข้อต่อ และอุบัติเหตุเล็กน้อย",tip:"สิ่งที่สะดุดคือสัญญาณให้ปรับ ไม่ใช่ให้หยุด"},
+ {s:4.5,tag:"สามประสาน (三合)",t:"ปีที่ดีมาก ทีมงานดี เพื่อนช่วยเหลือ",work:"งานเป็นทีมได้ผลดีเยี่ยม มีโอกาสเลื่อนตำแหน่งหรือได้รับความไว้วางใจ",money:"รายได้เพิ่มจากความร่วมมือ เหมาะเริ่มลงทุนระยะยาว",love:"มีผู้ใหญ่หรือเพื่อนแนะนำคนดีให้ คู่รักมั่นคงและอบอุ่น",health:"ไต ระบบปัสสาวะ และการพักผ่อน",tip:"ใจกว้างเป็นจุดแข็ง แต่ต้องรู้จักปฏิเสธด้วย"}
+];
+const YEAR_DATA={2026:Y2026,2027:Y2027};
+const GOD_YEAR=GOD_2026;
+// generic yearly outlook for years without hand-written data (by relation between birth-year and year branches)
+const PO=[[0,9],[3,6],[4,1],[7,10],[2,11],[5,8]];
+const REL_YEAR={
+  zhi:{s:2.5,tag:"ปีชงตัวเอง (值太岁)",t:"ปีนักษัตรของตัวเอง พลังแรงแต่ผันผวน ควรทบทวนเป้าหมายและมีแผนสำรอง"},
+  chong:{s:2,tag:"ชง (冲太岁)",t:"ปีแห่งการเปลี่ยนแปลงใหญ่ วางแผนล่วงหน้า เน้นสภาพคล่องและความไม่ประมาท"},
+  liuhe:{s:4.5,tag:"หกประสาน (六合)",t:"ปีที่ดีมาก มีคนช่วย เหมาะเจรจา ร่วมมือ และเรื่องความรัก"},
+  sanhe:{s:4.5,tag:"สามประสาน (三合)",t:"ปีที่ดีมาก มีผู้อุปถัมภ์ งานเติบโต เหมาะเริ่มสิ่งใหม่"},
+  hai:{s:2.5,tag:"害太岁",t:"ระวังความเข้าใจผิดกับคนรอบข้าง ทำงานให้มีหลักฐาน"},
+  po:{s:3,tag:"破太岁",t:"แผนอาจสะดุดระหว่างทาง ยืดหยุ่นและมีแผนสำรอง"},
+  xing:{s:3,tag:"刑太岁",t:"มีแรงเสียดทาน ระวังคำพูดและเรื่องเอกสาร"},
+  neutral:{s:3.5,tag:"ปีกลาง",t:"ดวงทรงตัว ได้ผลจากความสม่ำเสมอ เหมาะพัฒนาตัวเอง"}
+};
+const yearPillar=by=>[((by-4)%10+10)%10,((by-4)%12+12)%12];
+const yearName=by=>{const [s,b]=yearPillar(by);return `${STEMS[s]}${BR[b]} ${ANIMAL[b]}${EL_TH[stemEl(s)]}`;};
+const chineseYearOf=P=>bazi(P.y,P.m,P.d,null).by;
+function animalYear(by,ab){
+  const D=YEAR_DATA[by]; if(D) return D[ab];
+  const yb=yearPillar(by)[1];
+  const rel=ab===yb?"zhi":clash(ab,yb)?"chong":has(LIUHE,ab,yb)?"liuhe":(groupOf(ab)===groupOf(yb))?"sanhe":has(HAI,ab,yb)?"hai":has(PO,ab,yb)?"po":has(XING,ab,yb)?"xing":"neutral";
+  return Object.assign({work:"",money:"",love:"",health:"",tip:""},REL_YEAR[rel]);
+}
+// annual flying stars: center number for Chinese year `by`, then the Lo Shu flight path
+const FLIGHT=["C","NW","W","NE","S","N","SW","E","SE"];
+const STAR_INFO={1:[true,"ดาว 1 การงานและผู้ใหญ่","เหมาะวางโต๊ะทำงานหรือมุมวางแผนอาชีพ เสริมโอกาสงานใหม่"],2:[false,"ดาว 2 ดำ (เจ็บป่วย)","ดูแลสุขภาพ ไม่ควรนอนด้านนี้ถ้าเลี่ยงได้ วางของโลหะหรือน้ำเต้าทองเหลือง"],3:[false,"ดาว 3 (ทะเลาะ)","ระวังการโต้เถียง ใช้สีแดงหรือแสงไฟอุ่นช่วยลดพลัง"],4:[true,"ดาว 4 การเรียนและความรัก","เหมาะมุมอ่านหนังสือ การสอบ และความรัก"],5:[false,"ดาว 5 เหลือง (อุปสรรค)","ไม่ควรต่อเติม เจาะ หรือทุบด้านนี้ ลดเสียงดัง วางของโลหะช่วยลดพลัง"],6:[true,"ดาว 6 ผู้มีอำนาจ","การเลื่อนตำแหน่งและผู้ใหญ่ช่วยเหลือ"],7:[false,"ดาว 7 (สูญเสีย)","ระวังทรัพย์สิน ล็อกประตูหน้าต่างให้ดี ใช้น้ำนิ่งช่วยลดพลัง"],8:[true,"ดาว 8 ความมั่งคั่ง","ทิศการเงินของปี วางต้นไม้ ของมงคล หรือโต๊ะทำงานด้านนี้"],9:[true,"ดาว 9 ความยินดี","งานมงคล ความสำเร็จ ชื่อเสียง เปิดไฟให้สว่าง"]};
+function annualStars(by){const c=((11-(by%9))%9)||9, m={};FLIGHT.forEach((d,i)=>{m[d]=((c-1+i)%9)+1;});return m;}
+
 /* ---------- วัยจรและรายเดือน ---------- */
 const LUCK_GOD=[
  {theme:"ทศวรรษแห่งการยืนด้วยลำแข้งตัวเอง ความมั่นใจสูง เพื่อนฝูงเยอะ",work:"เหมาะทำงานอิสระหรือเป็นหุ้นส่วน",money:"รายได้มาจากความพยายามของตัวเอง ระวังการแบ่งผลประโยชน์",love:"มีเพื่อนต่างเพศมาก ความสัมพันธ์ต้องการความเท่าเทียม",caution:"การแข่งขันกับคนใกล้ตัว"},
@@ -244,8 +289,6 @@ const KUA_DETAIL=[
  {read:"เจวี๋ยมิ่ง (ตัดชีวิต)",energy:"ทิศที่บั่นทอนที่สุด เกี่ยวกับความเจ็บป่วยหนัก การสูญเสียก้อนใหญ่ และความเหนื่อยล้า",uses:["<b>ห้ามหันหัวนอนหรือนั่งทำงานหันไปทิศนี้</b>","<b>เป็นห้องน้ำหรือห้องเก็บของจะดีที่สุด</b> เพราะช่วยกดพลังร้าย","<b>ถ้าประตูหลักของบ้านหันไปทิศนี้และเปลี่ยนไม่ได้</b> ให้วางฉากกั้นหรือต้นไม้ใหญ่ด้านในประตู และใช้ทิศดีภายในห้องแทน"]}
 ];
 const KUA_EL={1:4,2:2,3:0,4:0,6:3,7:3,8:2,9:1};
-// 2026 annual flying stars (center 1)
-const STAR2026=[["E",8,"good","ดาว 8 ความมั่งคั่ง","ทิศการเงินของปี วางของมงคล ต้นไม้ หรือโต๊ะทำงานด้านนี้"],["SE",9,"good","ดาว 9 ความยินดี","งานมงคล ความสำเร็จ ชื่อเสียง เปิดไฟให้สว่าง"],["N",6,"good","ดาว 6 ผู้มีอำนาจ","การเลื่อนตำแหน่งและผู้ใหญ่ช่วยเหลือ"],["NE",4,"good","ดาว 4 การเรียนและความรัก","เหมาะมุมอ่านหนังสือ การสอบ และความรัก"],["S",5,"bad","ดาว 5 เหลือง (อุปสรรค)","ไม่ควรต่อเติม เจาะ หรือทุบด้านนี้ ลดเสียงดัง วางโลหะช่วยลดพลัง"],["NW",2,"bad","ดาว 2 ดำ (เจ็บป่วย)","ดูแลสุขภาพ ไม่ควรนอนด้านนี้ถ้าเลี่ยงได้ วางโลหะหรือน้ำเต้าทองเหลือง"],["W",3,"bad","ดาว 3 (ทะเลาะ)","ระวังการโต้เถียง ใช้สีแดงหรือแสงไฟอุ่นช่วยลดพลัง"],["SW",7,"bad","ดาว 7 (สูญเสีย)","ระวังทรัพย์สิน ล็อกประตูหน้าต่างให้ดี ใช้น้ำนิ่งช่วยลดพลัง"]];
 
 /* ---------- คู่สมพงษ์ ---------- */
 const LIUHE=[[0,1],[2,11],[3,10],[4,9],[5,8],[6,7]];
@@ -330,27 +373,48 @@ function luckPillars(b,male){
   for(let i=1;i<=8;i++){const n=((base+(fwd?i:-i))%60+60)%60; const age=start+10*(i-1); list.push({s:n%10,b:n%12,age,from:y+age,to:y+age+9});}
   return {fwd,start,list};
 }
-function months2026(b,a){
+// 12 Chinese months starting with the month that contains `anchorMs`
+function monthsWindow(b,a,anchorMs){
+  const A=new Date(anchorMs); let y=A.getFullYear(), m=A.getMonth()+1;
+  if(A.getDate()<TERM_DAY[m-1]){m--; if(m===0){m=12;y--;}}
   const rows=[];
   for(let i=0;i<12;i++){
-    const s=(6+i)%10, br=(2+i)%12, gm=i+2>12?i-10:i+2, gy=i+2>12?2027:2026;
+    const t=bazi(y,m,TERM_DAY[m-1],null), [s,br]=t.month;
     let v=elScore(a,stemEl(s))+elScore(a,BR_EL[br]); const flags=[];
     if(clash(br,b.day[1])){v-=1;flags.push("ชงกิ่งวันเกิด: ระวังความสัมพันธ์และการเปลี่ยนแปลงกะทันหัน");}
     if(has(LIUHE,br,b.day[1])){v+=0.5;flags.push("ประสานกิ่งวันเกิด: มีคนช่วย ความรักดี");}
     if(clash(br,b.year[1])){v-=0.5;flags.push("ชงปีเกิด: ดูแลครอบครัวและการเดินทาง");}
     const [r,lab]=rateOf(v);
-    rows.push({s,br,gm,gy,v,r,lab,flags,tg:tenGod(b.day[0],s)});
+    rows.push({s,br,gm:m,gy:y,by:t.by,v,r,lab,flags,tg:tenGod(b.day[0],s)});
+    m++; if(m>12){m=1;y++;}
   }
   return rows;
 }
+function curMonthStart(){const T=todayParts();let y=T.y,m=T.m;if(T.d<TERM_DAY[m-1]){m--;if(m===0){m=12;y--;}}return {y,m};}
 function kua(by,male){
   const r=by%9; let k=male?(11-r)%9:(r+4)%9; if(k===0)k=9; if(k===5)k=male?2:8; return k;
 }
 
 /* ===== premium ===== */
-let unlocked=false, access=null; // access = {k: report key or "*", exp, token}
+// purchases kept in this browser: [{k: report key or "*", t: "year"|"full", p: purchase time ms, exp, token}]
+let TIER=null, ANCHOR=Date.now(), access=null;
 const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
-access=store.get("bazi_access"); if(!access||!(access.exp>Date.now())) access=null;
+function loadAcc(){
+  let L=store.get("bazi_acc2");
+  if(!Array.isArray(L)){ // migrate the single-purchase format used before tiers (those were full reports)
+    L=[]; const old=store.get("bazi_access");
+    if(old&&old.k) L.push({k:old.k,t:"full",p:(old.exp||Date.now())-365*864e5,exp:old.exp,token:old.token});
+    store.set("bazi_access",null);
+  }
+  return L.filter(a=>a&&a.exp>Date.now());
+}
+let ACC=loadAcc();
+function effAccess(key){
+  const L=ACC.filter(a=>a.exp>Date.now()&&(a.k==="*"||a.k===key)); if(!L.length) return null;
+  const yt=L.find(a=>a.t==="year"&&a.k===key&&a.token);
+  return {k:L.some(a=>a.k==="*")?"*":key,t:L.some(a=>a.t==="full")?"full":"year",p:Math.max(...L.map(a=>a.p||Date.now())),admin:L.some(a=>a.k==="*"),yearTok:yt?yt.token:null};
+}
+const hasYear=()=>!!TIER, hasFull=()=>TIER==="full";
 const framed=(()=>{try{return window.self!==window.top}catch(e){return true}})();
 async function api(path,body){
   const r=await fetch(CONFIG.api+path,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
@@ -381,7 +445,9 @@ function reportKey(){
   const h=getHour();
   return `${getDate("bd")}|${h==null?"":pad(h)}|${$("sex").value}`;
 }
-function setAccess(a){access=a; store.set("bazi_access",a); run();}
+function addAccess(a){ACC=ACC.filter(x=>!(x.k===a.k&&x.t===a.t));ACC.push(a);store.set("bazi_acc2",ACC);run();}
+function dropAccess(a){ACC=ACC.filter(x=>x!==a);store.set("bazi_acc2",ACC);run();}
+const accFrom=d=>({k:d.key,t:d.t||"full",p:d.p||Date.now(),exp:d.exp,token:d.token});
 
 const $=id=>document.getElementById(id);
 const elSpan=(e,txt)=>`<span class="el-${EL[e]}">${txt}</span>`;
@@ -389,14 +455,24 @@ const esc=s=>s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&qu
 const kv=rows=>`<dl>${rows.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>`;
 const godLine=g=>`<b>${GOD[g.idx].han} ${GOD[g.idx].th}</b> (${GOD[g.idx].kw}) · ด้านดี: ${GOD[g.idx].plus} · ระวัง: ${GOD[g.idx].minus}`;
 
-function lockCard(title,items){
+const TIER_NAME={year:"แพ็กดวงปี",full:"แพ็กชีวิตฉบับสมบูรณ์"};
+// need: "year" (either pack unlocks it), "full" (only the complete pack), "renew" (buy a fresh 12-month window)
+function lockCard(title,items,need="year"){
+  const up=need==="full"&&TIER==="year";
+  const btnY=`<button class="go pay" data-tier="year" type="button">${TIER_NAME.year} ${CONFIG.priceYear} บาท</button>`;
+  const btnF=`<button class="go pay" data-tier="full" type="button">${TIER_NAME.full} ${CONFIG.priceFull} บาท</button>`;
+  const btnU=`<button class="go pay" data-tier="upgrade" type="button">อัปเกรดเป็น${TIER_NAME.full} จ่ายเพิ่ม ${CONFIG.priceFull-CONFIG.priceYear} บาท</button>`;
+  const buttons=need==="renew"?btnY:up?btnU:need==="full"?btnF:btnY+btnF;
+  const note=need==="renew"?`ต่ออายุดวง 12 เดือนชุดใหม่ นับจากวันที่ชำระ`
+    :up?`คุณมี${TIER_NAME.year}อยู่แล้ว จ่ายเฉพาะส่วนต่างเพื่อปลดล็อกทุกหมวด`
+    :need==="full"?`ส่วนนี้อยู่ใน${TIER_NAME.full}เท่านั้น ได้ครบทุกหมวด: พื้นดวงเชิงลึก ดวง 12 เดือนข้างหน้า วัยจร 10 ปี การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์ และ PDF`
+    :`<b>${TIER_NAME.year}</b>: พื้นดวงเชิงลึก + ดวงปี + ดวง 12 เดือนข้างหน้า + PDF<br><b>${TIER_NAME.full}</b>: ทุกอย่างในแพ็กดวงปี + วัยจร 10 ปี + การเงินและอาชีพ + ฮวงจุ้ยละเอียด + คู่สมพงษ์ละเอียด`;
   return `<div class="lock">
     <h2>${title}</h2>
-    <p>ส่วนนี้อยู่ในรายงานฉบับเต็ม ประกอบด้วย</p>
+    <p>${up?"ปลดล็อกส่วนนี้ด้วยการอัปเกรด":"ส่วนนี้ประกอบด้วย"}</p>
     <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
-    <div class="price">${CONFIG.price}</div>
-    <p class="note">จ่ายครั้งเดียวต่อวันเดือนปีเกิด ได้ครบทุกส่วน: พื้นดวงเชิงลึก วัยจร 10 ปี ดวงปีและรายเดือน 2569 การเงินและอาชีพ ฮวงจุ้ย คู่สมพงษ์แบบละเอียด และรายงาน PDF · ชำระด้วย PromptPay หรือบัตร</p>
-    <div class="row"><button class="go pay" type="button">ชำระเงินและปลดล็อกรายงานนี้</button></div>
+    <p class="note">${note}<br>จ่ายครั้งเดียวต่อวันเดือนปีเกิด · ชำระด้วย PromptPay หรือบัตร</p>
+    <div class="row">${buttons}</div>
     <p class="msg" aria-live="polite"></p>
     <form class="row unlock" novalidate>
       <input type="text" placeholder="มีรหัสผู้ดูแล? ใส่ที่นี่" aria-label="รหัสผู้ดูแล" autocomplete="off">
@@ -412,7 +488,8 @@ document.addEventListener("click",async e=>{
   btn.disabled=true; say(msg,"กำลังเปิดหน้าชำระเงิน...");
   store.set("bazi_pending",{key:reportKey(),nm:$("nm").value.trim()});
   try{
-    const {status,data}=await api("/checkout",{key:reportKey(),page:document.body.dataset.page||"chart"});
+    const tier=btn.dataset.tier||"year", acc=effAccess(reportKey());
+    const {status,data}=await api("/checkout",{key:reportKey(),page:document.body.dataset.page||"chart",tier,token:tier==="upgrade"&&acc?acc.yearTok:undefined});
     if(status===200&&data.url){location.href=data.url;return;}
     say(msg,"เปิดหน้าชำระเงินไม่สำเร็จ ลองใหม่อีกครั้ง หรือติดต่อ "+CONFIG.contact,"err");
   }catch(_){say(msg,"เชื่อมต่อระบบชำระเงินไม่ได้ ตรวจอินเทอร์เน็ตแล้วลองใหม่","err");}
@@ -424,10 +501,10 @@ document.addEventListener("submit",async e=>{
   const v=e.target.querySelector("input").value.trim();
   const msg=e.target.previousElementSibling;
   if(!v){say(msg,"ใส่รหัสก่อนกด “ใช้รหัส”","err");return;}
-  if(framed&&CONFIG.previewCode&&v.toUpperCase()===CONFIG.previewCode.toUpperCase()){setAccess({k:"*",exp:Date.now()+864e5});return;}
+  if(framed&&CONFIG.previewCode&&v.toUpperCase()===CONFIG.previewCode.toUpperCase()){addAccess({k:"*",t:"full",p:Date.now(),exp:Date.now()+864e5});return;}
   try{
     const {status,data}=await api("/verify",{code:v});
-    if(status===200&&data.ok){setAccess({k:data.key,exp:data.exp,token:data.token});return;}
+    if(status===200&&data.ok){addAccess(accFrom(data));return;}
     say(msg,"รหัสไม่ถูกต้อง ตรวจตัวอักษรอีกครั้ง","err");
   }catch(_){say(msg,framed?"รหัสนี้ใช้ไม่ได้ในหน้าพรีวิว":"เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ ลองใหม่อีกครั้ง","err");}
 });
@@ -452,7 +529,7 @@ function renderPillars(b){
 }
 
 function renderRead(b,a,male){
-  const dm=b.day[0], d=DM[dm], yb=b.year[1], max=Math.max(...a.cnt,1), f=a.fav[0], y=Y2026[yb];
+  const dm=b.day[0], d=DM[dm], yb=b.year[1], max=Math.max(...a.cnt,1), f=a.fav[0], cy=chineseYearOf(todayParts()), y=animalYear(cy,yb);
   const bars=a.cnt.map((c,e)=>`<div class="bar"><span>${elSpan(e,EL_HAN[e]+" "+EL_TH[e])}</span><div class="track"><div class="fill" style="width:${c/max*100}%;background:var(--${EL[e]})"></div></div><span class="num">${c}</span></div>`).join("");
   const missing=a.cnt.map((c,e)=>c===0?EL_TH[e]:null).filter(Boolean);
   const stars="★".repeat(Math.floor(y.s))+(y.s%1?"½":"")+"☆".repeat(5-Math.ceil(y.s));
@@ -476,11 +553,11 @@ function renderRead(b,a,male){
     </div>
   </div>
   <div class="card">
-    <h3>ปี${BR_TH[yb]} (${ANIMAL[yb]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span> ในปี 2569</h3>
+    <h3>ปี${BR_TH[yb]} (${ANIMAL[yb]}) <span class="hanS">${STEMS[b.year[0]]}${BR[yb]}</span> ในปี${yearName(cy)} ${BE(cy)}</h3>
     <div><span class="stars" aria-label="${y.s} จาก 5 ดาว">${stars}</span> <span class="chip ${y.s>=4?"good":y.s<3?"bad":""}">${y.tag}</span></div>
-    <p>${y.t} รายละเอียดเรื่องงาน เงิน ความรัก สุขภาพ อยู่ในแท็บดวงปี/เดือน 2569</p>
+    <p>${y.t} รายละเอียดเรื่องงาน เงิน ความรัก สุขภาพ อยู่ในแท็บดวงปีและ 12 เดือน</p>
   </div>`;
-  if(!unlocked){
+  if(!hasYear()){
     html+=lockCard("วิเคราะห์พื้นดวงเชิงลึก",["นิสัยด้านความรัก การงาน สุขภาพ และคำแนะนำเฉพาะเจ้าชะตาของคุณ","อ่านดวงทีละเสา: วัยเด็ก วัยทำงาน คู่ครอง และบั้นปลาย","โครงสร้างนิสัยจากสิบเทพ ดาวที่เด่นและดาวที่ขาด","ดาวพิเศษ: ผู้อุปถัมภ์ เสน่ห์ ม้าเดินทาง ปัญญา จิตวิญญาณ","วังคู่ครองและดาวคู่ครอง","สุขภาพตามธาตุที่ขาดหรือเกิน พร้อมวิธีปรับสมดุล"]);
     $("p-read").innerHTML=html; return;
   }
@@ -534,8 +611,8 @@ function healthHtml(a){
 }
 
 function renderLuck(b,a,male){
-  if(!unlocked){$("p-luck").innerHTML=lockCard("วัยจร 10 ปี (大运)",["เสาวัยจร 8 ช่วง ตั้งแต่อายุเริ่มจรจนถึงวัยเกษียณ","แต่ละทศวรรษ: ธีมชีวิต การงาน การเงิน ความรัก และสิ่งที่ต้องระวัง","ระดับดวงของแต่ละช่วง ดีมาก ดี กลางๆ หรือควรตั้งรับ","รายละเอียดทศวรรษที่คุณอยู่ตอนนี้"]);return;}
-  const L=luckPillars(b,male), age=2026-b.y;
+  if(!hasFull()){$("p-luck").innerHTML=lockCard("วัยจร 10 ปี (大运)",["เสาวัยจร 8 ช่วง ตั้งแต่อายุเริ่มจรจนถึงวัยเกษียณ","แต่ละทศวรรษ: ธีมชีวิต การงาน การเงิน ความรัก และสิ่งที่ต้องระวัง","ระดับดวงของแต่ละช่วง ดีมาก ดี กลางๆ หรือควรตั้งรับ","รายละเอียดทศวรรษที่คุณอยู่ตอนนี้"],"full");return;}
+  const L=luckPillars(b,male), age=todayParts().y-b.y;
   const items=L.list.map(p=>{
     const v=elScore(a,stemEl(p.s))+elScore(a,BR_EL[p.b])-(clash(p.b,b.day[1])?0.5:0);
     const [r,lab]=rateOf(v), g=tenGod(b.day[0],p.s), bg=tenGod(b.day[0],HIDDEN[p.b][0]), now=age>=p.age&&age<p.age+10, T=LUCK_GOD[g.idx];
@@ -560,34 +637,36 @@ function renderLuck(b,a,male){
   <div class="grid2">${items.map(card).join("")}</div>`;
 }
 
+function yearCard(b,by){
+  const yb=b.year[1], Y=animalYear(by,yb), g=tenGod(b.day[0],yearPillar(by)[0]);
+  return `<div class="card">
+    <h2>ปี${BR_TH[yb]} (${ANIMAL[yb]}) ในปี${yearName(by)} พ.ศ. ${BE(by)} <span class="chip ${Y.s>=4?"good":Y.s<3?"bad":""}">${Y.tag}</span></h2>
+    <p class="note">ปีจีน ${BE(by)} เริ่มที่ลี่ชุน ประมาณ 4 ก.พ. ${BE(by)} ถึงต้นเดือน ก.พ. ${BE(by+1)}</p>
+    <p>${Y.t}</p>
+    ${Y.work?kv([["การงาน",Y.work],["การเงิน",Y.money],["ความรัก",Y.love],["สุขภาพ",Y.health],["คำแนะนำ",Y.tip]]):""}
+    <p><b>ปีนี้กับเจ้าชะตา ${STEMS[b.day[0]]}:</b> <span class="chip">${g.name}</span> ${GOD_YEAR[g.rel]}</p>
+  </div>`;
+}
 function renderMonth(b,a){
-  if(!unlocked){$("p-month").innerHTML=lockCard("ดวงปีและรายเดือน 2569",["ดวงนักษัตรของคุณปี 2569 แยกงาน เงิน ความรัก สุขภาพ","ปี 2569 กับเจ้าชะตาของคุณโดยเฉพาะ","คำทำนายครบ 12 เดือนจีน (ก.พ. 2569 – ม.ค. 2570) พร้อมสิ่งที่ควรทำและควรเลี่ยง","สรุปเดือนเด่นและเดือนที่ต้องระวัง"]);return;}
-  const yb=b.year[1], Y=Y2026[yb], g=tenGod(b.day[0],2), M=months2026(b,a);
+  if(!hasYear()){$("p-month").innerHTML=lockCard("ดวงปีและดวง 12 เดือนข้างหน้า",["ดวงนักษัตรของคุณ แยกงาน เงิน ความรัก สุขภาพ ทั้งปีนี้และปีหน้า (ปีจีนเปลี่ยนที่ลี่ชุน 4 ก.พ.)","ปีจีนแต่ละปีกับเจ้าชะตาของคุณโดยเฉพาะ","ดวง 12 เดือนข้างหน้านับจากวันที่ซื้อ พร้อมสิ่งที่ควรทำและควรเลี่ยง","สรุปเดือนเด่นและเดือนที่ต้องระวัง"],"year");return;}
+  const M=monthsWindow(b,a,ANCHOR), C=curMonthStart();
   const mlabel=x=>`${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}`;
-  const T=todayParts(), tb=bazi(T.y,T.m,T.d,null), curMonthBr=tb.month[1], curInYear=tb.by===2026;
   const best=M.filter(x=>x.r>=2).map(mlabel), bad=M.filter(x=>x.r===0).map(mlabel);
+  const years=[...new Set(M.map(x=>x.by))];
+  const ended=!access.admin&&Date.now()>ANCHOR+365*864e5;
   const rows=M.map(x=>{const G=MONTH_GROUP[x.tg.rel];
     const hl=a.unfav.includes(BR_EL[x.br])?`<br><span class="note">ธาตุ${EL_TH[BR_EL[x.br]]}แรงในเดือนนี้ ดูแล${EL_INFO[BR_EL[x.br]].organs}</span>`:"";
-    const isNow=x.br===curMonthBr&&curInYear;
-    return `<tr class="${isNow?"me":""}"><td>${isNow?'<span class="tag">เดือนนี้</span><br>':""}${TERM_DAY[x.gm-1]} ${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}<br><span class="note">เดือน${BR_TH[x.br]}</span></td><td><span class="hanS">${elSpan(stemEl(x.s),STEMS[x.s])}${elSpan(BR_EL[x.br],BR[x.br])}</span><br><span class="rate r${x.r}">${x.lab}</span></td><td><b>${G.focus}</b> <span class="note">(${x.tg.name})</span><br>ควรทำ: ${G.do}<br>ควรเลี่ยง: ${G.avoid}${x.flags.length?`<br><span class="note">${x.flags.join(" · ")}</span>`:""}${hl}</td></tr>`;}).join("");
+    const isNow=x.gy===C.y&&x.gm===C.m;
+    return `<tr class="${isNow?"me":""}"><td>${isNow?'<span class="tag">เดือนนี้</span><br>':""}${TERM_DAY[x.gm-1]} ${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}<br><span class="note">เดือน${BR_TH[x.br]} · ปี${ANIMAL[yearPillar(x.by)[1]]}</span></td><td><span class="hanS">${elSpan(stemEl(x.s),STEMS[x.s])}${elSpan(BR_EL[x.br],BR[x.br])}</span><br><span class="rate r${x.r}">${x.lab}</span></td><td><b>${G.focus}</b> <span class="note">(${x.tg.name})</span><br>ควรทำ: ${G.do}<br>ควรเลี่ยง: ${G.avoid}${x.flags.length?`<br><span class="note">${x.flags.join(" · ")}</span>`:""}${hl}</td></tr>`;}).join("");
+  const first=M[0], last=M[11];
   $("p-month").innerHTML=`
+  ${ended?lockCard("ดวง 12 เดือนชุดนี้ครบกำหนดแล้ว",["ดวง 12 เดือนชุดใหม่นับจากวันที่ต่ออายุ","ดวงปีจีนปีถัดไปตามนักษัตรของคุณ"],"renew"):""}
   <div class="card">
-    <h2>ปี${BR_TH[yb]} (${ANIMAL[yb]}) ในปีม้าไฟ 2569 (ค.ศ. 2026) <span class="chip ${Y.s>=4?"good":Y.s<3?"bad":""}">${Y.tag}</span></h2>
-    <p>${Y.t}</p>
-    ${kv([["การงาน",Y.work],["การเงิน",Y.money],["ความรัก",Y.love],["สุขภาพ",Y.health],["คำแนะนำ",Y.tip]])}
+    <h2>ดวง 12 เดือนของคุณ</h2>
+    <p>ตั้งแต่เดือนจีนที่เริ่ม ${TERM_DAY[first.gm-1]} ${MON_FULL[first.gm-1]} ${BE(first.gy)} ถึงเดือนที่เริ่ม ${TERM_DAY[last.gm-1]} ${MON_FULL[last.gm-1]} ${BE(last.gy)} ${years.length>1?`ช่วงนี้คร่อม ${years.length} ปีจีน ระบบจึงแสดงดวงทั้ง${years.map(y=>"ปี"+ANIMAL[yearPillar(y)[1]]+" "+BE(y)).join(" และ")}`:""}</p>
+    ${kv([["เดือนเด่น",best.length?best.join(", "):"ไม่มีเดือนเด่นชัด ใช้ความสม่ำเสมอเป็นจุดแข็ง"],["เดือนที่ต้องระวัง",bad.length?bad.join(", "):"ไม่มีเดือนที่หนักเป็นพิเศษ"],["เดือนการเงิน",M.filter(x=>x.tg.rel===2).map(mlabel).join(", ")||"-"],["เดือนเรียนรู้/พักใจ",M.filter(x=>x.tg.rel===4).map(mlabel).join(", ")||"-"]])}
   </div>
-  <div class="grid2">
-    <div class="card">
-      <h3>ปี 2569 丙 กับเจ้าชะตา ${STEMS[b.day[0]]}</h3>
-      <p><span class="chip">${g.name}</span></p>
-      <p>${GOD_2026[g.rel]}</p>
-      <p>${godLine(g)}</p>
-    </div>
-    <div class="card">
-      <h3>สรุปทั้งปี</h3>
-      ${kv([["เดือนเด่น",best.length?best.join(", "):"ไม่มีเดือนเด่นชัด ใช้ความสม่ำเสมอเป็นจุดแข็ง"],["เดือนที่ต้องระวัง",bad.length?bad.join(", "):"ไม่มีเดือนที่หนักเป็นพิเศษ"],["เดือนการเงิน",M.filter(x=>x.tg.rel===2).map(mlabel).join(", ")||"-"],["เดือนเรียนรู้/พักใจ",M.filter(x=>x.tg.rel===4).map(mlabel).join(", ")||"-"]])}
-    </div>
-  </div>
+  ${years.map(by=>yearCard(b,by)).join("")}
   <div class="card">
     <h3>ดวงรายเดือน (นับตามวันเปลี่ยนเดือนจีน)</h3>
     <div class="tblwrap"><table><thead><tr><th>เริ่ม</th><th>เสาเดือน</th><th>คำทำนาย</th></tr></thead><tbody>${rows}</tbody></table></div>
@@ -595,7 +674,7 @@ function renderMonth(b,a){
 }
 
 function renderMoney(b,a){
-  if(!unlocked){$("p-money").innerHTML=lockCard("การเงินและอาชีพตามธาตุ",["สไตล์การหาเงิน การใช้เงิน และการเก็บเงินของคุณ","แผนการเงินตามช่วงวัย: ออม ลงทุน ความคุ้มครอง เกษียณ","อาชีพและอุตสาหกรรมที่ธาตุส่งเสริม","กลุ่มการลงทุนที่ธาตุสอดคล้อง","เดือนการเงินดีของปี 2569"]);return;}
+  if(!hasFull()){$("p-money").innerHTML=lockCard("การเงินและอาชีพตามธาตุ",["สไตล์การหาเงิน การใช้เงิน และการเก็บเงินของคุณ","แผนการเงินตามช่วงวัย: ออม ลงทุน ความคุ้มครอง เกษียณ","อาชีพและอุตสาหกรรมที่ธาตุส่งเสริม","กลุ่มการลงทุนที่ธาตุสอดคล้อง","เดือนการเงินดีใน 12 เดือนข้างหน้า"],"full");return;}
   const wE=(a.dmE+2)%5, wCnt=a.cnt[wE], wFav=a.fav.includes(wE), out=a.gods[1], res=a.gods[4], off=a.gods[3];
   let style,plan;
   if(a.strong&&wFav){style="นักล่าโอกาส: ดวงแข็งพอจะแบกความเสี่ยงและจัดการทรัพย์ก้อนใหญ่";plan="รับความเสี่ยงได้ปานกลางถึงสูง แต่ควรมีเงินสำรองฉุกเฉิน 6 เดือนและแผนคุ้มครองรายได้ก่อน แล้วค่อยกระจายลงทุนตามเป้าหมาย";}
@@ -610,13 +689,13 @@ function renderMoney(b,a){
   if(a.gods[0]>=3) tips.push("ดาวเพื่อนและคู่แข่งเยอะ ระวังการร่วมหุ้นและให้ยืมเงิน ทำสัญญาเป็นลายลักษณ์อักษรเสมอ");
   if(a.godIdx[4]>a.godIdx[5]) tips.push("ลาภลอย (偏财) เด่นกว่ารายได้ประจำ เหมาะมีรายได้หลายทาง แต่ต้องกันเงินส่วนหนึ่งไว้ไม่ให้แตะ");
   if(a.godIdx[5]>a.godIdx[4]) tips.push("รายได้ประจำ (正财) เด่น เงินมาจากความขยันสม่ำเสมอ เหมาะการออมและลงทุนระยะยาว");
-  const age=2026-b.y;
+  const age=todayParts().y-b.y, cy=chineseYearOf(todayParts());
   const stage=age<30?["ช่วงสร้างนิสัย","ออมอย่างน้อย 20% ของรายได้ มีเงินสำรอง 3–6 เดือน ทำประกันสุขภาพตั้งแต่ยังแข็งแรงเพื่อเบี้ยถูกและไม่มีข้อยกเว้น เริ่มลงทุนสม่ำเสมอแม้จำนวนน้อย"]
     :age<45?["ช่วงสร้างทรัพย์","กระจายการลงทุนตามเป้าหมาย คุ้มครองรายได้ด้วยประกันชีวิตให้คนที่พึ่งพาคุณ วางแผนการศึกษาบุตรและเริ่มแผนเกษียณจริงจัง"]
     :age<60?["ช่วงเตรียมเกษียณ","ลดความเสี่ยงของพอร์ตทีละขั้น คำนวณเงินที่ต้องใช้หลังเกษียณ วางแผนบำนาญและประกันสุขภาพระยะยาวที่คุ้มครองถึงวัยสูงอายุ"]
     :["ช่วงรักษาทรัพย์","สร้างกระแสเงินสดสม่ำเสมอ เก็บเงินค่ารักษาพยาบาลแยกไว้ และวางแผนส่งต่อทรัพย์สินให้ชัดเจน"];
-  const M=months2026(b,a).filter(x=>x.tg.rel===2||x.r===3).map(x=>`${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}`);
-  const g=tenGod(b.day[0],2);
+  const M=monthsWindow(b,a,ANCHOR).filter(x=>x.tg.rel===2||x.r===3).map(x=>`${MON_TH[x.gm-1]} ${String(BE(x.gy)).slice(2)}`);
+  const g=tenGod(b.day[0],yearPillar(cy)[0]);
   $("p-money").innerHTML=`
   <div class="card">
     <h2>สไตล์การเงินของคุณ</h2>
@@ -625,7 +704,7 @@ function renderMoney(b,a){
   </div>
   <div class="grid2">
     <div class="card"><h3>ข้อสังเกตจากดวง</h3>${tips.length?`<ul class="list">${tips.map(t=>`<li>${t}</li>`).join("")}</ul>`:"<p>โครงสร้างการเงินสมดุล ไม่มีจุดที่ต้องระวังเป็นพิเศษ</p>"}</div>
-    <div class="card"><h3>แผนการเงินตามช่วงวัย (อายุ ${age} ปีในปี 2569)</h3><p><b>${stage[0]}</b></p><p>${stage[1]}</p></div>
+    <div class="card"><h3>แผนการเงินตามช่วงวัย (อายุประมาณ ${age} ปี)</h3><p><b>${stage[0]}</b></p><p>${stage[1]}</p></div>
   </div>
   <div class="grid2">
     <div class="card"><h3>อาชีพที่ธาตุส่งเสริม</h3>
@@ -635,18 +714,31 @@ function renderMoney(b,a){
       ${a.fav.map(e=>`<p>${elSpan(e,EL_TH[e])}: ${LUCK[e].invest}</p>`).join("")}
       <p class="note">ใช้ประกอบการคิดเท่านั้น ไม่ใช่คำแนะนำการลงทุน ควรดูเป้าหมาย ระยะเวลา และความเสี่ยงที่รับได้ร่วมด้วย</p></div>
   </div>
-  <div class="card"><h3>จังหวะการเงินปี 2569</h3>
-    <p>${g.name} · ${GOD_2026[g.rel]}</p>
-    ${kv([["เดือนการเงินเด่น",M.length?M.join(", "):"ไม่มีเดือนเด่นชัด เน้นออมสม่ำเสมอทั้งปี"]])}
+  <div class="card"><h3>จังหวะการเงินปี${yearName(cy)} ${BE(cy)}</h3>
+    <p>${g.name} · ${GOD_YEAR[g.rel]}</p>
+    ${kv([["เดือนการเงินเด่นใน 12 เดือนข้างหน้า",M.length?M.join(", "):"ไม่มีเดือนเด่นชัด เน้นออมสม่ำเสมอทั้งปี"]])}
   </div>`;
 }
 
 function renderFS(b,a,male){
-  if(!unlocked){const k0=kua(b.by,male),D0=KUA_DIR[k0];$("p-fs").innerHTML=`<div class="card"><h2>เลขกัวของคุณ: ${k0}</h2><p>ทิศดี 4 ทิศของคุณคือ ${D0.slice(0,4).map((d,i)=>`<b>${DIRS[d]}</b> (${KUA_NAME[i][1]})`).join(", ")}</p><p class="note">ทิศที่ควรเลี่ยงที่สุดคือ ${DIRS[D0[7]]} วิธีใช้แต่ละทิศในบ้านแบบละเอียดอยู่ในรายงานฉบับเต็ม</p></div>`+lockCard("ฮวงจุ้ยเลขกัว (八宅)",["เลขกัวประจำตัว และวิธีหาทิศในบ้านด้วยมือถือ","4 ทิศมงคลพร้อมวิธีใช้ทีละข้อ: โชคลาภ สุขภาพ ความรัก ความสงบ","4 ทิศที่ควรเลี่ยง และควรวางห้องอะไรไว้ตรงนั้น","ตัวอย่างจัดห้องนอนและโต๊ะทำงานเฉพาะของคุณ","ทิศพลังงานประจำปี 2569 และการแต่งบ้านตามธาตุ"]);return;}
+  if(!hasFull()){const k0=kua(b.by,male),D0=KUA_DIR[k0];$("p-fs").innerHTML=`<div class="card"><h2>เลขกัวของคุณ: ${k0}</h2><p>ทิศดี 4 ทิศของคุณคือ ${D0.slice(0,4).map((d,i)=>`<b>${DIRS[d]}</b> (${KUA_NAME[i][1]})`).join(", ")}</p><p class="note">ทิศที่ควรเลี่ยงที่สุดคือ ${DIRS[D0[7]]} วิธีใช้แต่ละทิศในบ้านแบบละเอียดอยู่ในรายงานฉบับเต็ม</p></div>`+lockCard("ฮวงจุ้ยเลขกัว (八宅)",["เลขกัวประจำตัว และวิธีหาทิศในบ้านด้วยมือถือ","4 ทิศมงคลพร้อมวิธีใช้ทีละข้อ: โชคลาภ สุขภาพ ความรัก ความสงบ","4 ทิศที่ควรเลี่ยง และควรวางห้องอะไรไว้ตรงนั้น","ตัวอย่างจัดห้องนอนและโต๊ะทำงานเฉพาะของคุณ","ทิศพลังงานประจำปีนี้และปีหน้า และการแต่งบ้านตามธาตุ"],"full");return;}
   const k=kua(b.by,male), D=KUA_DIR[k], east=[1,3,4,9].includes(k);
   const at={}; D.forEach((d,i)=>at[d]=i);
   const cell=d=>{const i=at[d];return `<div class="${i<4?"g":"b"}">${DIRS_S[d]}<small>${KUA_NAME[i][0]} ${KUA_NAME[i][1]}</small></div>`};
-  const sc=d=>{const s=STAR2026.find(x=>x[0]===d);return `<div class="${s[2]==="good"?"g":"b"}">${DIRS_S[d]}<small>ดาว ${s[1]}</small></div>`};
+  const cy=chineseYearOf(todayParts());
+  const starBlock=by=>{const S=annualStars(by), sc=d=>`<div class="${STAR_INFO[S[d]][0]?"g":"b"}">${DIRS_S[d]}<small>ดาว ${S[d]}</small></div>`;
+    return `<div class="grid2">
+    <div class="card">
+      <h3>ทิศพลังงานประจำปี${yearName(by)} ${BE(by)}</h3>
+      <p class="note">มีผลตั้งแต่ลี่ชุน ประมาณ 4 ก.พ. ${BE(by)} ถึงต้นเดือน ก.พ. ${BE(by+1)}</p>
+      <p>พลังงานประจำปีเปลี่ยนทุกปีและมีผลกับ<b>ทุกคนในบ้าน</b> ต่างจากเลขกัวที่เป็นของแต่ละคน ดูจาก<b>โซนของบ้าน</b> ไม่ใช่ทิศที่หันหน้า</p>
+      <div class="compass" aria-label="ดาวประจำปี ${BE(by)}">${sc("NW")}${sc("N")}${sc("NE")}${sc("W")}<div class="c">${S.C}</div>${sc("E")}${sc("SW")}${sc("S")}${sc("SE")}</div>
+    </div>
+    <div class="card">
+      <h3>ความหมายของแต่ละโซนปี ${BE(by)}</h3>
+      <ul class="list">${FLIGHT.slice(1).map(d=>{const n=S[d],I=STAR_INFO[n];return `<li><b class="${I[0]?"el-wood":"el-fire"}">โซน${DIRS[d]}: ${I[1]}</b><br>${I[2]}</li>`}).join("")}<li><b>กลางบ้าน: ${STAR_INFO[S.C][1]}</b><br>รักษาให้โล่งและสะอาด</li></ul>
+    </div>
+  </div>`;};
   const dirCard=(d,i)=>{const K=KUA_DETAIL[i];return `<div class="card dircard ${i<4?"g":"b"}">
       <div class="dh"><span class="dn">ทิศ${DIRS[d]}</span><span class="chip ${i<4?"good":"bad"}">${i<4?"ทิศดีอันดับ "+(i+1):"ทิศควรเลี่ยง"}</span></div>
       <p><b>${KUA_NAME[i][0]} ${K.read}</b> · ${KUA_NAME[i][1]}</p>
@@ -693,17 +785,8 @@ function renderFS(b,a,male){
   <div class="grid2">${D.slice(0,4).map((d,i)=>dirCard(d,i)).join("")}</div>
   <h2>4 ทิศที่ควรเลี่ยง</h2>
   <div class="grid2">${D.slice(4).map((d,i)=>dirCard(d,i+4)).join("")}</div>
-  <div class="grid2">
-    <div class="card">
-      <h3>ทิศพลังงานประจำปี 2569</h3>
-      <p>พลังงานประจำปีเปลี่ยนทุกปีและมีผลกับ<b>ทุกคนในบ้าน</b> ต่างจากเลขกัวที่เป็นของแต่ละคน ดูจาก<b>โซนของบ้าน</b> ไม่ใช่ทิศที่หันหน้า</p>
-      <div class="compass" aria-label="ดาวประจำปี 2569">${sc("NW")}${sc("N")}${sc("NE")}${sc("W")}<div class="c">1</div>${sc("E")}${sc("SW")}${sc("S")}${sc("SE")}</div>
-    </div>
-    <div class="card">
-      <h3>ความหมายของแต่ละโซนปีนี้</h3>
-      <ul class="list">${STAR2026.map(s=>`<li><b class="${s[2]==="good"?"el-wood":"el-fire"}">โซน${DIRS[s[0]]}: ${s[3]}</b><br>${s[4]}</li>`).join("")}</ul>
-    </div>
-  </div>
+  ${starBlock(cy)}
+  ${starBlock(cy+1)}
   <div class="card">
     <h3>แต่งบ้านเสริมธาตุให้คุณ</h3>
     <p>ธาตุให้คุณจากดวงปาจื้อของคุณคือ ${a.fav.map(e=>elSpan(e,EL_TH[e])).join(" และ ")} ใช้ของตกแต่งเหล่านี้ในห้องนอนและมุมทำงาน</p>
@@ -773,7 +856,7 @@ function runMatch(){
   const lv=n=>n>=4?"hi":n===3?"mid":"lo";
   const order=r.types.map((v,i)=>[v,i]).sort((x,z)=>z[0]-x[0]);
   const best=order.filter(x=>x[0]===order[0][0]).map(x=>RTYPES[x[1]].name);
-  const Y1=Y2026[r.a], Y2=Y2026[r.c];
+  const cy=chineseYearOf(todayParts()), Y1=animalYear(cy,r.a), Y2=animalYear(cy,r.c);
   $("matchOut").innerHTML=`
   <div class="card">
     <h3>คะแนนคู่สมพงษ์ ${esc(nm1)} กับ ${esc(nm2)}</h3>
@@ -783,7 +866,7 @@ function runMatch(){
     <p>${R.txt}</p>
     <p><b>เหมาะที่สุดกับความสัมพันธ์แบบ:</b> ${best.join(", ")}</p>
   </div>
-  ${unlocked?`<div class="card">
+  ${hasFull()?`<div class="card">
     <h3>คู่นี้เหมาะกับความสัมพันธ์แบบไหน</h3>
     <div>${RTYPES.map((t,i)=>{const v=r.types[i];return `<div class="rtype"><b>${t.name}</b><span class="stars" aria-label="${v} จาก 5">${st(v)}</span><p>${t[lv(v)]}</p></div>`}).join("")}</div>
   </div>
@@ -809,13 +892,13 @@ function runMatch(){
     <h3>เรื่องเงินเมื่ออยู่ด้วยกัน</h3><p>${MONEY_PAIR[r.r]}</p>
     <h3>ธาตุประสานความสัมพันธ์: ${elSpan(r.bridge,EL_HAN[r.bridge]+" "+EL_TH[r.bridge])}</h3>
     <p>ธาตุนี้ช่วยเชื่อมพลังของทั้งคู่ ทำกิจกรรมร่วมกันที่เกี่ยวกับ${LUCK[r.bridge].act} หรือใช้สี${LUCK[r.bridge].color.split(" ")[0]}ในบ้านและวันสำคัญ</p>
-    <h3>ทั้งคู่ในปี 2569</h3>
+    <h3>ทั้งคู่ในปี${yearName(cy)} ${BE(cy)}</h3>
     <p>${esc(nm1)} ปี${BR_TH[r.a]}: ${Y1.tag} · ${esc(nm2)} ปี${BR_TH[r.c]}: ${Y2.tag}${(Y1.s<3||Y2.s<3)?" · ปีนี้มีฝ่ายหนึ่งดวงผันผวน อีกฝ่ายควรเป็นหลักให้พิงและใจเย็นเป็นพิเศษ":" · ปีนี้ดวงของทั้งคู่ไม่ขัดกัน เหมาะวางแผนเรื่องสำคัญร่วมกัน"}</p>
   </div>
   <div class="card">
     <h3>คำแนะนำสำหรับความสัมพันธ์</h3><p>${R.adv}</p>
     <p class="note">คู่ไหนก็ไปได้ดีถ้าเข้าใจกันและพูดคุยกันสม่ำเสมอ คะแนนนี้บอกจุดที่ง่ายและจุดที่ต้องใส่ใจ ไม่ได้ตัดสินความสัมพันธ์</p>
-  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปี 2569"])}`;
+  </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปีนี้"],"full")}`;
 }
 
 
@@ -914,7 +997,7 @@ function run(){
   const [y,m,d]=v.split("-").map(Number);
   const hour=$("bh")?getHour():null;
   const male=($("sex")?.value||"f")==="m";
-  unlocked=!!access&&access.exp>Date.now()&&(access.k==="*"||access.k===reportKey());
+  access=effAccess(reportKey()); TIER=access?access.t:null; ANCHOR=access?(access.admin?Date.now():access.p):Date.now();
   const b=bazi(y,m,d,hour); current=b;
   const a=analyse(b); currentA=a;
   if($("pillars")) renderPillars(b);
@@ -924,9 +1007,9 @@ function run(){
   if($("p-money")) renderMoney(b,a);
   if($("p-fs")) renderFS(b,a,male);
   if($("p-daily")) renderDaily(b,a);
-  document.querySelectorAll(".tabs .lk").forEach(x=>x.hidden=unlocked);
-  if($("status")) $("status").textContent=unlocked?(access.k==="*"?"รายงานฉบับเต็ม · โหมดผู้ดูแล":"รายงานฉบับเต็ม"):(PAGE==="daily"?"ดวงรายวันดูฟรีทุกวัน":"ฉบับฟรี · ส่วนที่มีจุดหรือกรอบเส้นประคือส่วนพรีเมียม");
-  if($("pdfBtn")) $("pdfBtn").hidden=!(unlocked&&!framed);
+  document.querySelectorAll(".tabs .lk").forEach(x=>x.hidden=x.parentElement.id==="t-month"?hasYear():hasFull());
+  if($("status")) $("status").textContent=TIER?(TIER_NAME[TIER]+(access.admin?" · โหมดผู้ดูแล":"")+(TIER==="year"?" · อัปเกรดเพื่อดูวัยจร การเงิน ฮวงจุ้ย และคู่สมพงษ์":"")):(PAGE==="daily"?"ดวงรายวันดูฟรีทุกวัน":"ฉบับฟรี · ส่วนที่มีจุดหรือกรอบเส้นประคือส่วนพรีเมียม");
+  if($("pdfBtn")) $("pdfBtn").hidden=!(hasYear()&&!framed);
   if($("printHead")){const nm=$("nm")?.value.trim()||"";
     $("printHead").innerHTML=`<h2>รายงานดวงจีนแปดอักษร${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${thaiDate(y,m,d)} (ค.ศ. ${y})${hour!=null?` เวลา ${pad(hour)}:00–${pad(hour)}:59 น.`:" · ไม่ทราบเวลาเกิด"} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;}
   if($("bd2")||$("bd2-y")) { if(getDate("bd2")) runMatch(); }
@@ -961,18 +1044,19 @@ async function boot(){
     $("status")&&($("status").textContent="กำลังยืนยันการชำระเงิน...");
     try{
       const {status,data}=await api("/verify",{session_id:sid});
-      if(status===200&&data.ok){restoreForm(data.key);store.set("bazi_pending",null);saveMe();setAccess({k:data.key,exp:data.exp,token:data.token});$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · รายงานฉบับเต็ม");return;}
+      if(status===200&&data.ok){restoreForm(data.key);store.set("bazi_pending",null);saveMe();addAccess(accFrom(data));$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]);return;}
       const p=store.get("bazi_pending"); if(p) restoreForm(p.key); run();
       $("status")&&($("status").textContent=status===202?"ยังไม่ได้รับยืนยันการชำระเงิน รอสักครู่แล้วรีเฟรชหน้านี้":"ยืนยันการชำระเงินไม่สำเร็จ กรุณาติดต่อ "+CONFIG.contact);
     }catch(_){run();$("status")&&($("status").textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ รีเฟรชหน้านี้อีกครั้ง");}
     return;
   }
-  if(access&&access.k!=="*") restoreForm(access.k); // returning buyer: reopen their paid report
+  const mine=ACC.filter(a=>a.k!=="*").sort((x,z)=>z.p-x.p)[0];
+  if(mine) restoreForm(mine.k); // returning buyer: reopen their latest paid report
   else if(loadMe()&&$("exnote")) $("exnote").hidden=true;
   run();
   if(q.has("canceled")&&$("status")) $("status").textContent="ยกเลิกการชำระเงินแล้ว ยังไม่มีการตัดเงิน";
-  if(access&&access.token&&!framed){
-    try{const {status}=await api("/verify",{token:access.token}); if(status===401) setAccess(null);}catch(_){}
+  if(!framed) for(const a of ACC.filter(x=>x.token)){
+    try{const {status}=await api("/verify",{token:a.token}); if(status===401) dropAccess(a);}catch(_){}
   }
 }
 boot();
