@@ -80,20 +80,20 @@ const CONFIG={
 3. ถ้าจ่ายแล้ว ระบบออก “ตั๋วปลดล็อก” ที่เซ็นด้วย `TOKEN_SECRET` อายุ 1 ปี ผูกกับวันเกิดนั้น ปลอมไม่ได้ และเปิดดวงคนอื่นด้วยตั๋วใบนี้ไม่ได้
 4. ตั๋วเก็บไว้ในเบราว์เซอร์ของลูกค้า ถ้าลูกค้าเปลี่ยนเครื่องหรือล้างข้อมูลเบราว์เซอร์ ให้พี่ใช้รหัสผู้ดูแลเปิดรายงานแล้วบันทึก PDF ส่งให้แทน
 
-## ขั้นที่ 5.1 แผนโดเมนที่เลือกไว้: onenesslove + โดเมนย่อย
+## ขั้นที่ 5.1 แผนโดเมนที่เลือกไว้: rungseesomboon + โดเมนย่อย
 
 | ที่อยู่ | ใช้ทำอะไร |
 |---|---|
-| `onenesslove.com` (ถ้าว่าง หรือต่อท้ายเช่น `onenesslove.co`) | เว็บหลัก งานอบรม Workshop Counseling E-book |
-| `heng.onenesslove.com` | เว็บดูดวง "เฮงเฮงเฮง ดวงจีน" (เว็บชุดนี้) |
-| `workshop.onenesslove.com` | หน้าขาย Workshop "ธาตุทีมขาย" (ทำภายหลัง) |
+| `rungseesomboon.com` (ถ้าว่าง หรือต่อท้ายเช่น `rungseesomboon.co`) | เว็บหลัก งานอบรม Workshop Counseling E-book |
+| `heng.rungseesomboon.com` | เว็บดูดวง "เฮงเฮงเฮง ดวงจีน" (เว็บชุดนี้) |
+| `workshop.rungseesomboon.com` | หน้าขาย Workshop "ธาตุทีมขาย" (ทำภายหลัง) |
 
 ขั้นตอนผูกโดเมนย่อยกับ Netlify:
-1. ซื้อ `onenesslove` (เปิด WHOIS privacy) แล้วเช็กความว่างที่หน้าค้นหาโดเมนของผู้ขายก่อนจ่าย
-2. Netlify → Domain management → **Add a domain** → พิมพ์ `heng.onenesslove.com`
+1. ซื้อ `rungseesomboon` (เปิด WHOIS privacy) แล้วเช็กความว่างที่หน้าค้นหาโดเมนของผู้ขายก่อนจ่าย
+2. Netlify → Domain management → **Add a domain** → พิมพ์ `heng.rungseesomboon.com`
 3. ที่หน้า DNS ของผู้ขายโดเมน เพิ่ม **CNAME** ชื่อ `heng` ชี้ไป `<ชื่อเว็บ>.netlify.app`
 4. รอแล้วกด Verify DNS ใน Netlify จะได้ https อัตโนมัติ และตั้งเป็น Primary domain
-5. Facebook Domain Verification ยืนยันที่ `onenesslove.com` (โดเมนหลัก) ครั้งเดียว ครอบคลุมโดเมนย่อย
+5. Facebook Domain Verification ยืนยันที่ `rungseesomboon.com` (โดเมนหลัก) ครั้งเดียว ครอบคลุมโดเมนย่อย
 6. เว็บดูดวงไม่โยงงานประกันและไม่ใส่ข้อมูลบริษัทประกันในโดเมนนี้
 
 ## ขั้นที่ 5 (แนะนำ): ใช้โดเมนของตัวเอง
