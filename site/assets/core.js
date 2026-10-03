@@ -1010,7 +1010,7 @@ async function makeShareCard(b,a){
   // seal
   x.save();x.translate(110,150);x.rotate(-0.07);x.strokeStyle="#D2473B";x.lineWidth=6;x.strokeRect(-55,-55,110,110);x.fillStyle="#D2473B";x.font='900 40px "Noto Serif TC",serif';x.textAlign="center";x.textBaseline="middle";
   x.fillText("八",-24,-24);x.fillText("字",24,-24);x.fillText("命",-24,24);x.fillText("理",24,24);x.restore();
-  x.textAlign="left";x.textBaseline="alphabetic";x.fillStyle="#C9D3CE";x.font='500 40px "IBM Plex Sans Thai",sans-serif';x.fillText("ธาตุประจำตัวของฉัน · ดวงจีน 8 อักษร",200,165);
+  x.textAlign="left";x.textBaseline="alphabetic";x.fillStyle="#C9D3CE";x.font='500 40px "IBM Plex Sans Thai",sans-serif';x.fillText("ธาตุประจำตัวของฉัน · เฮงเฮงเฮง ดวงจีน",200,165);
   // hero character
   x.textAlign="center";x.fillStyle=EL_HEX[e];x.font='900 400px "Noto Serif TC",serif';x.fillText(STEMS[dm],W/2,700);
   x.fillStyle="#FFFFFF";x.font='700 84px "Noto Serif Thai",serif';x.fillText(DM[dm].name,W/2,905);
@@ -1111,7 +1111,7 @@ function run(){
   if($("status")) $("status").textContent=TIER?(TIER_NAME[TIER]+(access.admin?" · โหมดผู้ดูแล":"")+(TIER==="year"?" · อัปเกรดเพื่อดูวัยจร การเงิน ฮวงจุ้ย และคู่สมพงษ์":"")):(PAGE==="daily"?"ดวงรายวันดูฟรีทุกวัน":"ฉบับฟรี · ส่วนที่มีจุดหรือกรอบเส้นประคือส่วนพรีเมียม");
   if($("pdfBtn")) $("pdfBtn").hidden=!(hasYear()&&!framed);
   if($("printHead")){const nm=$("nm")?.value.trim()||"";
-    $("printHead").innerHTML=`<h2>รายงานดวงจีนแปดอักษร${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${thaiDate(y,m,d)} (ค.ศ. ${y})${hour!=null?` เวลา ${pad(hour)}:00–${pad(hour)}:59 น.`:" · ไม่ทราบเวลาเกิด"} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;}
+    $("printHead").innerHTML=`<h2>รายงานเฮงเฮงเฮง ดวงจีน${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${thaiDate(y,m,d)} (ค.ศ. ${y})${hour!=null?` เวลา ${pad(hour)}:00–${pad(hour)}:59 น.`:" · ไม่ทราบเวลาเกิด"} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;}
   if($("bd2")||$("bd2-y")) { if(getDate("bd2")) runMatch(); }
 }
 function restoreForm(key){
