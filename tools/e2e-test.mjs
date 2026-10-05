@@ -33,7 +33,7 @@ async function newPage(clock){const ctx=await b.newContext({viewport:{width:400,
   if(clock) await p.clock.setFixedTime(new Date(clock));
   p.on("pageerror",e=>errs.push(e.message));return p;}
 const paid=async p=>p.waitForFunction(()=>!location.search&&document.getElementById("status")?.textContent.includes("ชำระเงินสำเร็จ"));
-async function pay(p,sel){await p.evaluate(()=>{document.getElementById("status").textContent="";});await p.click(sel);await paid(p);}
+async function pay(p,sel){await p.evaluate(()=>{document.getElementById("status").textContent="";});await p.click(sel);await p.click('.confirm-box [data-c="y"]');await paid(p);}
 async function fill(p,y,m,d,sex,h){await p.selectOption("#bd-y",String(y));await p.selectOption("#bd-m",String(m));await p.selectOption("#bd-d",String(d));await p.selectOption("#sex",sex);await p.selectOption("#bh",h);await p.click("#f .go");}
 const txt=async(p,sel)=>(await p.textContent(sel)).replace(/\s+/g," ");
 const locks=async(p,sel)=>p.locator(sel+" .lock").count();
@@ -145,7 +145,7 @@ ok("after accept: TikTok loaded + page",await q.evaluate(()=>Array.isArray(windo
 await q.click("#f .go");
 ok("reading fires ViewContent",(await tlog(q)).some(e=>e[0]==="ViewContent"));
 await q.evaluate(()=>{document.getElementById("status").textContent="";});
-await q.click('#p-read .pay[data-tier="year"]'); await q.waitForFunction(()=>!location.search&&document.getElementById("status")?.textContent.includes("ชำระเงินสำเร็จ"));
+await q.click('#p-read .pay[data-tier="year"]'); await q.click('.confirm-box [data-c="y"]'); await q.waitForFunction(()=>!location.search&&document.getElementById("status")?.textContent.includes("ชำระเงินสำเร็จ"));
 let L=await tlog(q);
 ok("checkout fires InitiateCheckout 299",L.some(e=>e[0]==="InitiateCheckout"&&e[1]===299),JSON.stringify(L));
 const pur=L.filter(e=>e[0]==="Purchase");
@@ -171,7 +171,12 @@ await q.selectOption("#bd2-y","1986");await q.selectOption("#bd2-m","7");await q
 await q.fill("#nm2","คุณบี"); await q.click("#f2 .go");
 ok("match page offers pair pack",await q.locator('#matchOut .pay[data-tier="pair"]').count()===1);
 await q.evaluate(()=>{document.getElementById("status").textContent="";});
-await q.click('#matchOut .pay[data-tier="pair"]'); await q.waitForFunction(()=>!location.search&&document.getElementById("status")?.textContent.includes("ชำระเงินสำเร็จ"));
+await q.click('#matchOut .pay[data-tier="pair"]');
+ok("pair confirm dialog shows both people",(await txt(q,".confirm-box")).includes("3 มีนาคม 2531")&&(await txt(q,".confirm-box")).includes("20 กรกฎาคม 2529")&&(await txt(q,".confirm-box")).includes("คุณบี"));
+const nBefore=created.length;
+await q.click('.confirm-box [data-c="n"]'); await q.waitForTimeout(200);
+ok("cancelling the confirm does not create a payment",created.length===nBefore&&await q.locator(".confirm-box").count()===0);
+await q.click('#matchOut .pay[data-tier="pair"]'); await q.click('.confirm-box [data-c="y"]'); await q.waitForFunction(()=>!location.search&&document.getElementById("status")?.textContent.includes("ชำระเงินสำเร็จ"));
 const sp=created.at(-1);
 ok("pair pack charges 990 THB with both birth keys",sp.amount===99000&&sp.metadata.tier==="pair"&&sp.metadata.key==="1988-03-03|14|f"&&sp.metadata.key2==="1986-07-20|06|m",JSON.stringify(sp.metadata));
 ok("buyer gets full pack and compatibility detail",(await txt(q,"#status")).includes("แพ็กชีวิตฉบับสมบูรณ์")&&await q.locator("#matchOut .lock").count()===0);

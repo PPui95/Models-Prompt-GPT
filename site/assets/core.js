@@ -487,14 +487,36 @@ function lockCard(title,items,need="year",opts={}){
   </div>`;
 }
 const say=(el,txt,cls)=>{el.className="msg "+(cls||"");el.textContent=txt;};
+function describeKey(k){const [bd,h,sx]=k.split("|"),[y,m,d]=bd.split("-").map(Number);return `${thaiDate(y,m,d)} (ค.ศ. ${y}) · ${sx==="m"?"ชาย":"หญิง"} · ${h?`เวลา ${pad(h)}:00–${pad(h)}:59 น.`:"ไม่ทราบเวลาเกิด"}`;}
+// confirmation before paying: the report is bound to the birth data entered here
+function confirmBirth(tier){
+  return new Promise(res=>{
+    const people=[{n:($("nm")?.value||"").trim(),k:reportKey()}];
+    if(tier==="pair") people.push({n:($("nm2")?.value||"").trim(),k:reportKey2()});
+    const prev=document.activeElement;
+    const wrap=document.createElement("div"); wrap.className="share-modal"; wrap.setAttribute("role","dialog"); wrap.setAttribute("aria-modal","true"); wrap.setAttribute("aria-label","ตรวจสอบวันเกิดก่อนชำระเงิน");
+    wrap.innerHTML=`<div class="share-box confirm-box"><h3>ตรวจสอบวันเกิดก่อนชำระเงิน</h3>${people.map((p,i)=>`<div class="card"><b>${esc(p.n)||("คนที่ "+(i+1))}</b><br>${describeKey(p.k)}</div>`).join("")}<p class="note">รายงานจะผูกกับวันเกิด เวลาเกิด และเพศนี้${tier==="pair"?" ของทั้งสองคน":""} และเปลี่ยนภายหลังด้วยตัวเองไม่ได้ ถ้าไม่ถูกต้อง กลับไปแก้ไขก่อนค่ะ</p><div class="row"><button type="button" class="go" data-c="y">ยืนยันและไปชำระเงิน</button><button type="button" class="ghost" data-c="n">กลับไปแก้ไข</button></div></div>`;
+    const done=v=>{document.removeEventListener("keydown",onKey);wrap.remove();if(prev&&prev.focus)prev.focus();res(v);};
+    const onKey=e=>{if(e.key==="Escape")done(false);};
+    wrap.addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(b)done(b.dataset.c==="y");});
+    document.addEventListener("keydown",onKey);
+    document.body.appendChild(wrap);
+    wrap.querySelector('[data-c="n"]').focus();
+  });
+}
 document.addEventListener("click",async e=>{
   const btn=e.target.closest(".pay"); if(!btn) return;
   const msg=btn.parentElement.nextElementSibling;
   if(framed){say(msg,"การชำระเงินใช้ได้บนเว็บจริงเท่านั้น หน้านี้เป็นพรีวิว","err");return;}
-  btn.disabled=true; say(msg,"กำลังเปิดหน้าชำระเงิน...");
+  const tier=btn.dataset.tier||"year";
+  if(tier==="pair"&&(!getDate("bd2")||reportKey2()===reportKey())){say(msg,"แพ็กคู่ต้องกรอกวันเกิด เวลาเกิด และเพศของอีกคน ที่ต่างจากของคุณ แล้วกดดูคู่สมพงษ์ใหม่อีกครั้ง","err");return;}
+  btn.disabled=true;
+  const okGo=await confirmBirth(tier);
+  if(!okGo){btn.disabled=false;say(msg,"");return;}
+  say(msg,"กำลังเปิดหน้าชำระเงิน...");
   store.set("bazi_pending",{key:reportKey(),nm:$("nm").value.trim(),bd2:$("bd2-y")?getDate("bd2"):"",nm2:$("nm2")?$("nm2").value.trim():"",bh2:$("bh2")?$("bh2").value:"",sex2:$("sex2")?$("sex2").value:""});
   try{
-    const tier=btn.dataset.tier||"year", acc=effAccess(reportKey());
+    const acc=effAccess(reportKey());
     track("InitiateCheckout",{tier,value:tierValue(tier)});
     const {status,data}=await api("/checkout",{key:reportKey(),key2:tier==="pair"?reportKey2():undefined,page:document.body.dataset.page||"chart",tier,token:tier==="upgrade"&&acc?acc.yearTok:undefined});
     if(status===200&&data.url){location.href=data.url;return;}
