@@ -168,6 +168,25 @@ def build(out, preview):
         shutil.copy(os.path.join(ASSETS,'style.css'),os.path.join(out,'assets','style.css'))
         core=open(os.path.join(ASSETS,'core.js'),encoding='utf8').read().replace('previewCode:""','previewCode:"PUEY2026"')
         open(os.path.join(out,'assets','core.js'),'w',encoding='utf8').write(core)
+    NF='''<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>ไม่พบหน้านี้ | เฮงเฮงเฮง ดวงจีน</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<main style="max-width:560px;margin:0 auto;padding:96px 16px;text-align:center">
+<h1 style="margin:0 0 12px">ไม่พบหน้านี้</h1>
+<p>ลิงก์อาจพิมพ์ผิดหรือหน้านี้ถูกย้ายแล้ว ลองกลับไปที่หน้าแรกนะคะ</p>
+<p style="margin-top:24px"><a class="btn" href="/">กลับหน้าแรก เฮงเฮงเฮง ดวงจีน</a></p>
+</main>
+</body>
+</html>
+'''
+    open(os.path.join(out,'404.html'),'w',encoding='utf8').write(NF)
     for name,(title,desc,body) in PAGES.items():
         html=page(name,title,desc,body)
         if preview and name=='index':
