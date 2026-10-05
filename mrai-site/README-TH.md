@@ -2,7 +2,7 @@
 
 - ไฟล์: `index.html` ใช้ได้เลยเป็นหน้าเดียว ไม่ต้อง build
 - ช่องสีเหลือง `[...]` คือข้อมูลที่ต้องเติม: ชื่อเล่ม, บทต่างๆ, ราคา, เงื่อนไขคืนเงิน, ช่องทางติดต่อ
-- แทนที่ `LINE_URL` ด้วยลิงก์ LINE OA (รูปแบบ https://line.me/R/ti/p/@xxxx)
+- ลิงก์ LINE OA ใส่แล้ว: https://line.me/R/ti/p/@113fdrol
 - เมื่อเติมครบ ให้ลบบรรทัด `<meta name="robots" content="noindex">` ออก
 - ใช้ปุ่มสั่งซื้อทาง LINE ก่อน เมื่อมี Stripe แล้วเปลี่ยนเป็น Stripe Payment Link
 

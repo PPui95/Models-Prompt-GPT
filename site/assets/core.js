@@ -3,7 +3,7 @@ const CONFIG={
   priceYear:299,                // แพ็กดวงปี (บาท) ต้องตรงกับ PRICE_YEAR_THB บน Netlify
   priceFull:690,
   pricePair:990,                // แพ็กคู่: ฉบับสมบูรณ์ 2 ดวง ต้องตรงกับ PRICE_PAIR_THB                // แพ็กชีวิตฉบับสมบูรณ์ (บาท) ต้องตรงกับ PRICE_FULL_THB บน Netlify
-  contact:"ใส่ LINE ID หรือช่องทางชำระเงินของคุณที่ CONFIG.contact",
+  contact:"LINE @113fdrol",
   metaPixelId:"",               // Meta (Facebook/Instagram) Pixel ID เช่น "1234567890123456" เว้นว่าง = ไม่ติดตาม
   tiktokPixelId:"",             // TikTok Pixel ID เช่น "C1ABCDEF2GHIJK3LMNOP" เว้นว่าง = ไม่ติดตาม
   api:"/api",                   // Netlify functions (ชำระเงิน + ตรวจรหัส)
