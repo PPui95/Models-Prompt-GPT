@@ -178,6 +178,14 @@ ok("buyer gets full pack and compatibility detail",(await txt(q,"#status")).incl
 ok("partner form restored after payment",(await q.evaluate(()=>getDate("bd2")))==="1986-07-20"&&await q.inputValue("#nm2")==="คุณบี"&&await q.inputValue("#sex2")==="m");
 await q.goto("http://localhost:8788/chart.html"); await fill(q,1986,7,20,"m","6");
 ok("partner's own report is unlocked too",(await txt(q,"#status")).includes("แพ็กชีวิตฉบับสมบูรณ์")&&await locks(q,"#p-luck")===0);
+await q.goto("http://localhost:8788/match.html"); await fill(q,1988,3,3,"f","14");
+await q.selectOption("#bd2-y","1986");await q.selectOption("#bd2-m","7");await q.selectOption("#bd2-d","20");await q.selectOption("#sex2","m");await q.selectOption("#bh2","6");await q.click("#f2 .go");
+ok("match page links to both full reports after pair purchase",await q.locator('#matchOut a[href^="chart.html?open="]').count()===2);
+await q.locator('#matchOut a[href^="chart.html?open="]').nth(1).click(); await q.waitForURL("**/chart.html");
+await q.waitForFunction(()=>document.getElementById("myReports")&&document.getElementById("myReports").querySelectorAll(".mine").length===2);
+ok("link opens the partner's full report",(await q.evaluate(()=>getDate("bd")))==="1986-07-20"&&(await txt(q,"#status")).includes("แพ็กชีวิตฉบับสมบูรณ์")&&await locks(q,"#p-luck")===0);
+await q.locator('#myReports .mine[data-k^="1988"]').click(); await q.waitForTimeout(150);
+ok("switcher flips back to the buyer's report",(await q.evaluate(()=>getDate("bd")))==="1988-03-03"&&await locks(q,"#p-luck")===0);
 r=await call(checkout,{key:"1988-03-03|14|f",key2:"1988-03-03|14|f",tier:"pair"});
 ok("pair pack with the same person twice is rejected",r.status===400);
 r=await call(checkout,{key:"1988-03-03|14|f",tier:"pair"});

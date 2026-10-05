@@ -905,7 +905,7 @@ function runMatch(){
   </div>
   <div class="card">
     <h3>คำแนะนำสำหรับความสัมพันธ์</h3><p>${R.adv}</p>
-    ${(()=>{const a2=effAccess(reportKey2());return(a2&&a2.t==="full")?"":`<p class="note">วิเคราะห์คู่สมพงษ์ละเอียดนี้รวมอยู่ในแพ็กชีวิตฉบับสมบูรณ์ของคุณแล้ว ถ้าอยากเปิดรายงานฉบับเต็มของ ${esc(nm2)} ด้วย ไปที่<a href="chart.html">หน้าผูกดวง</a> กรอกวันเกิดของเขาแล้วเลือกซื้อฉบับเต็ม</p>`;})()}
+    ${(()=>{const a2=effAccess(reportKey2());return(a2&&a2.t==="full")?`<p class="note">รายงานฉบับเต็มของทั้งสองคนปลดล็อกแล้ว: <a href="chart.html?open=${encodeURIComponent(reportKey())}">เปิดรายงานของ ${esc(nm1)||"คนที่ 1"}</a> · <a href="chart.html?open=${encodeURIComponent(reportKey2())}">เปิดรายงานของ ${esc(nm2)||"คนที่ 2"}</a></p>`:`<p class="note">วิเคราะห์คู่สมพงษ์ละเอียดนี้รวมอยู่ในแพ็กชีวิตฉบับสมบูรณ์ของคุณแล้ว ถ้าอยากเปิดรายงานฉบับเต็มของ ${esc(nm2)} ด้วย ไปที่<a href="chart.html">หน้าผูกดวง</a> กรอกวันเกิดของเขาแล้วเลือกซื้อฉบับเต็ม</p>`;})()}
     <p class="note">คู่ไหนก็ไปได้ดีถ้าเข้าใจกันและพูดคุยกันสม่ำเสมอ คะแนนนี้บอกจุดที่ง่ายและจุดที่ต้องใส่ใจ ไม่ได้ตัดสินความสัมพันธ์</p>
   </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปีนี้"],"full",{pair:reportKey2()!==reportKey()})}`;
 }
@@ -1114,7 +1114,18 @@ function run(){
   if($("printHead")){const nm=$("nm")?.value.trim()||"";
     $("printHead").innerHTML=`<h2>รายงานเฮงเฮงเฮง ดวงจีน${nm?" · "+esc(nm):""}</h2><p class="note">เกิด ${thaiDate(y,m,d)} (ค.ศ. ${y})${hour!=null?` เวลา ${pad(hour)}:00–${pad(hour)}:59 น.`:" · ไม่ทราบเวลาเกิด"} · ${male?"ชาย":"หญิง"} · ออกรายงานวันที่ ${new Date().toLocaleDateString("th-TH")}</p>`;}
   if($("bd2")||$("bd2-y")) { if(getDate("bd2")) runMatch(); }
+  renderMine();
 }
+function renderMine(){
+  const st=$("status"); if(!st||!$("pdfBtn")) return;
+  let box=$("myReports");
+  if(!box){box=document.createElement("div");box.id="myReports";box.className="note";st.parentElement.insertAdjacentElement("afterend",box);}
+  const keys=[...new Set(ACC.filter(a=>a.k!=="*"&&a.exp>Date.now()).map(a=>a.k))];
+  if(keys.length<2){box.hidden=true;box.innerHTML="";return;}
+  box.hidden=false;
+  box.innerHTML="รายงานที่ปลดล็อกในเครื่องนี้: "+keys.map(k=>{const [bd,,sx]=k.split("|"),[yy,mm,dd]=bd.split("-").map(Number);return `<button type="button" class="ghost mine" data-k="${k}">${thaiDate(yy,mm,dd)} · ${sx==="m"?"ชาย":"หญิง"}</button>`;}).join(" ");
+}
+document.addEventListener("click",e=>{const b=e.target.closest(".mine"); if(!b) return; restoreForm(b.dataset.k); if($("nm"))$("nm").value=""; run();});
 function restoreForm(key){
   const [bd,h,sex]=key.split("|"), p=store.get("bazi_pending");
   setDate("bd",bd); if($("sex"))$("sex").value=sex; if($("bh"))$("bh").value=h?String(Number(h)):"";
@@ -1140,7 +1151,8 @@ async function boot(){
   }));
   if(!$("bd-y")) return;
   const q=new URLSearchParams(location.search), sid=q.get("session_id");
-  if(sid||q.has("canceled")) history.replaceState(null,"",location.pathname);
+  const openKey=q.get("open");
+  if(sid||q.has("canceled")||q.has("open")) history.replaceState(null,"",location.pathname);
   if(sid){
     $("status")&&($("status").textContent="กำลังยืนยันการชำระเงิน...");
     try{
@@ -1148,14 +1160,16 @@ async function boot(){
       if(status===200&&data.ok){restoreForm(data.key);
         const pp=store.get("bazi_pending"); if(pp&&pp.bd2&&$("bd2-y")){setDate("bd2",pp.bd2);if($("nm2"))$("nm2").value=pp.nm2||"";if($("bh2"))$("bh2").value=pp.bh2||"";if($("sex2"))$("sex2").value=pp.sex2||"f";}
         store.set("bazi_pending",null);saveMe();(data.extra||[]).forEach(x=>{ACC=ACC.filter(a=>!(a.k===x.key&&a.t===x.t));ACC.push(accFrom(x));});addAccess(accFrom(data));
-        track("Purchase",{value:data.amount??(data.extra&&data.extra.length?CONFIG.pricePair:data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.extra&&data.extra.length?"pair":data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]);return;}
+        track("Purchase",{value:data.amount??(data.extra&&data.extra.length?CONFIG.pricePair:data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.extra&&data.extra.length?"pair":data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]+(data.extra&&data.extra.length?" · แพ็กคู่: เปิดรายงานของอีกคนได้ที่หน้าผูกดวง":""));return;}
       const p=store.get("bazi_pending"); if(p) restoreForm(p.key); run();
       $("status")&&($("status").textContent=status===202?"ยังไม่ได้รับยืนยันการชำระเงิน รอสักครู่แล้วรีเฟรชหน้านี้":"ยืนยันการชำระเงินไม่สำเร็จ กรุณาติดต่อ "+CONFIG.contact);
     }catch(_){run();$("status")&&($("status").textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ รีเฟรชหน้านี้อีกครั้ง");}
     return;
   }
   const mine=ACC.filter(a=>a.k!=="*").sort((x,z)=>z.p-x.p)[0];
-  if(mine) restoreForm(mine.k); // returning buyer: reopen their latest paid report
+  const target=(openKey&&/^\d{4}-\d{2}-\d{2}\|(\d{2})?\|[mf]$/.test(openKey)&&effAccess(openKey))?openKey:null;
+  if(target){restoreForm(target);if($("nm"))$("nm").value="";}
+  else if(mine) restoreForm(mine.k); // returning buyer: reopen their latest paid report
   else if(loadMe()&&$("exnote")) $("exnote").hidden=true;
   run();
   if(q.has("canceled")&&$("status")) $("status").textContent="ยกเลิกการชำระเงินแล้ว ยังไม่มีการตัดเงิน";
