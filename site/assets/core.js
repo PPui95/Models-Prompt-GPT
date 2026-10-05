@@ -477,7 +477,7 @@ function lockCard(title,items,need="year",opts={}){
     <h2>${title}</h2>
     <p>${up?"ปลดล็อกส่วนนี้ด้วยการอัปเกรด":"ส่วนนี้ประกอบด้วย"}</p>
     <ul>${items.map(i=>`<li>${i}</li>`).join("")}</ul>
-    <p class="note">${note}${opts.pair?`<br><b>แพ็กคู่</b>: แพ็กชีวิตฉบับสมบูรณ์ทั้งของคุณและอีกฝ่าย (ปกติ ${CONFIG.priceFull*2} บาท)`:""}<br>จ่ายครั้งเดียวต่อวันเดือนปีเกิด · ชำระด้วย PromptPay หรือบัตร</p>
+    <p class="note">${note}${opts.pair?`<br><b>แพ็กคู่ ${CONFIG.pricePair} บาท</b>: ได้รายงานฉบับเต็มของ <u>ทั้งสองคน</u> พร้อมวิเคราะห์คู่สมพงษ์ละเอียด (ซื้อแยกคนละฉบับ ${CONFIG.priceFull*2} บาท)`:""}<br>จ่ายครั้งเดียวต่อวันเดือนปีเกิด · ชำระด้วย PromptPay หรือบัตร</p>
     <div class="row">${buttons}</div>
     <p class="msg" aria-live="polite"></p>
     <form class="row unlock" novalidate>
@@ -905,6 +905,7 @@ function runMatch(){
   </div>
   <div class="card">
     <h3>คำแนะนำสำหรับความสัมพันธ์</h3><p>${R.adv}</p>
+    ${(()=>{const a2=effAccess(reportKey2());return(a2&&a2.t==="full")?"":`<p class="note">วิเคราะห์คู่สมพงษ์ละเอียดนี้รวมอยู่ในแพ็กชีวิตฉบับสมบูรณ์ของคุณแล้ว ถ้าอยากเปิดรายงานฉบับเต็มของ ${esc(nm2)} ด้วย ไปที่<a href="chart.html">หน้าผูกดวง</a> กรอกวันเกิดของเขาแล้วเลือกซื้อฉบับเต็ม</p>`;})()}
     <p class="note">คู่ไหนก็ไปได้ดีถ้าเข้าใจกันและพูดคุยกันสม่ำเสมอ คะแนนนี้บอกจุดที่ง่ายและจุดที่ต้องใส่ใจ ไม่ได้ตัดสินความสัมพันธ์</p>
   </div>`:lockCard("คู่สมพงษ์แบบละเอียด",["คู่นี้เหมาะกับความสัมพันธ์แบบไหน: คู่รัก หุ้นส่วน ทีมงาน หัวหน้า–ลูกน้อง เพื่อน ครอบครัว","ที่มาของคะแนน และใครนำ ใครตาม","นิสัยของอีกฝ่าย และจุดแข็ง จุดที่ต้องระวัง","เรื่องเงินเมื่ออยู่ด้วยกัน ธาตุประสาน และดวงของทั้งคู่ในปีนี้"],"full",{pair:reportKey2()!==reportKey()})}`;
 }
@@ -1121,7 +1122,7 @@ function restoreForm(key){
   if($("exnote")) $("exnote").hidden=true;
 }
 async function boot(){
-  document.querySelectorAll("[data-cfg]").forEach(e=>{e.textContent=CONFIG[e.dataset.cfg]||"";});
+  document.querySelectorAll("[data-cfg]").forEach(e=>{e.textContent=e.dataset.cfg==="priceFullX2"?String(CONFIG.priceFull*2):(CONFIG[e.dataset.cfg]||"");});
   if($("bd-y")) buildDate("bd");
   if($("bd2-y")) buildDate("bd2");
   if($("dd-y")) buildDate("dd");
