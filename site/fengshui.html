@@ -20,12 +20,12 @@
   <div class="pagehead"><h1>ฮวงจุ้ยเลขกัว</h1><p>เลขกัวคำนวณจากปีเกิดและเพศ บอกทิศที่พลังงานส่งเสริมคุณ 4 ทิศ และทิศที่ควรเลี่ยง 4 ทิศ</p></div>
   <form id="f">
     <label for="nm">ชื่อ (ใส่ในรายงาน)<input type="text" id="nm" maxlength="40" placeholder="เช่น คุณมาลี"></label>
-    <label for="sex">เพศ<select id="sex"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
+    <label for="sex">เพศ<select id="sex"><option value="">เลือกเพศ</option><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
     <fieldset class="dsel"><legend>วันเกิด (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd-d" aria-label="วันที่เกิด"></select><select id="bd-m" aria-label="เดือนเกิด"></select><select id="bd-y" aria-label="ปีเกิด พ.ศ."></select></div></fieldset>
     <label for="bh">เวลาเกิด (ยามจีน)<select id="bh"></select></label>
     <button class="go" type="submit">หาทิศมงคล</button>
   </form>
-  <p class="note" id="exnote">ข้อมูลตัวอย่าง: หญิง เกิด 15 สิงหาคม 2528 เวลา 10 นาฬิกา ใส่ข้อมูลของคุณแล้วกด “หาทิศมงคล” ระบบจะจำข้อมูลไว้ในเครื่องนี้ให้ใช้ได้ทุกหน้า</p>
+
   <span class="note" id="status"></span>
   <section class="panel" id="p-fs"></section>
   <footer class="sitefoot">

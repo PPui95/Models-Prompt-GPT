@@ -427,15 +427,16 @@ async function api(path,body){
 function getDate(p){const d=$(p+"-d").value,m=$(p+"-m").value,y=$(p+"-y").value;return y&&m&&d?`${y}-${pad(m)}-${pad(d)}`:"";}
 function setDate(p,iso){const [y,m,d]=iso.split("-").map(Number);$(p+"-y").value=y;$(p+"-m").value=m;fillDays(p);$(p+"-d").value=d;}
 function fillDays(p){
-  const y=+$(p+"-y").value, m=+$(p+"-m").value, sel=$(p+"-d"), cur=+sel.value||1;
-  const n=new Date(y,m,0).getDate();
-  sel.innerHTML=Array.from({length:n},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
-  sel.value=Math.min(cur,n);
+  const y=+$(p+"-y").value, m=+$(p+"-m").value, sel=$(p+"-d"), cur=+sel.value||0;
+  const n=(y&&m)?new Date(y,m,0).getDate():31;
+  sel.innerHTML='<option value="">วัน</option>'+Array.from({length:n},(_,i)=>`<option value="${i+1}">${i+1}</option>`).join("");
+  sel.value=cur?String(Math.min(cur,n)):"";
 }
 function buildDate(p){
-  $(p+"-m").innerHTML=MON_FULL.map((t,i)=>`<option value="${i+1}">${t}</option>`).join("");
-  let ys=""; for(let y=2100;y>=1900;y--) ys+=`<option value="${y}">${BE(y)} (${y})</option>`;
+  $(p+"-m").innerHTML='<option value="">เดือน</option>'+MON_FULL.map((t,i)=>`<option value="${i+1}">${t}</option>`).join("");
+  let ys='<option value="">ปี พ.ศ.</option>'; for(let y=2100;y>=1900;y--) ys+=`<option value="${y}">${BE(y)} (${y})</option>`;
   $(p+"-y").innerHTML=ys;
+  fillDays(p);
   [p+"-m",p+"-y"].forEach(id=>$(id).addEventListener("change",()=>fillDays(p)));
 }
 function buildHours(){
@@ -877,7 +878,8 @@ function matchScore(b1,b2){
 }
 
 function runMatch(){
-  const iso=getDate("bd2"); if(!current||!iso) return;
+  const iso=getDate("bd2");
+  if(!current||!iso||($("sex2")&&!$("sex2").value)){const mo=$("matchOut");if(mo)mo.innerHTML=`<div class="card"><p class="note">เลือก <b>วัน เดือน ปีเกิด</b> และ<b>เพศ</b>ของอีกฝ่ายให้ครบ แล้วกดดูคู่สมพงษ์ (ส่วนของคุณต้องกรอกและกดดูดวงก่อน)</p></div>`;return;}
   const [y,m,d]=iso.split("-").map(Number);
   const b2=bazi(y,m,d,null), r=matchScore(current,b2), R=r.R;
   const nm1=$("nm").value.trim()||"คุณ", nm2=$("nm2").value.trim()||"อีกฝ่าย";
@@ -1117,6 +1119,7 @@ function saveMe(){store.set("bazi_me",{bd:getDate("bd"),h:$("bh")?.value??"",sex
 function loadMe(){const me=store.get("bazi_me");if(!me||!me.bd)return false;setDate("bd",me.bd);if($("bh"))$("bh").value=me.h;if($("sex"))$("sex").value=me.sex;if($("nm"))$("nm").value=me.nm;return true;}
 function run(){
   const v=getDate("bd"); if(!v) return;
+  if($("sex")&&!$("sex").value) return;
   const [y,m,d]=v.split("-").map(Number);
   const hour=$("bh")?getHour():null;
   const male=($("sex")?.value||"f")==="m";
@@ -1160,10 +1163,8 @@ async function boot(){
   if($("bd2-y")) buildDate("bd2");
   if($("dd-y")) buildDate("dd");
   if($("bh")) buildHours();
-  if($("bd-y")){ setDate("bd","1985-08-15"); if($("bh")) $("bh").value="10"; }
-  if($("bd2-y")) setDate("bd2","1987-03-21");
   if($("dd-y")){const T=todayParts();setDate("dd",`${T.y}-${pad(T.m)}-${pad(T.d)}`);}
-  if($("f")) $("f").addEventListener("submit",e=>{e.preventDefault();if($("exnote"))$("exnote").hidden=true;saveMe();run();track("ViewContent",{page:PAGE});});
+  if($("f")) $("f").addEventListener("submit",e=>{e.preventDefault();const need=[];if(!getDate("bd"))need.push("วัน เดือน ปีเกิด");if($("sex")&&!$("sex").value)need.push("เพศ");if(need.length){if($("status"))$("status").textContent="กรุณาเลือก"+need.join("และ")+"ให้ครบก่อนกดดูดวง";return;}if($("exnote"))$("exnote").hidden=true;saveMe();run();track("ViewContent",{page:PAGE});});
   if($("f2")) $("f2").addEventListener("submit",e=>{e.preventDefault();runMatch();track("ViewContent",{page:"match-pair"});});
   if($("pdfBtn")) $("pdfBtn").addEventListener("click",()=>window.print());
   if($("dayPick")) $("dayPick").addEventListener("change",run);
@@ -1192,7 +1193,12 @@ async function boot(){
   const target=(openKey&&/^\d{4}-\d{2}-\d{2}\|(\d{2})?\|[mf]$/.test(openKey)&&effAccess(openKey))?openKey:null;
   if(target){restoreForm(target);if($("nm"))$("nm").value="";}
   else if(mine) restoreForm(mine.k); // returning buyer: reopen their latest paid report
-  else if(loadMe()&&$("exnote")) $("exnote").hidden=true;
+  else loadMe();
+  if($("exnote")) $("exnote").hidden=true;
+  if(!getDate("bd")||($("sex")&&!$("sex").value)){
+    const hint='<div class="card"><p>เริ่มต้น: เลือก <b>วัน เดือน ปีเกิด</b> และ<b>เพศ</b> (ไม่ทราบเวลาเกิดก็ได้) แล้วกดปุ่มดูดวงด้านบน ผลจะแสดงที่นี่</p></div>';
+    ["p-read","p-luck","p-month","p-money","p-fs","p-daily"].forEach(id=>{const el=$(id);if(el&&!el.innerHTML.trim())el.innerHTML=hint;});
+  }
   run();
   if(q.has("canceled")&&$("status")) $("status").textContent="ยกเลิกการชำระเงินแล้ว ยังไม่มีการตัดเงิน";
   if(!framed) for(const a of ACC.filter(x=>x.token)){

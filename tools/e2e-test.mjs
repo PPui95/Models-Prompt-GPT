@@ -64,7 +64,7 @@ ok("upgrade charges 391 THB and keeps purchase date",s1.amount===39100&&s1.metad
 ok("status shows full pack",(await txt(p,"#status")).includes("แพ็กชีวิตฉบับสมบูรณ์"));
 for(const t of ["luck","money","fs","month"]){await p.click("#t-"+t);}
 ok("full pack unlocks luck, money, feng shui",await locks(p,"#p-luck")+await locks(p,"#p-money")+await locks(p,"#p-fs")===0);
-await p.click("#t-match"); await p.click("#f2 .go");
+await p.click("#t-match"); await p.selectOption("#bd2-y","1987");await p.selectOption("#bd2-m","3");await p.selectOption("#bd2-d","21");await p.selectOption("#sex2","m"); await p.click("#f2 .go");
 ok("full pack unlocks compatibility detail",await locks(p,"#matchOut")===0&&await p.locator("#matchOut .rtype").count()===6);
 await p.click("#t-fs");
 const fsTitles=await p.locator("#p-fs h3").allTextContents();
@@ -164,6 +164,15 @@ ok("cookie settings link reopens banner",await q.locator("#consentBar").isVisibl
 
 
 
+// ---------- J2. blank birth form ----------
+q=await newPage("2026-10-01T10:00:00");
+await q.goto("http://localhost:8788/chart.html"); await q.waitForTimeout(200);
+ok("birth form starts blank (no preset date or sex)",await q.inputValue("#bd-y")===""&&await q.inputValue("#bd-m")===""&&await q.inputValue("#bd-d")===""&&await q.inputValue("#sex")==="");
+ok("blank form shows a start hint, not a sample report",(await txt(q,"#p-read")).includes("เริ่มต้น")&&await q.locator("#pillars .pillar, #pillars .p").count()===0);
+await q.click("#f .go"); await q.waitForTimeout(100);
+ok("submitting an empty form asks to complete it",(await txt(q,"#status")).includes("กรุณาเลือก"));
+await q.selectOption("#bd-y","1985");await q.selectOption("#bd-m","8");await q.selectOption("#bd-d","15");await q.click("#f .go"); await q.waitForTimeout(100);
+ok("sex is also required",(await txt(q,"#status")).includes("เพศ"));
 // ---------- K. pair pack ----------
 q=await newPage("2026-10-01T10:00:00");
 await q.goto("http://localhost:8788/match.html"); await fill(q,1988,3,3,"f","14");

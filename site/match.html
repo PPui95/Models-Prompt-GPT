@@ -21,18 +21,18 @@
   <h2>ข้อมูลของคุณ</h2>
   <form id="f">
     <label for="nm">ชื่อ (ใส่ในรายงาน)<input type="text" id="nm" maxlength="40" placeholder="เช่น คุณมาลี"></label>
-    <label for="sex">เพศ<select id="sex"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
+    <label for="sex">เพศ<select id="sex"><option value="">เลือกเพศ</option><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
     <fieldset class="dsel"><legend>วันเกิด (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd-d" aria-label="วันที่เกิด"></select><select id="bd-m" aria-label="เดือนเกิด"></select><select id="bd-y" aria-label="ปีเกิด พ.ศ."></select></div></fieldset>
     <label for="bh">เวลาเกิด (ยามจีน)<select id="bh"></select></label>
     <button class="go" type="submit">บันทึกข้อมูลของฉัน</button>
   </form>
-  <p class="note" id="exnote">ข้อมูลตัวอย่าง: หญิง เกิด 15 สิงหาคม 2528 เวลา 10 นาฬิกา ใส่ข้อมูลของคุณแล้วกด “บันทึกข้อมูลของฉัน” ระบบจะจำข้อมูลไว้ในเครื่องนี้ให้ใช้ได้ทุกหน้า</p>
+
   <span class="note" id="status"></span>
   <h2>ข้อมูลของอีกฝ่าย</h2>
   <form id="f2">
     <label for="nm2">ชื่ออีกฝ่าย (ไม่ใส่ก็ได้)<input type="text" id="nm2" maxlength="40" placeholder="เช่น คุณเอ"></label>
     <fieldset class="dsel"><legend>วันเกิดของอีกฝ่าย (วัน / เดือน / ปี พ.ศ.)</legend><div class="dsel-row"><select id="bd2-d" aria-label="วันที่เกิดของอีกฝ่าย"></select><select id="bd2-m" aria-label="เดือนเกิดของอีกฝ่าย"></select><select id="bd2-y" aria-label="ปีเกิดของอีกฝ่าย พ.ศ."></select></div></fieldset>
-      <label for="sex2">เพศของอีกฝ่าย<select id="sex2"><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
+      <label for="sex2">เพศของอีกฝ่าย<select id="sex2"><option value="">เลือกเพศ</option><option value="f">หญิง</option><option value="m">ชาย</option></select></label>
       <label for="bh2">เวลาเกิดของอีกฝ่าย<select id="bh2"></select></label>
     <button class="go" type="submit">ดูคู่สมพงษ์</button>
   </form>
