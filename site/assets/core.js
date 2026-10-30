@@ -1075,6 +1075,7 @@ function loadPixels(){
   if(pixelsLoaded||!TRACKING_ON) return; pixelsLoaded=true;
   if(CONFIG.metaPixelId){
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('set','autoConfig',false,CONFIG.metaPixelId); // no automatic button-click/metadata collection
     fbq('init',CONFIG.metaPixelId); fbq('track','PageView');
   }
   if(CONFIG.tiktokPixelId){
@@ -1082,15 +1083,18 @@ function loadPixels(){
   }
 }
 // name: ViewContent | InitiateCheckout | Purchase ; data: {value, tier, page} ; eventId de-duplicates Purchase
-const TT_NAME={ViewContent:"ViewContent",InitiateCheckout:"InitiateCheckout",Purchase:"CompletePayment"};
+const TT_NAME={ViewContent:"ViewContent",InitiateCheckout:"InitiateCheckout",Purchase:"CompletePayment",Contact:"Contact"};
+const PACK_NAME={year:"แพ็กดวงปี",full:"ฉบับเต็ม",upgrade:"อัปเกรดเป็นฉบับเต็ม",pair:"แพ็กคู่สมพงษ์"};
 function track(name,data={},eventId){
   if(!pixelsLoaded) return;
-  const p={content_name:data.tier?("แพ็ก"+(data.tier==="year"?"ดวงปี":data.tier==="upgrade"?"อัปเกรด":data.tier==="pair"?"คู่":"สมบูรณ์")):(data.page||PAGE),content_type:"product"};
+  const p={content_name:data.tier?(PACK_NAME[data.tier]||PACK_NAME.full):(data.page||PAGE),content_type:"product"};
   if(data.value!=null){p.value=data.value;p.currency="THB";}
   if(window.fbq) eventId?fbq('track',name,p,{eventID:eventId}):fbq('track',name,p);
   if(window.ttq) ttq.track(TT_NAME[name],p,eventId?{event_id:eventId}:undefined);
   try{const L=JSON.parse(sessionStorage.getItem("bazi_tlog")||"[]");L.push([name,p.value??null,eventId||null]);sessionStorage.setItem("bazi_tlog",JSON.stringify(L.slice(-20)));}catch(e){}
 }
+// remember which orders already sent Purchase so a reload/back never counts the same order twice
+function firedOnce(kind,id){try{const k="bazi_fired_"+kind,L=JSON.parse(localStorage.getItem(k)||"[]");if(L.includes(id))return true;L.push(id);localStorage.setItem(k,JSON.stringify(L.slice(-50)));}catch(e){}return false;}
 const tierValue=t=>t==="year"?CONFIG.priceYear:t==="upgrade"?CONFIG.priceFull-CONFIG.priceYear:t==="pair"?CONFIG.pricePair:CONFIG.priceFull;
 function showConsent(){
   if(!TRACKING_ON) return;
@@ -1107,7 +1111,8 @@ document.addEventListener("click",e=>{
     $("consentBar").hidden=true;
     if(v==="yes") loadPixels(); else if(prev==="yes"&&pixelsLoaded) location.reload(); // stop pixels already running
     return;}
-  if(e.target.closest("[data-consent-open]")){e.preventDefault();showConsent();}
+  if(e.target.closest("[data-consent-open]")){e.preventDefault();showConsent();return;}
+  if(e.target.closest('a[href*="line.me/R/ti/p/"]')) track("Contact",{page:PAGE});
 });
 if(TRACKING_ON){ if(consent()==="yes") loadPixels(); else if(!consent()) showConsent(); }
 document.querySelectorAll("[data-consent-open]").forEach(a=>a.hidden=!TRACKING_ON);
@@ -1183,7 +1188,7 @@ async function boot(){
       if(status===200&&data.ok){restoreForm(data.key);
         const pp=store.get("bazi_pending"); if(pp&&pp.bd2&&$("bd2-y")){setDate("bd2",pp.bd2);if($("nm2"))$("nm2").value=pp.nm2||"";if($("bh2"))$("bh2").value=pp.bh2||"";if($("sex2"))$("sex2").value=pp.sex2||"f";}
         store.set("bazi_pending",null);saveMe();(data.extra||[]).forEach(x=>{ACC=ACC.filter(a=>!(a.k===x.key&&a.t===x.t));ACC.push(accFrom(x));});addAccess(accFrom(data));
-        track("Purchase",{value:data.amount??(data.extra&&data.extra.length?CONFIG.pricePair:data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.extra&&data.extra.length?"pair":data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]+(data.extra&&data.extra.length?" · แพ็กคู่: เปิดรายงานของอีกคนได้ที่หน้าผูกดวง":""));return;}
+        if(pixelsLoaded&&!firedOnce("purchase",sid)) track("Purchase",{value:data.amount??(data.extra&&data.extra.length?CONFIG.pricePair:data.t==="year"?CONFIG.priceYear:CONFIG.priceFull),tier:data.extra&&data.extra.length?"pair":data.t},sid);$("status")&&($("status").textContent="ชำระเงินสำเร็จ ขอบคุณค่ะ · "+TIER_NAME[TIER]+(data.extra&&data.extra.length?" · แพ็กคู่: เปิดรายงานของอีกคนได้ที่หน้าผูกดวง":""));return;}
       const p=store.get("bazi_pending"); if(p) restoreForm(p.key); run();
       $("status")&&($("status").textContent=status===202?"ยังไม่ได้รับยืนยันการชำระเงิน รอสักครู่แล้วรีเฟรชหน้านี้":"ยืนยันการชำระเงินไม่สำเร็จ กรุณาติดต่อ "+CONFIG.contact);
     }catch(_){run();$("status")&&($("status").textContent="เชื่อมต่อเซิร์ฟเวอร์ไม่ได้ รีเฟรชหน้านี้อีกครั้ง");}
