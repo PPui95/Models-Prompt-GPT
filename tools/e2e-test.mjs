@@ -125,11 +125,12 @@ ok("before Lichun (20 Jan 2570) it is still the Horse year 2569",(await txt(q,"#
 
 // ---------- J. Pixel + cookie consent ----------
 async function pixelPage(clock){const p2=await newPage(clock);
-  await p2.route("**/assets/core.js",async r=>{const res=await r.fetch();const body=(await res.text()).replace('metaPixelId:""','metaPixelId:"111122223333444"').replace('tiktokPixelId:""','tiktokPixelId:"CTEST123"');await r.fulfill({response:res,body});});
+  await p2.route("**/assets/core.js",async r=>{const res=await r.fetch();const body=(await res.text()).replace(/metaPixelId:"[^"]*"/,'metaPixelId:"111122223333444"').replace(/tiktokPixelId:"[^"]*"/,'tiktokPixelId:"CTEST123"');await r.fulfill({response:res,body});});
   await p2.route(/connect\.facebook\.net|analytics\.tiktok\.com/,r=>r.abort());
   return p2;}
 const tlog=async q=>q.evaluate(()=>JSON.parse(sessionStorage.getItem("bazi_tlog")||"[]"));
 q=await newPage("2026-10-01T10:00:00");
+await q.route("**/assets/core.js",async r=>{const res=await r.fetch();await r.fulfill({response:res,body:(await res.text()).replace(/metaPixelId:"[^"]*"/,'metaPixelId:""').replace(/tiktokPixelId:"[^"]*"/,'tiktokPixelId:""')});});
 await q.goto("http://localhost:8788/chart.html"); await q.waitForTimeout(200);
 ok("no pixel IDs: no banner, no cookie link",await q.locator("#consentBar").count()===0&&await q.locator("[data-consent-open]").isHidden());
 q=await pixelPage("2026-10-01T10:00:00");
