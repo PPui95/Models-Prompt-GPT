@@ -1,6 +1,6 @@
 # ตั้งค่าเพจ Facebook: เฮงเฮงเฮง ดวงจีน (คัดลอกวางได้เลย)
 
-เพจ: https://www.facebook.com/profile.php?id=61594946229100
+เพจ: https://www.facebook.com/hengdoungjeen
 เว็บ: https://heng.rungseesomboon.com
 LINE OA: @113fdrol (https://line.me/R/ti/p/@113fdrol)
 
