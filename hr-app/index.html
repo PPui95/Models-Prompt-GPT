@@ -1,0 +1,649 @@
+<title>HR Desk</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anuphan:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky top bar + scrollable tab strip, single content column (max 1080px), cards only for actionable blocks */
+:root{
+  --bg:#fbf7f9; --surface:#ffffff; --surface-2:#f6eef2; --line:#ead9e1;
+  --fg:#2a1d24; --muted:#7a6670; --accent:#d6336c; --accent-ink:#ffffff; --accent-soft:#fde3ec;
+  --ok:#1f8a5b; --ok-soft:#dcf3e8; --warn:#b26b00; --warn-soft:#fdf0d9; --bad:#c0392b; --bad-soft:#fbe2df;
+  --shadow:0 1px 2px rgba(80,20,45,.06),0 4px 14px rgba(80,20,45,.06);
+  --f-display:"Anuphan","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#1a1216; --surface:#241a1f; --surface-2:#2e2128; --line:#3d2c35;
+  --fg:#f5e9ef; --muted:#b39aa6; --accent:#f06595; --accent-ink:#1a0d13; --accent-soft:#4a1f30;
+  --ok:#4cc38a; --ok-soft:#163a2a; --warn:#f0b04a; --warn-soft:#3b2c12; --bad:#f07167; --bad-soft:#40201d;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#1a1216; --surface:#241a1f; --surface-2:#2e2128; --line:#3d2c35;
+  --fg:#f5e9ef; --muted:#b39aa6; --accent:#f06595; --accent-ink:#1a0d13; --accent-soft:#4a1f30;
+  --ok:#4cc38a; --ok-soft:#163a2a; --warn:#f0b04a; --warn-soft:#3b2c12; --bad:#f07167; --bad-soft:#40201d;
+  --shadow:0 1px 2px rgba(0,0,0,.3); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.25}
+h2{font-size:1.35rem} h3{font-size:1.05rem}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.topbar{display:flex;align-items:center;gap:12px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-weight:700;font-size:1.15rem}
+.logo{width:30px;height:30px;border-radius:9px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:.85rem}
+.who{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--muted);min-width:0}
+.who b{color:var(--fg);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav.tabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-bottom:0}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs a{flex:none;padding:10px 14px;border-bottom:2px solid transparent;color:var(--muted);text-decoration:none;font-weight:500;white-space:nowrap}
+nav.tabs a[aria-current="page"]{color:var(--accent);border-color:var(--accent)}
+nav.tabs a:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;border-radius:6px}
+main{padding-block:20px 48px;display:grid;gap:20px}
+.sec-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;justify-content:space-between}
+.sub{color:var(--muted);font-size:.88rem}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--shadow);min-width:0}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr))}
+.stats{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+.stat .n{font-family:var(--f-display);font-size:1.7rem;font-weight:700;font-variant-numeric:tabular-nums}
+.stat .l{color:var(--muted);font-size:.82rem}
+.stat.hl .n{color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 14px;cursor:pointer;font-weight:500;min-height:38px}
+.btn:hover{border-color:var(--accent)}
+.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.pri:hover{filter:brightness(1.06)}
+.btn.sm{padding:4px 10px;min-height:30px;font-size:.85rem}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.pill{display:inline-flex;align-items:center;padding:2px 9px;border-radius:999px;font-size:.78rem;font-weight:600;white-space:nowrap}
+.p-ok{background:var(--ok-soft);color:var(--ok)} .p-warn{background:var(--warn-soft);color:var(--warn)}
+.p-bad{background:var(--bad-soft);color:var(--bad)} .p-acc{background:var(--accent-soft);color:var(--accent)}
+.p-mute{background:var(--surface-2);color:var(--muted)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:.9rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-weight:600;color:var(--muted);font-size:.8rem;letter-spacing:.02em;background:var(--surface-2);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.list{display:grid;gap:8px}
+.item{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.item .t{font-weight:600}
+.empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:var(--r)}
+.clock{font-family:var(--f-display);font-size:2.4rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:.01em}
+.checkin{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.bal{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.bal .b{border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.bar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:6px}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:99px}
+.kanban{display:grid;gap:10px;grid-auto-flow:column;grid-auto-columns:minmax(220px,1fr);overflow-x:auto;padding-bottom:6px}
+.col{background:var(--surface-2);border-radius:var(--r);padding:10px;display:grid;gap:8px;align-content:start;min-height:120px}
+.col h3{font-size:.9rem;display:flex;justify-content:space-between}
+.kcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;display:grid;gap:6px}
+.chk{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.chk input{width:18px;height:18px;margin-top:3px;accent-color:var(--accent)}
+.grade{font-family:var(--f-display);font-weight:700;font-size:1.1rem;width:34px;height:34px;border-radius:9px;display:grid;place-items:center}
+.notice{padding:10px 14px;border-radius:10px;background:var(--accent-soft);color:var(--fg);font-size:.88rem}
+.notice.warn{background:var(--warn-soft)}
+label.f{display:grid;gap:4px;font-size:.85rem;color:var(--muted)}
+label.f>input,label.f>select,label.f>textarea,.inp{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:var(--surface);color:var(--fg);font-size:.95rem}
+.fgrid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr))}
+.overlay{position:fixed;inset:0;background:rgba(30,10,20,.45);z-index:20;display:grid;place-items:center;padding:16px;padding-top:max(16px,env(safe-area-inset-top,0px));padding-bottom:max(16px,env(safe-area-inset-bottom,0px))}
+.modal{background:var(--surface);border-radius:16px;width:min(640px,100%);max-height:100%;overflow:auto;padding:20px;display:grid;gap:14px;box-shadow:0 10px 40px rgba(0,0,0,.25)}
+.modal .acts{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:30;font-size:.9rem;max-width:calc(100% - 32px)}
+.kpi-row{display:grid;grid-template-columns:2fr .8fr .9fr .9fr auto;gap:6px;align-items:center}
+@media (max-width:560px){.kpi-row{grid-template-columns:1fr 1fr}.kpi-row .kn{grid-column:1/-1}}
+.score{display:flex;gap:4px}
+.score button{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+.score button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.muted{color:var(--muted)}
+.small{font-size:.82rem}
+@media (prefers-reduced-motion:no-preference){.btn,.score button{transition:filter .15s,border-color .15s}}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand"><span class="logo" aria-hidden="true">HR</span><span id="org-name">HR Desk</span></div>
+      <div class="who" id="who"></div>
+    </div>
+    <nav class="tabs" id="tabs" aria-label="เมนูหลัก"></nav>
+  </div>
+</header>
+<main class="wrap" id="app">
+  <div class="empty">กำลังโหลดข้อมูลพนักงาน การลา และเวลาเข้างาน…</div>
+</main>
+<div id="modal-root"></div>
+
+<script>
+(() => {
+"use strict";
+// ---------- constants ----------
+const TZ = "Asia/Bangkok";
+const LEAVE_TYPES = {
+  sick:{label:"ลาป่วย", note:"ได้รับค่าจ้างไม่เกิน 30 วัน/ปี (ม.32, 57)"},
+  personal:{label:"ลากิจ", note:"ไม่น้อยกว่า 3 วัน/ปี (ม.34)"},
+  vacation:{label:"พักร้อน", note:"ทำงานครบ 1 ปี ได้ไม่น้อยกว่า 6 วัน (ม.30)"},
+  maternity:{label:"ลาคลอด", note:"ไม่เกิน 98 วัน/ครรภ์ (ม.41)"},
+  unpaid:{label:"ลาไม่รับค่าจ้าง", note:"ตามที่หัวหน้าอนุมัติ"}
+};
+const DEFAULT_SETTINGS = {
+  orgName:"HR Desk", workStart:"08:30", workEnd:"17:30", graceMin:0,
+  quotas:{sick:30, personal:3, vacation:6, maternity:98},
+  kpiWeight:70, trainingTarget:12
+};
+const STAGES = [
+  ["applied","สมัคร"],["screen","คัดกรอง"],["interview","สัมภาษณ์"],["offer","เสนองาน"],["hired","รับเข้าทำงาน"],["rejected","ไม่ผ่าน"]
+];
+const DEFAULT_COMPS = ["ความรับผิดชอบ","การทำงานเป็นทีม","การสื่อสาร","การแก้ปัญหา","การเรียนรู้และพัฒนาตนเอง"];
+const DEFAULT_ONBOARD = ["เซ็นสัญญาจ้างและเอกสารบุคคล","แจ้งเข้าประกันสังคม","เปิดอีเมลและบัญชีระบบงาน","รับอุปกรณ์ทำงาน","ปฐมนิเทศนโยบายบริษัท","แนะนำทีมและพี่เลี้ยง","ตั้งเป้าหมายช่วงทดลองงาน","ประเมินผลก่อนครบทดลองงาน 119 วัน"];
+const ROLE_LABEL = {hr:"HR", manager:"หัวหน้า", staff:"พนักงาน"};
+const STATUS_LABEL = {active:["ทำงาน","p-ok"], probation:["ทดลองงาน","p-warn"], resigned:["ลาออก","p-mute"]};
+const TABS = [
+  ["home","ภาพรวม"],["people","พนักงาน"],["time","เข้างาน"],["leave","การลา"],["review","ประเมินผล"],["hiring","สรรหา"],["training","อบรม"],["settings","ตั้งค่า"]
+];
+
+// ---------- state ----------
+const S = {employees:{}, attendance:{}, leaves:{}, reviews:{}, candidates:{}, onboarding:{}, trainings:{}, settings:{...DEFAULT_SETTINGS}};
+const loaded = new Set();
+let db = null, user = null, myId = null, isEditor = false, viewAs = "";
+let attMonth = monthKey(new Date()), attUnsub = null, attDate = todayKey();
+let reviewPeriod = "", timedOut = false, fatal = "";
+
+// ---------- helpers ----------
+const $ = (s, r=document) => r.querySelector(s);
+const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function partsTZ(d){const o={};new Intl.DateTimeFormat("en-GB",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",second:"2-digit",hour12:false}).formatToParts(d).forEach(p=>o[p.type]=p.value);return o;}
+function todayKey(d=new Date()){const p=partsTZ(d);return `${p.year}-${p.month}-${p.day}`;}
+function monthKey(d=new Date()){const p=partsTZ(d);return `${p.year}-${p.month}`;}
+function nowHM(){const p=partsTZ(new Date());return `${p.hour==="24"?"00":p.hour}:${p.minute}`;}
+function thDate(k){if(!k)return"-";const[y,m,d]=k.split("-").map(Number);return new Date(Date.UTC(y,m-1,d||1)).toLocaleDateString("th-TH",{timeZone:"UTC",day:"numeric",month:"short",year:"2-digit"});}
+function thMonth(k){const[y,m]=k.split("-").map(Number);return new Date(Date.UTC(y,m-1,1)).toLocaleDateString("th-TH",{timeZone:"UTC",month:"long",year:"numeric"});}
+function toMin(hm){const[h,m]=String(hm||"0:0").split(":").map(Number);return h*60+(m||0);}
+function workDays(a,b){if(!a||!b)return 0;let n=0;const s=new Date(a+"T00:00:00Z"),e=new Date(b+"T00:00:00Z");for(let d=s;d<=e;d=new Date(d.getTime()+864e5)){const w=d.getUTCDay();if(w!==0&&w!==6)n++;}return n;}
+function serviceYears(start){if(!start)return 0;return (new Date(todayKey()+"T00:00:00Z")-new Date(start+"T00:00:00Z"))/(365.25*864e5);}
+function serviceText(start){const y=serviceYears(start);if(y<0)return"ยังไม่เริ่มงาน";const yy=Math.floor(y),mm=Math.floor((y-yy)*12);return (yy?yy+" ปี ":"")+mm+" เดือน";}
+function uid(p){return p+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function fmt(n,d=0){return Number(n||0).toLocaleString("th-TH",{maximumFractionDigits:d,minimumFractionDigits:d});}
+function toast(msg){const t=document.createElement("div");t.className="toast";t.setAttribute("role","status");t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600);}
+const empList = () => Object.values(S.employees).sort((a,b)=>String(a.code||"").localeCompare(String(b.code||""))||String(a.name).localeCompare(String(b.name)));
+const empName = id => S.employees[id]?.name || "ไม่ระบุ";
+const activeEmps = () => empList().filter(e=>e.status!=="resigned");
+
+// ---------- roles ----------
+function myEmp(){ if(!myId) return null; return Object.values(S.employees).find(e=>e.userId===myId) || null; }
+function ctx(){
+  const real = myEmp();
+  const realHR = isEditor || real?.role==="hr";
+  if (realHR && viewAs && S.employees[viewAs]) {
+    const e = S.employees[viewAs];
+    return {emp:e, role:e.role||"staff", isHR:e.role==="hr", previewing:true, realHR};
+  }
+  if (realHR) return {emp:real, role:"hr", isHR:true, previewing:false, realHR};
+  if (real) return {emp:real, role:real.role||"staff", isHR:false, previewing:false, realHR};
+  return {emp:null, role:"none", isHR:false, previewing:false, realHR};
+}
+function teamIds(c){ if(!c.emp) return []; return Object.values(S.employees).filter(e=>e.managerId===c.emp.id).map(e=>e.id); }
+function visibleEmpIds(c){
+  if (c.isHR) return activeEmps().map(e=>e.id);
+  const ids = c.emp ? [c.emp.id] : [];
+  if (c.role==="manager") ids.push(...teamIds(c));
+  return ids;
+}
+function canApprove(c, leave){ const e=S.employees[leave.empId]; if(!e) return c.isHR; if(c.emp && leave.empId===c.emp.id) return false; return c.isHR || (c.emp && e.managerId===c.emp.id); }
+function tabsFor(c){
+  if (c.isHR) return TABS.map(t=>t[0]);
+  const t = ["home","people","time","leave","review","training"];
+  if (c.role==="manager") t.splice(5,0,"hiring");
+  return t;
+}
+
+// ---------- db ----------
+async function write(path, data, mode="set"){
+  if(!db){toast("ยังเชื่อมต่อฐานข้อมูลไม่ได้");return false;}
+  try{ const ref=db.doc(path); if(mode==="delete") await ref.delete(); else if(mode==="update") await ref.update(data); else await ref.set(data); return true; }
+  catch(e){ const m={not_granted:"บัญชีนี้ไม่มีสิทธิ์บันทึก ขอสิทธิ์ผู้ร่วมแก้ไข (Contributor) จาก HR", quota_exceeded:"พื้นที่จัดเก็บเต็ม ลบข้อมูลเก่าก่อน"}[e?.code]; toast(m||"บันทึกไม่สำเร็จ ลองใหม่อีกครั้ง"); return false; }
+}
+function listen(col, q){
+  return q.onSnapshot(snap=>{
+    const map={}; snap.docs.forEach(d=>{map[d.id]={id:d.id,...d.data()};});
+    if(col==="settings") S.settings={...DEFAULT_SETTINGS,...(map.main||{}),quotas:{...DEFAULT_SETTINGS.quotas,...(map.main?.quotas||{})}};
+    else S[col]=map;
+    if(!snap.metadata.fromCache) loaded.add(col);
+    render();
+  }, err=>{ loaded.add(col); if(err?.code==="not_granted"||err?.code==="revoked") fatal="บัญชีนี้ยังไม่ได้รับสิทธิ์เปิดข้อมูล HR ขอให้ HR แชร์ลิงก์ให้ก่อน"; render(); });
+}
+function subscribeAttendance(){
+  if(attUnsub) attUnsub();
+  attUnsub = listen("attendance", db.collection("attendance").where("month","==",attMonth).limit(1000));
+}
+
+// ---------- modal ----------
+function modal(title, body, onSubmit, submitLabel="บันทึก"){
+  const root=$("#modal-root");
+  root.innerHTML=`<div class="overlay" role="dialog" aria-modal="true" aria-label="${esc(title)}"><form class="modal" id="mform"><h2>${esc(title)}</h2>${body}<div class="acts"><button type="button" class="btn ghost" data-close>ยกเลิก</button>${onSubmit?`<button class="btn pri" type="submit">${esc(submitLabel)}</button>`:""}</div></form></div>`;
+  const f=$("#mform");
+  f.addEventListener("submit",async ev=>{ev.preventDefault(); const ok=await onSubmit(new FormData(f), f); if(ok!==false) closeModal();});
+  root.querySelector("[data-close]").onclick=closeModal;
+  root.querySelector(".overlay").addEventListener("click",ev=>{if(ev.target.classList.contains("overlay"))closeModal();});
+  const first=f.querySelector("input,select,textarea"); if(first) first.focus();
+}
+function closeModal(){ $("#modal-root").innerHTML=""; }
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal();});
+function confirmBox(text, label, fn){ modal("ยืนยัน", `<p>${esc(text)}</p>`, async()=>{await fn();}, label); }
+
+// ---------- views ----------
+function pill(text, cls){return `<span class="pill ${cls}">${esc(text)}</span>`;}
+function leavePill(s){return s==="approved"?pill("อนุมัติ","p-ok"):s==="rejected"?pill("ไม่อนุมัติ","p-bad"):pill("รออนุมัติ","p-warn");}
+function gradeOf(t){return t>=90?["A","ดีเยี่ยม","p-ok"]:t>=80?["B","ดี","p-ok"]:t>=70?["C","ตามเป้าหมาย","p-acc"]:t>=60?["D","ต้องพัฒนา","p-warn"]:["E","ต่ำกว่ามาตรฐาน","p-bad"];}
+function attDoc(empId, mk=attMonth){return S.attendance[`${empId}_${mk}`];}
+function attToday(empId){ const d=attDoc(empId, monthKey()); return d?.days?.[todayKey().slice(8)] || null; }
+function isLate(inHM){return toMin(inHM) > toMin(S.settings.workStart)+Number(S.settings.graceMin||0);}
+
+function leaveUsage(empId, year){
+  const u={}; Object.keys(LEAVE_TYPES).forEach(k=>u[k]={used:0,pending:0});
+  Object.values(S.leaves).filter(l=>l.empId===empId && String(l.start).startsWith(year)).forEach(l=>{
+    if(!u[l.type]) return; if(l.status==="approved") u[l.type].used+=Number(l.days||0); else if(l.status==="pending") u[l.type].pending+=Number(l.days||0);
+  });
+  return u;
+}
+function quotaFor(emp, type){
+  const q=S.settings.quotas;
+  if(type==="vacation") return serviceYears(emp?.startDate)>=1 ? Number(q.vacation) : 0;
+  return type==="unpaid" ? null : Number(q[type]);
+}
+
+function viewHome(c){
+  const out=[];
+  if(c.emp){
+    const t=attToday(c.emp.id);
+    const status = !t ? pill("ยังไม่เช็กอิน","p-mute") : t.out ? pill(`ออกงาน ${t.out}`,"p-mute") : t.late ? pill(`เข้างาน ${t.in} · สาย`,"p-warn") : pill(`เข้างาน ${t.in}`,"p-ok");
+    out.push(`<section class="card checkin" aria-label="บันทึกเวลา">
+      <div><div class="sub">สวัสดีค่ะ คุณ${esc(c.emp.nickname||c.emp.name)} · ${esc(thDate(todayKey()))}</div><div class="clock" id="clock">${nowHM()}</div><div class="row">${status}<span class="sub">เวลางาน ${esc(S.settings.workStart)}–${esc(S.settings.workEnd)} น.</span></div></div>
+      <div class="row">${c.previewing?`<span class="sub">ตัวอย่างมุมมอง กดเช็กอินแทนไม่ได้</span>`:!t?`<button class="btn pri" data-act="checkin">เช็กอินเข้างาน</button>`:!t.out?`<button class="btn pri" data-act="checkout">เช็กเอาต์ออกงาน</button>`:`<span class="sub">บันทึกครบแล้ววันนี้</span>`}<button class="btn" data-act="new-leave">ขอลา</button></div>
+    </section>`);
+  } else if(c.isHR){
+    out.push(`<div class="notice">คุณใช้งานในฐานะ HR ถ้าต้องการเช็กอินด้วย ไปที่ <a href="#settings">ตั้งค่า</a> แล้วผูกบัญชีกับรายชื่อพนักงานของคุณ</div>`);
+  }
+  if(c.isHR || c.role==="manager"){
+    const ids=new Set(visibleEmpIds(c)); const today=todayKey();
+    const present=[...ids].filter(id=>attToday(id)); const late=present.filter(id=>attToday(id)?.late);
+    const onLeave=Object.values(S.leaves).filter(l=>ids.has(l.empId)&&l.status==="approved"&&l.start<=today&&l.end>=today);
+    const pending=Object.values(S.leaves).filter(l=>l.status==="pending"&&canApprove(c,l)).sort((a,b)=>String(a.start).localeCompare(b.start));
+    const cand=Object.values(S.candidates).filter(x=>!["hired","rejected"].includes(x.stage)).length;
+    out.push(`<section class="stats" aria-label="สรุปวันนี้">
+      <div class="stat"><div class="n">${ids.size}</div><div class="l">${c.isHR?"พนักงานทั้งหมด":"คนในทีม (รวมคุณ)"}</div></div>
+      <div class="stat"><div class="n">${present.length}</div><div class="l">เช็กอินวันนี้</div></div>
+      <div class="stat"><div class="n">${late.length}</div><div class="l">มาสายวันนี้</div></div>
+      <div class="stat"><div class="n">${onLeave.length}</div><div class="l">ลางานวันนี้</div></div>
+      <div class="stat hl"><div class="n">${pending.length}</div><div class="l">คำขอลารออนุมัติ</div></div>
+      ${c.isHR?`<div class="stat"><div class="n">${cand}</div><div class="l">ผู้สมัครที่กำลังดำเนินการ</div></div>`:""}
+    </section>`);
+    out.push(`<section class="grid g2">
+      <div class="card grid"><h3>คำขอลารออนุมัติ</h3>${pending.length?`<div class="list">${pending.map(l=>leaveItem(l,c)).join("")}</div>`:`<div class="empty">ไม่มีคำขอค้างอนุมัติ</div>`}</div>
+      <div class="card grid"><h3>ยังไม่เช็กอินวันนี้</h3>${(()=>{const w=new Date(today+"T00:00:00Z").getUTCDay();if(w===0||w===6)return`<div class="empty">วันนี้เป็นวันหยุด</div>`;const leaveIds=new Set(onLeave.map(l=>l.empId));const miss=[...ids].filter(id=>!attToday(id)&&!leaveIds.has(id));return miss.length?`<div class="list">${miss.map(id=>`<div class="item"><span>${esc(empName(id))}</span><span class="sub">${esc(S.employees[id]?.dept||"")}</span></div>`).join("")}</div>`:`<div class="empty">ทุกคนเช็กอินหรือลาแล้ว</div>`;})()}</div>
+    </section>`);
+  }
+  if(c.emp){
+    const y=todayKey().slice(0,4); const u=leaveUsage(c.emp.id,y);
+    out.push(`<section class="card grid"><div class="sec-head"><h3>วันลาคงเหลือ ปี ${Number(y)+543}</h3><a class="btn sm" href="#leave">ดูประวัติการลา</a></div>${balanceHTML(c.emp,u)}</section>`);
+    const mine=Object.values(S.leaves).filter(l=>l.empId===c.emp.id).sort((a,b)=>String(b.createdAt).localeCompare(a.createdAt)).slice(0,3);
+    if(mine.length) out.push(`<section class="card grid"><h3>คำขอลาล่าสุดของฉัน</h3><div class="list">${mine.map(l=>leaveItem(l,c)).join("")}</div></section>`);
+    const ob=S.onboarding[c.emp.id];
+    if(ob && ob.items?.some(i=>!i.done)) out.push(`<section class="card grid"><h3>Onboarding ของฉัน</h3>${onboardHTML(ob,true)}</section>`);
+  }
+  return out.join("");
+}
+function balanceHTML(emp,u){
+  return `<div class="bal">${["sick","personal","vacation","maternity"].map(k=>{const q=quotaFor(emp,k);const used=u[k].used;const left=Math.max(0,q-used);const pct=q?Math.min(100,used/q*100):0;
+    return `<div class="b"><div class="sub">${LEAVE_TYPES[k].label}</div><div><b style="font-size:1.25rem;font-variant-numeric:tabular-nums">${fmt(left,left%1?1:0)}</b> <span class="sub">/ ${fmt(q)} วัน</span></div><div class="bar"><i style="width:${pct}%"></i></div>${u[k].pending?`<div class="small muted">รออนุมัติ ${fmt(u[k].pending,1)} วัน</div>`:""}${k==="vacation"&&!q?`<div class="small muted">สิทธิ์เริ่มเมื่อทำงานครบ 1 ปี</div>`:""}</div>`;}).join("")}</div>`;
+}
+function leaveItem(l,c){
+  const acts = l.status==="pending" && canApprove(c,l) && !c.previewing ? `<div class="row"><button class="btn sm pri" data-act="approve" data-id="${l.id}">อนุมัติ</button><button class="btn sm" data-act="reject" data-id="${l.id}">ไม่อนุมัติ</button></div>`
+    : l.status==="pending" && c.emp && l.empId===c.emp.id && !c.previewing ? `<button class="btn sm ghost danger" data-act="cancel-leave" data-id="${l.id}">ยกเลิกคำขอ</button>` : "";
+  const range = l.start===l.end ? thDate(l.start) : `${thDate(l.start)} – ${thDate(l.end)}`;
+  return `<div class="item"><div style="min-width:0"><div class="t">${esc(empName(l.empId))} · ${esc(LEAVE_TYPES[l.type]?.label||l.type)} ${fmt(l.days,l.days%1?1:0)} วัน</div><div class="sub">${esc(range)}${l.reason?` · ${esc(l.reason)}`:""}</div></div><div class="row">${leavePill(l.status)}${acts}</div></div>`;
+}
+
+function viewPeople(c){
+  const ids=new Set(c.isHR?empList().map(e=>e.id):visibleEmpIds(c));
+  const list=empList().filter(e=>ids.has(e.id));
+  const head=`<div class="sec-head"><div><h2>${c.isHR?"ทะเบียนพนักงาน":c.role==="manager"?"ทีมของฉัน":"ข้อมูลของฉัน"}</h2><div class="sub">${list.length} คน${c.isHR?" · เก็บเฉพาะข้อมูลงาน ไม่เก็บเงินเดือนหรือเลขบัตรประชาชน":""}</div></div>${c.isHR&&!c.previewing?`<button class="btn pri" data-act="new-emp">เพิ่มพนักงาน</button>`:""}</div>`;
+  if(!list.length) return head+`<div class="empty">ยังไม่มีพนักงาน${c.isHR?" กด “เพิ่มพนักงาน” เพื่อเริ่ม":""}</div>`;
+  return head+`<div class="tbl-wrap"><table><thead><tr><th>รหัส</th><th>ชื่อ</th><th>ตำแหน่ง</th><th>แผนก</th><th>หัวหน้า</th><th>อายุงาน</th><th>สถานะ</th>${c.isHR?"<th>บัญชี</th><th></th>":""}</tr></thead><tbody>${list.map(e=>{const st=STATUS_LABEL[e.status]||STATUS_LABEL.active;return `<tr><td>${esc(e.code)}</td><td><b>${esc(e.name)}</b>${e.nickname?` <span class="sub">(${esc(e.nickname)})</span>`:""}<div class="small muted">${esc(ROLE_LABEL[e.role]||"พนักงาน")}${e.workEmail?` · ${esc(e.workEmail)}`:""}</div></td><td>${esc(e.position)}</td><td>${esc(e.dept)}</td><td>${esc(e.managerId?empName(e.managerId):"-")}</td><td>${esc(serviceText(e.startDate))}</td><td>${pill(st[0],st[1])}</td>${c.isHR?`<td>${e.userId?pill("ผูกแล้ว","p-ok"):pill("ยังไม่ผูก","p-mute")}</td><td><div class="row" style="flex-wrap:nowrap">${c.previewing?"":`<button class="btn sm" data-act="edit-emp" data-id="${e.id}">แก้ไข</button>`}</div></td>`:""}</tr>`;}).join("")}</tbody></table></div>`;
+}
+function empForm(e={}){
+  const mgrs=activeEmps().filter(x=>x.id!==e.id);
+  return `<div class="fgrid">
+  <label class="f">รหัสพนักงาน<input name="code" required value="${esc(e.code||"")}" placeholder="EMP011"></label>
+  <label class="f">ชื่อ-นามสกุล<input name="name" required value="${esc(e.name||"")}"></label>
+  <label class="f">ชื่อเล่น<input name="nickname" value="${esc(e.nickname||"")}"></label>
+  <label class="f">ตำแหน่ง<input name="position" required value="${esc(e.position||"")}"></label>
+  <label class="f">แผนก<input name="dept" required value="${esc(e.dept||"")}" list="depts"></label>
+  <label class="f">อีเมลงาน<input name="workEmail" type="email" value="${esc(e.workEmail||"")}"></label>
+  <label class="f">วันเริ่มงาน<input name="startDate" type="date" required value="${esc(e.startDate||todayKey())}"></label>
+  <label class="f">หัวหน้า<select name="managerId"><option value="">ไม่มี</option>${mgrs.map(m=>`<option value="${m.id}" ${m.id===e.managerId?"selected":""}>${esc(m.name)}</option>`).join("")}</select></label>
+  <label class="f">สิทธิ์ในแอป<select name="role">${Object.entries(ROLE_LABEL).map(([k,v])=>`<option value="${k}" ${(e.role||"staff")===k?"selected":""}>${v}</option>`).join("")}</select></label>
+  <label class="f">สถานะ<select name="status">${Object.entries(STATUS_LABEL).map(([k,v])=>`<option value="${k}" ${(e.status||"probation")===k?"selected":""}>${v[0]}</option>`).join("")}</select></label>
+  </div><datalist id="depts">${[...new Set(empList().map(x=>x.dept).filter(Boolean))].map(d=>`<option value="${esc(d)}">`).join("")}</datalist>
+  ${e.id?`<div class="row">${e.userId?`<button type="button" class="btn sm" data-act="unlink" data-id="${e.id}">ยกเลิกการผูกบัญชี</button>`:""}<button type="button" class="btn sm ghost danger" data-act="del-emp" data-id="${e.id}">ลบพนักงาน</button></div>`:`<label class="chk"><input type="checkbox" name="onboard" checked> สร้าง Onboarding checklist ให้อัตโนมัติ</label>`}`;
+}
+function saveEmp(id){
+  return async fd=>{
+    const old=id?S.employees[id]:{}; const nid=id||uid("e");
+    const data={...old, code:fd.get("code").trim(), name:fd.get("name").trim(), nickname:fd.get("nickname").trim(), position:fd.get("position").trim(), dept:fd.get("dept").trim(), workEmail:fd.get("workEmail").trim(), startDate:fd.get("startDate"), managerId:fd.get("managerId")||"", role:fd.get("role"), status:fd.get("status"), userId:old.userId||null};
+    delete data.id;
+    if(!await write(`employees/${nid}`, data)) return false;
+    if(!id && fd.get("onboard")) await write(`onboarding/${nid}`, {empId:nid, items:DEFAULT_ONBOARD.map(t=>({t,done:false})), sample:false});
+    toast(id?"บันทึกข้อมูลพนักงานแล้ว":"เพิ่มพนักงานแล้ว");
+  };
+}
+
+function viewTime(c){
+  const ids=visibleEmpIds(c); const self=!c.isHR&&c.role!=="manager";
+  const [y,m]=attMonth.split("-").map(Number); const days=new Date(Date.UTC(y,m,0)).getUTCDate();
+  const head=`<div class="sec-head"><div><h2>เวลาเข้างาน</h2><div class="sub">เข้างาน ${esc(S.settings.workStart)} น. · หลังเวลานี้${Number(S.settings.graceMin)?` ${S.settings.graceMin} นาที`:""} นับว่าสาย</div></div><label class="f" style="min-width:170px">เดือน<input type="month" id="att-month" value="${attMonth}"></label></div>`;
+  const rows=ids.map(id=>{const d=attDoc(id)?.days||{};const v=Object.values(d);const lateN=v.filter(x=>x.late).length;const lateMin=v.reduce((s,x)=>s+(x.late?Math.max(0,toMin(x.in)-toMin(S.settings.workStart)):0),0);return{id,present:v.length,lateN,lateMin};});
+  let html=head;
+  if(!self){
+    const dk=attDate.startsWith(attMonth)?attDate:`${attMonth}-01`; const dd=dk.slice(8);
+    html+=`<section class="card grid"><div class="sec-head"><h3>รายวัน</h3><label class="f" style="min-width:170px">วันที่<input type="date" id="att-date" value="${dk}" min="${attMonth}-01" max="${attMonth}-${String(days).padStart(2,"0")}"></label></div>
+    <div class="tbl-wrap"><table><thead><tr><th>พนักงาน</th><th>เข้า</th><th>ออก</th><th>สถานะ</th></tr></thead><tbody>${ids.map(id=>{const r=attDoc(id)?.days?.[dd];const lv=Object.values(S.leaves).find(l=>l.empId===id&&l.status==="approved"&&l.start<=dk&&l.end>=dk);return `<tr><td>${esc(empName(id))}</td><td>${esc(r?.in||"-")}</td><td>${esc(r?.out||"-")}</td><td>${r?(r.late?pill("สาย","p-warn"):pill("ตรงเวลา","p-ok")):lv?pill(LEAVE_TYPES[lv.type]?.label||"ลา","p-acc"):pill("ไม่มีบันทึก","p-mute")}</td></tr>`;}).join("")}</tbody></table></div></section>`;
+  }
+  html+=`<section class="card grid"><h3>สรุป${esc(thMonth(attMonth))}</h3><div class="tbl-wrap"><table><thead><tr><th>พนักงาน</th><th class="num">วันที่มา</th><th class="num">มาสาย (ครั้ง)</th><th class="num">สายรวม (นาที)</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${esc(empName(r.id))}</td><td class="num">${r.present}</td><td class="num">${r.lateN?`<span class="pill p-warn">${r.lateN}</span>`:"0"}</td><td class="num">${fmt(r.lateMin)}</td></tr>`).join("")}</tbody></table></div></section>`;
+  if(self && c.emp){
+    const d=attDoc(c.emp.id)?.days||{}; const keys=Object.keys(d).sort().reverse();
+    html+=`<section class="card grid"><h3>ประวัติของฉัน</h3>${keys.length?`<div class="list">${keys.map(k=>`<div class="item"><span>${esc(thDate(`${attMonth}-${k}`))}</span><span class="row"><span class="sub">${esc(d[k].in)} – ${esc(d[k].out||"ยังไม่ออก")}</span>${d[k].late?pill("สาย","p-warn"):pill("ตรงเวลา","p-ok")}</span></div>`).join("")}</div>`:`<div class="empty">ยังไม่มีการเช็กอินในเดือนนี้</div>`}</section>`;
+  }
+  if(!loaded.has("attendance")) html+=`<div class="sub">กำลังโหลดเวลาเข้างานของเดือนนี้…</div>`;
+  return html;
+}
+async function doCheck(kind){
+  const c=ctx(); if(!c.emp) return;
+  const mk=monthKey(), dd=todayKey().slice(8), path=`attendance/${c.emp.id}_${mk}`;
+  const cur=attDoc(c.emp.id,mk); const days={...(cur?.days||{})}; const t=nowHM();
+  if(kind==="in"){ if(days[dd]) return; days[dd]={in:t, late:isLate(t)}; }
+  else { if(!days[dd]) return; days[dd]={...days[dd], out:t}; }
+  if(mk!==attMonth){attMonth=mk;subscribeAttendance();}
+  if(await write(path,{empId:c.emp.id, month:mk, days, sample:!!cur?.sample})) toast(kind==="in"?(days[dd].late?`เช็กอิน ${t} น. (สาย)`:`เช็กอิน ${t} น.`):`เช็กเอาต์ ${t} น.`);
+}
+
+function viewLeave(c){
+  const ids=new Set(visibleEmpIds(c));
+  const all=Object.values(S.leaves).filter(l=>ids.has(l.empId)).sort((a,b)=>String(b.start).localeCompare(a.start));
+  const y=todayKey().slice(0,4);
+  let html=`<div class="sec-head"><div><h2>การลา</h2><div class="sub">โควตาตามพระราชบัญญัติคุ้มครองแรงงาน · นับเฉพาะวันจันทร์–ศุกร์</div></div>${c.emp&&!c.previewing?`<button class="btn pri" data-act="new-leave">ขอลา</button>`:""}</div>`;
+  if(c.emp) html+=`<section class="card grid"><h3>วันลาคงเหลือของฉัน ปี ${Number(y)+543}</h3>${balanceHTML(c.emp,leaveUsage(c.emp.id,y))}</section>`;
+  if(c.isHR||c.role==="manager"){
+    html+=`<section class="card grid"><h3>สรุปการใช้วันลา ปี ${Number(y)+543}</h3><div class="tbl-wrap"><table><thead><tr><th>พนักงาน</th>${["sick","personal","vacation","maternity","unpaid"].map(k=>`<th class="num">${LEAVE_TYPES[k].label}</th>`).join("")}</tr></thead><tbody>${[...ids].map(id=>{const u=leaveUsage(id,y);const e=S.employees[id];return `<tr><td>${esc(empName(id))}</td>${["sick","personal","vacation","maternity","unpaid"].map(k=>{const q=quotaFor(e,k);const over=q!==null&&u[k].used>q;return `<td class="num">${over?`<span class="pill p-bad">${fmt(u[k].used,1)}</span>`:fmt(u[k].used,u[k].used%1?1:0)}${q!==null?`<span class="muted small">/${q}</span>`:""}</td>`;}).join("")}</tr>`;}).join("")}</tbody></table></div></section>`;
+  }
+  html+=`<section class="card grid"><h3>รายการคำขอลา</h3>${all.length?`<div class="list">${all.map(l=>leaveItem(l,c)).join("")}</div>`:`<div class="empty">ยังไม่มีคำขอลา</div>`}</section>`;
+  html+=`<details class="card"><summary><b>สิทธิ์การลาตามกฎหมาย</b></summary><div class="list" style="margin-top:10px">${Object.values(LEAVE_TYPES).map(t=>`<div class="item"><span class="t">${t.label}</span><span class="sub">${t.note}</span></div>`).join("")}</div><p class="small muted">ลาป่วยตั้งแต่ 3 วันทำงานขึ้นไป นายจ้างขอใบรับรองแพทย์ได้ ตัวเลขโควตาแก้ได้ในหน้าตั้งค่า</p></details>`;
+  return html;
+}
+function leaveForm(c){
+  const opts=c.isHR?activeEmps():[c.emp].filter(Boolean);
+  return `<div class="fgrid">
+  ${c.isHR?`<label class="f">พนักงาน<select name="empId">${opts.map(e=>`<option value="${e.id}" ${c.emp&&e.id===c.emp.id?"selected":""}>${esc(e.name)}</option>`).join("")}</select></label>`:`<input type="hidden" name="empId" value="${c.emp.id}">`}
+  <label class="f">ประเภทการลา<select name="type">${Object.entries(LEAVE_TYPES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join("")}</select></label>
+  <label class="f">วันที่เริ่ม<input type="date" name="start" id="lv-start" required value="${todayKey()}"></label>
+  <label class="f">ถึงวันที่<input type="date" name="end" id="lv-end" required value="${todayKey()}"></label>
+  </div>
+  <label class="chk"><input type="checkbox" name="half" id="lv-half"> ลาครึ่งวัน (เฉพาะลาวันเดียว)</label>
+  <label class="f">เหตุผล<textarea name="reason" rows="2" placeholder="เช่น ไปพบแพทย์"></textarea></label>
+  <div class="notice" id="lv-calc">รวม 1 วันทำงาน</div>`;
+}
+function bindLeaveCalc(){
+  const upd=()=>{const s=$("#lv-start")?.value,e=$("#lv-end")?.value;if(!s||!e)return;const half=$("#lv-half")?.checked&&s===e;let d=workDays(s,e);if(half&&d)d=.5;const box=$("#lv-calc");if(!box)return;
+    if(e<s){box.textContent="วันสิ้นสุดต้องไม่ก่อนวันเริ่ม";box.className="notice warn";return;}
+    const empId=$("[name=empId]")?.value,type=$("[name=type]")?.value;const emp=S.employees[empId];const q=quotaFor(emp,type);const u=leaveUsage(empId,s.slice(0,4))[type]||{used:0,pending:0};
+    let msg=`รวม ${fmt(d,d%1?1:0)} วันทำงาน`; let warn=d===0;
+    if(d===0) msg="ช่วงวันที่เลือกเป็นวันหยุดเสาร์–อาทิตย์ทั้งหมด";
+    else if(q!==null){const left=q-u.used-u.pending;msg+=` · คงเหลือหลังลา ${fmt(left-d,1)} วัน`;if(left-d<0){warn=true;msg+=" (เกินโควตา หัวหน้าพิจารณาเป็นกรณี)";}}
+    box.textContent=msg; box.className="notice"+(warn?" warn":"");};
+  ["#lv-start","#lv-end","#lv-half","[name=empId]","[name=type]"].forEach(s=>$(s)?.addEventListener("input",upd)); upd();
+}
+async function saveLeave(fd){
+  const s=fd.get("start"),e=fd.get("end"); if(e<s){toast("วันสิ้นสุดต้องไม่ก่อนวันเริ่ม");return false;}
+  let d=workDays(s,e); if(fd.get("half")&&s===e&&d) d=.5; if(!d){toast("ช่วงวันที่เลือกไม่มีวันทำงาน");return false;}
+  const c=ctx(); const id=uid("l");
+  const ok=await write(`leaves/${id}`,{empId:fd.get("empId"), type:fd.get("type"), start:s, end:e, days:d, reason:fd.get("reason").trim(), status:"pending", createdAt:new Date().toISOString(), requestedBy:c.emp?.id||"hr", sample:false});
+  if(ok) toast("ส่งคำขอลาแล้ว รอหัวหน้าอนุมัติ"); return ok;
+}
+
+function viewReview(c){
+  const ids=new Set(visibleEmpIds(c));
+  const canWrite=id=>!c.previewing&&(c.isHR||(c.role==="manager"&&S.employees[id]?.managerId===c.emp?.id));
+  const all=Object.values(S.reviews).filter(r=>ids.has(r.empId)&&(canWrite(r.empId)||r.status==="final"));
+  const periods=[...new Set(all.map(r=>r.period))].sort().reverse();
+  if(!reviewPeriod||!periods.includes(reviewPeriod)) reviewPeriod=periods[0]||"";
+  const list=all.filter(r=>r.period===reviewPeriod).sort((a,b)=>b.total-a.total);
+  const kw=Number(S.settings.kpiWeight);
+  let html=`<div class="sec-head"><div><h2>ประเมินผลงาน</h2><div class="sub">คะแนนรวม = KPI ${kw}% + Competency ${100-kw}% · เกรด A ≥90 · B ≥80 · C ≥70 · D ≥60 · E &lt;60</div></div><div class="row">${periods.length?`<select class="inp" id="rv-period" style="width:auto" aria-label="รอบประเมิน">${periods.map(p=>`<option ${p===reviewPeriod?"selected":""}>${esc(p)}</option>`).join("")}</select>`:""}${(c.isHR||c.role==="manager")&&!c.previewing?`<button class="btn pri" data-act="new-review">สร้างแบบประเมิน</button>`:""}</div></div>`;
+  if(!list.length) return html+`<div class="empty">ยังไม่มีผลประเมิน${(c.isHR||c.role==="manager")?" กด “สร้างแบบประเมิน” เพื่อเริ่มรอบแรก":""}</div>`;
+  if(list.length>1){const dist={A:0,B:0,C:0,D:0,E:0};list.forEach(r=>dist[gradeOf(r.total)[0]]++);html+=`<section class="stats">${Object.entries(dist).map(([g,n])=>`<div class="stat"><div class="n">${n}</div><div class="l">เกรด ${g}</div></div>`).join("")}</section>`;}
+  html+=`<div class="tbl-wrap"><table><thead><tr><th>เกรด</th><th>พนักงาน</th><th class="num">KPI</th><th class="num">Competency</th><th class="num">รวม</th><th>สถานะ</th><th></th></tr></thead><tbody>${list.map(r=>{const g=gradeOf(r.total);return `<tr><td><span class="grade pill ${g[2]}">${g[0]}</span></td><td><b>${esc(empName(r.empId))}</b><div class="small muted">${g[1]} · ผู้ประเมิน ${esc(r.reviewer?empName(r.reviewer):"HR")}</div></td><td class="num">${fmt(r.kpiPct,1)}%</td><td class="num">${fmt(r.compPct,1)}%</td><td class="num"><b>${fmt(r.total,1)}</b></td><td>${r.status==="final"?pill("ยืนยันแล้ว","p-ok"):pill("ฉบับร่าง","p-mute")}</td><td><button class="btn sm" data-act="${canWrite(r.empId)?"edit-review":"view-review"}" data-id="${r.id}">${canWrite(r.empId)?"แก้ไข":"ดู"}</button></td></tr>`;}).join("")}</tbody></table></div>`;
+  return html;
+}
+function calcReview(kpis, comps){
+  const kw=Number(S.settings.kpiWeight);
+  const sw=kpis.reduce((s,k)=>s+Number(k.weight||0),0);
+  const kpiPct=sw?kpis.reduce((s,k)=>s+Number(k.weight||0)*Math.min(1.2,Number(k.target)?Number(k.actual||0)/Number(k.target):0),0)/sw*100:0;
+  const sc=comps.filter(x=>x.score); const compPct=sc.length?sc.reduce((s,x)=>s+Number(x.score),0)/sc.length/5*100:0;
+  const total=Math.min(100,kpiPct*kw/100+compPct*(100-kw)/100);
+  return {kpiPct,compPct,total,sw};
+}
+function reviewForm(r, c, readOnly){
+  const opts=visibleEmpIds(c).filter(id=>c.isHR||S.employees[id]?.managerId===c.emp?.id);
+  const ro=readOnly?"disabled":"";
+  return `<div class="fgrid">
+   <label class="f">พนักงาน<select name="empId" ${ro||(r.id?"disabled":"")}>${opts.concat(r.empId&&!opts.includes(r.empId)?[r.empId]:[]).map(id=>`<option value="${id}" ${id===r.empId?"selected":""}>${esc(empName(id))}</option>`).join("")}</select></label>
+   <label class="f">รอบประเมิน<input name="period" required value="${esc(r.period)}" ${ro} placeholder="ปี 2569 รอบ 2"></label></div>
+   <h3>KPI <span class="sub" id="kw-sum"></span></h3>
+   <div class="kpi-row small muted"><span class="kn">ตัวชี้วัด</span><span>น้ำหนัก %</span><span>เป้า</span><span>ทำได้</span><span></span></div>
+   <div id="kpis" class="grid" style="gap:6px">${r.kpis.map((k,i)=>kpiRow(k,i,ro)).join("")}</div>
+   ${readOnly?"":`<div><button type="button" class="btn sm" data-act="add-kpi">เพิ่ม KPI</button></div>`}
+   <h3>Competency <span class="sub">(1 = ต่ำกว่าคาด · 3 = ตามคาด · 5 = เกินคาดมาก)</span></h3>
+   <div class="grid" style="gap:8px">${r.comps.map((x,i)=>`<div class="item"><span>${esc(x.name)}</span><div class="score" data-ci="${i}" role="group" aria-label="${esc(x.name)}">${[1,2,3,4,5].map(n=>`<button type="button" ${ro} aria-pressed="${x.score==n}" data-score="${n}">${n}</button>`).join("")}</div></div>`).join("")}</div>
+   <label class="f">ความเห็นผู้ประเมิน / แผนพัฒนา<textarea name="comment" rows="3" ${ro}>${esc(r.comment||"")}</textarea></label>
+   <div class="notice" id="rv-sum"></div>
+   ${readOnly?"":`<label class="chk"><input type="checkbox" name="final" ${r.status==="final"?"checked":""}> ยืนยันผล (พนักงานจะเห็นผลนี้)</label>`}`;
+}
+function kpiRow(k,i,ro=""){return `<div class="kpi-row" data-ki="${i}"><input class="inp kn" aria-label="ชื่อ KPI" value="${esc(k.name)}" data-k="name" ${ro} placeholder="เช่น ยอดขายเทียบเป้า"><input class="inp" aria-label="น้ำหนัก" type="number" min="0" max="100" value="${esc(k.weight)}" data-k="weight" ${ro}><input class="inp" aria-label="เป้าหมาย" type="number" step="any" value="${esc(k.target)}" data-k="target" ${ro}><input class="inp" aria-label="ผลที่ทำได้" type="number" step="any" value="${esc(k.actual)}" data-k="actual" ${ro}>${ro?"<span></span>":`<button type="button" class="btn sm ghost" data-act="rm-kpi" data-i="${i}" aria-label="ลบ KPI">ลบ</button>`}</div>`;}
+let draft=null;
+function openReview(id, readOnly){
+  const c=ctx();
+  const base=id?JSON.parse(JSON.stringify(S.reviews[id])):{empId:visibleEmpIds(c).find(x=>c.isHR||S.employees[x]?.managerId===c.emp?.id)||"", period:reviewPeriod||`ปี ${Number(todayKey().slice(0,4))+543} รอบ 2`, kpis:[{name:"",weight:50,target:100,actual:0},{name:"",weight:50,target:100,actual:0}], comps:DEFAULT_COMPS.map(n=>({name:n,score:0})), comment:"", status:"draft"};
+  draft=base;
+  modal(readOnly?"ผลการประเมิน":id?"แก้ไขแบบประเมิน":"สร้างแบบประเมิน", reviewForm(base,c,readOnly), readOnly?null:async fd=>{
+    syncKpis(); const calc=calcReview(draft.kpis,draft.comps);
+    if(Math.round(calc.sw)!==100){toast("น้ำหนัก KPI รวมต้องเท่ากับ 100%");return false;}
+    if(draft.comps.some(x=>!x.score)&&fd.get("final")){toast("ให้คะแนน Competency ให้ครบก่อนยืนยันผล");return false;}
+    const rid=id||uid("r");
+    const data={empId:id?draft.empId:fd.get("empId"), period:fd.get("period").trim(), kpis:draft.kpis, comps:draft.comps, comment:fd.get("comment").trim(), kpiPct:calc.kpiPct, compPct:calc.compPct, total:calc.total, status:fd.get("final")?"final":"draft", reviewer:c.emp?.id||"", updatedAt:new Date().toISOString(), sample:!!draft.sample};
+    if(await write(`reviews/${rid}`,data)){reviewPeriod=data.period;toast("บันทึกผลประเมินแล้ว");}
+  });
+  updReviewSum();
+}
+function syncKpis(){ if(!draft) return; document.querySelectorAll("#kpis .kpi-row").forEach(row=>{const i=+row.dataset.ki;row.querySelectorAll("[data-k]").forEach(inp=>{draft.kpis[i][inp.dataset.k]=inp.dataset.k==="name"?inp.value:Number(inp.value);});}); }
+function updReviewSum(){ if(!draft||!$("#rv-sum")) return; syncKpis(); const c=calcReview(draft.kpis,draft.comps); const g=gradeOf(c.total); $("#kw-sum").textContent=`น้ำหนักรวม ${fmt(c.sw)}%`; $("#kw-sum").style.color=Math.round(c.sw)===100?"":"var(--bad)"; $("#rv-sum").innerHTML=`KPI ${fmt(c.kpiPct,1)}% · Competency ${fmt(c.compPct,1)}% · <b>รวม ${fmt(c.total,1)} คะแนน เกรด ${g[0]} (${g[1]})</b>`; }
+
+function viewHiring(c){
+  const ro=c.previewing||!c.isHR;
+  const cands=Object.values(S.candidates);
+  let html=`<div class="sec-head"><div><h2>สรรหาและรับพนักงานใหม่</h2><div class="sub">${cands.filter(x=>!["hired","rejected"].includes(x.stage)).length} คนกำลังอยู่ในขั้นตอน</div></div>${ro?"":`<button class="btn pri" data-act="new-cand">เพิ่มผู้สมัคร</button>`}</div>`;
+  html+=`<div class="kanban" role="list">${STAGES.map(([k,label],si)=>{const items=cands.filter(x=>x.stage===k).sort((a,b)=>String(a.appliedAt).localeCompare(b.appliedAt));return `<section class="col" role="listitem" aria-label="${label}"><h3><span>${label}</span><span class="pill p-mute">${items.length}</span></h3>${items.map(x=>`<div class="kcard"><div><b>${esc(x.name)}</b><div class="small muted">${esc(x.position)}${x.source?` · ${esc(x.source)}`:""}</div></div>${x.interviewAt&&k==="interview"?`<div class="small">นัดสัมภาษณ์ ${esc(thDate(x.interviewAt))}</div>`:""}${x.note?`<div class="small muted">${esc(x.note)}</div>`:""}${ro?"":`<div class="row">${si>0&&k!=="rejected"?`<button class="btn sm" data-act="stage" data-id="${x.id}" data-to="${STAGES[si-1][0]}" aria-label="ย้อนขั้น">◀</button>`:""}${si<4?`<button class="btn sm" data-act="stage" data-id="${x.id}" data-to="${STAGES[si+1][0]}">${STAGES[si+1][1]} ▶</button>`:""}${k==="hired"&&!x.empId?`<button class="btn sm pri" data-act="hire" data-id="${x.id}">สร้างเป็นพนักงาน</button>`:""}${si<4?`<button class="btn sm ghost" data-act="stage" data-id="${x.id}" data-to="rejected">ไม่ผ่าน</button>`:""}<button class="btn sm ghost" data-act="edit-cand" data-id="${x.id}">แก้ไข</button></div>`}</div>`).join("")||`<div class="small muted">ว่าง</div>`}</section>`;}).join("")}</div>`;
+  const obs=Object.values(S.onboarding).filter(o=>S.employees[o.empId]&&(c.isHR||visibleEmpIds(c).includes(o.empId)));
+  html+=`<div class="sec-head"><h2>Onboarding</h2></div>${obs.length?`<div class="grid g2">${obs.map(o=>{const done=o.items.filter(i=>i.done).length;return `<section class="card grid"><div class="sec-head"><div><h3>${esc(empName(o.empId))}</h3><div class="sub">เริ่มงาน ${esc(thDate(S.employees[o.empId]?.startDate))}</div></div>${pill(`${done}/${o.items.length}`,done===o.items.length?"p-ok":"p-acc")}</div><div class="bar"><i style="width:${done/o.items.length*100}%"></i></div>${onboardHTML(o,!ro)}</section>`;}).join("")}</div>`:`<div class="empty">ยังไม่มีพนักงานใหม่ที่ต้องทำ Onboarding</div>`}`;
+  return html;
+}
+function onboardHTML(o, editable){return `<div>${o.items.map((it,i)=>`<label class="chk"><input type="checkbox" data-act="ob-toggle" data-id="${o.id}" data-i="${i}" ${it.done?"checked":""} ${editable?"":"disabled"}><span>${esc(it.t)}</span></label>`).join("")}</div>`;}
+function candForm(x={}){return `<div class="fgrid">
+  <label class="f">ชื่อผู้สมัคร<input name="name" required value="${esc(x.name||"")}"></label>
+  <label class="f">ตำแหน่งที่สมัคร<input name="position" required value="${esc(x.position||"")}"></label>
+  <label class="f">ช่องทาง<input name="source" value="${esc(x.source||"")}" placeholder="JobsDB, แนะนำ, LinkedIn"></label>
+  <label class="f">อีเมล/ช่องทางติดต่อ<input name="contact" value="${esc(x.contact||"")}"></label>
+  <label class="f">วันนัดสัมภาษณ์<input type="date" name="interviewAt" value="${esc(x.interviewAt||"")}"></label>
+  <label class="f">ขั้นตอน<select name="stage">${STAGES.map(([k,l])=>`<option value="${k}" ${(x.stage||"applied")===k?"selected":""}>${l}</option>`).join("")}</select></label></div>
+  <label class="f">บันทึก<textarea name="note" rows="2">${esc(x.note||"")}</textarea></label>
+  ${x.id?`<div><button type="button" class="btn sm ghost danger" data-act="del-cand" data-id="${x.id}">ลบผู้สมัคร</button></div>`:""}`;}
+
+function viewTraining(c){
+  const ids=visibleEmpIds(c); const y=todayKey().slice(0,4); const target=Number(S.settings.trainingTarget);
+  const trs=Object.values(S.trainings).sort((a,b)=>String(b.date).localeCompare(a.date));
+  const hours=id=>trs.filter(t=>String(t.date).startsWith(y)&&(t.attendees||[]).includes(id)).reduce((s,t)=>s+Number(t.hours||0),0);
+  const mine=c.emp?trs.filter(t=>(t.attendees||[]).includes(c.emp.id)):[];
+  let html=`<div class="sec-head"><div><h2>แผนอบรมและพัฒนา</h2><div class="sub">เป้าหมาย ${target} ชั่วโมง/คน/ปี</div></div>${c.isHR&&!c.previewing?`<button class="btn pri" data-act="new-tr">เพิ่มหลักสูตร</button>`:""}</div>`;
+  html+=`<section class="card grid"><h3>ชั่วโมงอบรมสะสม ปี ${Number(y)+543}</h3><div class="tbl-wrap"><table><thead><tr><th>พนักงาน</th><th class="num">ชั่วโมง</th><th style="width:40%">ความคืบหน้า</th></tr></thead><tbody>${ids.map(id=>{const h=hours(id);return `<tr><td>${esc(empName(id))}</td><td class="num">${fmt(h,h%1?1:0)}</td><td><div class="bar" style="margin:0"><i style="width:${Math.min(100,target?h/target*100:0)}%"></i></div></td></tr>`;}).join("")}</tbody></table></div></section>`;
+  const show=c.isHR||c.role==="manager"?trs:mine;
+  html+=`<section class="card grid"><h3>${c.isHR||c.role==="manager"?"หลักสูตรทั้งหมด":"หลักสูตรของฉัน"}</h3>${show.length?`<div class="list">${show.map(t=>{const up=t.date>=todayKey();return `<div class="item"><div style="min-width:0"><div class="t">${esc(t.course)}</div><div class="sub">${esc(thDate(t.date))} · ${fmt(t.hours,t.hours%1?1:0)} ชม.${t.provider?` · ${esc(t.provider)}`:""} · ผู้เข้าอบรม ${(t.attendees||[]).length} คน</div></div><div class="row">${up?pill("กำลังจะมาถึง","p-acc"):pill("อบรมแล้ว","p-mute")}${c.isHR&&!c.previewing?`<button class="btn sm" data-act="edit-tr" data-id="${t.id}">แก้ไข</button>`:""}</div></div>`;}).join("")}</div>`:`<div class="empty">ยังไม่มีหลักสูตร</div>`}</section>`;
+  return html;
+}
+function trForm(t={}){return `<div class="fgrid">
+  <label class="f">ชื่อหลักสูตร<input name="course" required value="${esc(t.course||"")}"></label>
+  <label class="f">ผู้สอน/หน่วยงาน<input name="provider" value="${esc(t.provider||"")}"></label>
+  <label class="f">วันที่อบรม<input type="date" name="date" required value="${esc(t.date||todayKey())}"></label>
+  <label class="f">จำนวนชั่วโมง<input type="number" name="hours" min="0" step="0.5" required value="${esc(t.hours??3)}"></label></div>
+  <fieldset class="card" style="box-shadow:none"><legend class="sub">ผู้เข้าอบรม</legend><div class="row" style="margin-bottom:6px"><button type="button" class="btn sm" data-act="tr-all">เลือกทุกคน</button></div><div class="fgrid">${activeEmps().map(e=>`<label class="chk"><input type="checkbox" name="att" value="${e.id}" ${(t.attendees||[]).includes(e.id)?"checked":""}> ${esc(e.name)}</label>`).join("")}</div></fieldset>
+  ${t.id?`<div><button type="button" class="btn sm ghost danger" data-act="del-tr" data-id="${t.id}">ลบหลักสูตร</button></div>`:""}`;}
+
+function viewSettings(c){
+  const s=S.settings; const me=myEmp(); const sampleN=["employees","leaves","reviews","candidates","onboarding","trainings","attendance"].reduce((n,k)=>n+Object.values(S[k]).filter(x=>x.sample).length,0);
+  const linkable=activeEmps().filter(e=>!e.userId);
+  return `<div class="sec-head"><h2>ตั้งค่า</h2></div>
+  <form class="card grid" id="set-form"><h3>เวลาทำงานและเกณฑ์</h3><div class="fgrid">
+   <label class="f">ชื่อองค์กร<input name="orgName" value="${esc(s.orgName)}"></label>
+   <label class="f">เวลาเข้างาน<input type="time" name="workStart" value="${esc(s.workStart)}"></label>
+   <label class="f">เวลาออกงาน<input type="time" name="workEnd" value="${esc(s.workEnd)}"></label>
+   <label class="f">ผ่อนผันมาสาย (นาที)<input type="number" min="0" name="graceMin" value="${esc(s.graceMin)}"></label>
+   <label class="f">ลาป่วย (วัน/ปี)<input type="number" min="0" name="q_sick" value="${esc(s.quotas.sick)}"></label>
+   <label class="f">ลากิจ (วัน/ปี)<input type="number" min="0" name="q_personal" value="${esc(s.quotas.personal)}"></label>
+   <label class="f">พักร้อน (วัน/ปี)<input type="number" min="0" name="q_vacation" value="${esc(s.quotas.vacation)}"></label>
+   <label class="f">ลาคลอด (วัน)<input type="number" min="0" name="q_maternity" value="${esc(s.quotas.maternity)}"></label>
+   <label class="f">น้ำหนัก KPI (%)<input type="number" min="0" max="100" name="kpiWeight" value="${esc(s.kpiWeight)}"></label>
+   <label class="f">เป้าชั่วโมงอบรม/คน/ปี<input type="number" min="0" name="trainingTarget" value="${esc(s.trainingTarget)}"></label>
+  </div><div class="row"><button class="btn pri" type="submit">บันทึกการตั้งค่า</button>${isEditor?"":`<span class="sub">เฉพาะเจ้าของหรือผู้แก้ไข (Editor) ที่บันทึกการตั้งค่าได้</span>`}</div></form>
+  <section class="card grid"><h3>บัญชีของฉัน</h3>${me?`<div class="row">ผูกกับ <b>${esc(me.name)}</b><button class="btn sm" data-act="unlink" data-id="${me.id}">ยกเลิกการผูก</button></div>`:`<p class="sub">ผูกบัญชีกับรายชื่อพนักงาน เพื่อเช็กอินและขอลาได้</p><div class="row"><select class="inp" id="link-sel" style="width:auto">${linkable.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join("")}</select><button class="btn" data-act="link-me">ผูกบัญชี</button></div>`}</section>
+  <section class="card grid"><h3>ดูในมุมมองของผู้อื่น</h3><p class="sub">ใช้ทดสอบว่าหัวหน้าหรือพนักงานเห็นอะไรบ้าง เป็นแค่การแสดงผลในเครื่องนี้ ไม่มีการบันทึกแทนคนอื่น</p><div class="row"><select class="inp" id="viewas" style="width:auto"><option value="">HR (ตัวเอง)</option>${activeEmps().map(e=>`<option value="${e.id}" ${viewAs===e.id?"selected":""}>${esc(e.name)} · ${esc(ROLE_LABEL[e.role]||"")}</option>`).join("")}</select></div></section>
+  <section class="card grid"><h3>วิธีให้พนักงานเข้าใช้</h3><ol class="sub" style="margin:0;padding-left:20px"><li>แชร์ลิงก์แอปนี้ให้พนักงานในองค์กร โดยให้สิทธิ์ <b>Contributor</b> (ผู้ร่วมแก้ไข) เพื่อให้เช็กอินและขอลาได้</li><li>พนักงานเปิดลิงก์ครั้งแรก แล้วเลือกชื่อตัวเองเพื่อผูกบัญชี</li><li>ตรวจในหน้า “พนักงาน” ว่าผูกบัญชีถูกคน ถ้าผิด กด “แก้ไข” แล้วยกเลิกการผูก</li></ol><p class="small muted">การซ่อนข้อมูลตามสิทธิ์ทำในหน้าจอแอป ผู้ที่ได้รับลิงก์ทุกคนเข้าถึงข้อมูลชุดนี้ได้ จึงไม่ควรเก็บเงินเดือน เลขบัตรประชาชน หรือข้อมูลสุขภาพไว้ในแอปนี้</p></section>
+  <section class="card grid"><h3>ข้อมูลตัวอย่าง</h3>${sampleN?`<p class="sub">ตอนนี้มีข้อมูลตัวอย่าง ${sampleN} รายการ (พนักงานสมมติ 10 คนพร้อมประวัติการลา ผลประเมิน ผู้สมัคร และการอบรม) ลบออกเมื่อพร้อมใส่ข้อมูลจริง</p><div><button class="btn danger" data-act="clear-sample">ลบข้อมูลตัวอย่างทั้งหมด</button></div>`:`<p class="sub">ไม่มีข้อมูลตัวอย่างแล้ว</p>`}</section>`;
+}
+
+function viewClaim(){
+  const free=activeEmps().filter(e=>!e.userId);
+  return `<section class="card grid" style="max-width:560px;margin:0 auto"><h2>ยินดีต้อนรับค่ะ</h2><p class="sub">เลือกชื่อของคุณเพื่อผูกบัญชี หลังจากนี้จะเช็กอินเข้างาน ขอลา และดูผลประเมินของตัวเองได้</p>${free.length?`<label class="f">ชื่อของฉัน<select class="inp" id="claim-sel">${free.map(e=>`<option value="${e.id}">${esc(e.name)} · ${esc(e.position)}</option>`).join("")}</select></label><div><button class="btn pri" data-act="claim">นี่คือฉัน</button></div>`:`<div class="empty">ยังไม่มีรายชื่อที่ว่างให้ผูก ติดต่อ HR ให้เพิ่มชื่อของคุณก่อน</div>`}<p class="small muted">เลือกผิดคน ติดต่อ HR ให้ยกเลิกการผูกได้</p></section>`;
+}
+
+// ---------- render ----------
+function currentTab(c){const h=location.hash.slice(1);const allowed=tabsFor(c);return allowed.includes(h)?h:"home";}
+let pendingRender=false;
+document.addEventListener("focusout",()=>{ if(pendingRender) setTimeout(()=>{ const a=document.activeElement; if(!(a&&$("#app").contains(a)&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))){pendingRender=false;render();} },0); });
+function render(){
+  const app=$("#app");
+  const ae=document.activeElement;
+  if(ae&&app.contains(ae)&&/INPUT|TEXTAREA/.test(ae.tagName)&&ae.closest("form")){pendingRender=true;return;}
+  document.title = (S.settings.orgName && S.settings.orgName!=="HR Desk") ? `${S.settings.orgName} · HR Desk` : "HR Desk";
+  $("#org-name").textContent=S.settings.orgName||"HR Desk";
+  if(fatal){app.innerHTML=`<div class="empty">${esc(fatal)}</div>`;$("#tabs").innerHTML="";return;}
+  if(!db){app.innerHTML=`<div class="empty">${timedOut?"เปิดฐานข้อมูลไม่ได้ เข้าสู่ระบบ claude.ai แล้วเปิดลิงก์นี้อีกครั้ง":"กำลังเชื่อมต่อฐานข้อมูล…"}</div>`;return;}
+  if(!loaded.has("employees")){app.innerHTML=`<div class="empty">${timedOut?"ยังโหลดข้อมูลไม่ได้ ตรวจการเชื่อมต่ออินเทอร์เน็ต ข้อมูลจะขึ้นเองเมื่อเชื่อมต่อได้":"กำลังโหลดข้อมูลพนักงาน…"}</div>`;return;}
+  const c=ctx();
+  const who=$("#who");
+  who.innerHTML = c.emp||c.isHR ? `${c.previewing?pill("ตัวอย่างมุมมอง","p-warn"):""}<b>${esc(c.emp?.name||"HR")}</b>${pill(c.isHR?"HR":ROLE_LABEL[c.role]||"",c.isHR?"p-acc":"p-mute")}${c.previewing?`<button class="btn sm" data-act="exit-preview">กลับมุมมอง HR</button>`:""}` : "";
+  if(!c.emp && !c.isHR){ $("#tabs").innerHTML=""; app.innerHTML=viewClaim(); return; }
+  const tab=currentTab(c);
+  $("#tabs").innerHTML=tabsFor(c).map(k=>`<a href="#${k}" ${k===tab?'aria-current="page"':""}>${TABS.find(t=>t[0]===k)[1]}</a>`).join("");
+  const scroll=window.scrollY; const focusId=document.activeElement?.id;
+  const views={home:viewHome,people:viewPeople,time:viewTime,leave:viewLeave,review:viewReview,hiring:viewHiring,training:viewTraining,settings:viewSettings};
+  app.innerHTML=views[tab](c);
+  if(focusId&&document.getElementById(focusId)) document.getElementById(focusId).focus();
+  window.scrollTo(0,scroll);
+}
+window.addEventListener("hashchange",()=>{render();window.scrollTo(0,0);});
+setInterval(()=>{const el=$("#clock");if(el)el.textContent=nowHM();},10000);
+
+// ---------- events ----------
+document.addEventListener("change",async e=>{
+  const t=e.target;
+  if(t.id==="att-month"&&t.value){attMonth=t.value;attDate=`${t.value}-01`;loaded.delete("attendance");subscribeAttendance();render();}
+  else if(t.id==="att-date"&&t.value){attDate=t.value;render();}
+  else if(t.id==="rv-period"){reviewPeriod=t.value;render();}
+  else if(t.id==="viewas"){viewAs=t.value;location.hash="home";render();}
+  else if(t.dataset.act==="ob-toggle"){const o=S.onboarding[t.dataset.id];const items=o.items.map((it,i)=>i==+t.dataset.i?{...it,done:t.checked}:it);await write(`onboarding/${o.id}`,{items},"update");}
+});
+document.addEventListener("input",e=>{ if(e.target.closest("#kpis")) updReviewSum(); });
+document.addEventListener("submit",async e=>{
+  if(e.target.id!=="set-form") return; e.preventDefault();
+  const fd=new FormData(e.target); const n=k=>Number(fd.get(k));
+  const data={orgName:fd.get("orgName").trim()||"HR Desk", workStart:fd.get("workStart"), workEnd:fd.get("workEnd"), graceMin:n("graceMin"), quotas:{sick:n("q_sick"),personal:n("q_personal"),vacation:n("q_vacation"),maternity:n("q_maternity")}, kpiWeight:Math.min(100,Math.max(0,n("kpiWeight"))), trainingTarget:n("trainingTarget")};
+  if(await write("settings/main",data)) toast("บันทึกการตั้งค่าแล้ว");
+});
+document.addEventListener("click",async e=>{
+  const sb=e.target.closest(".score button");
+  if(sb&&draft&&!sb.disabled){ const ci=+sb.closest(".score").dataset.ci; draft.comps[ci].score=+sb.dataset.score; sb.parentElement.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===sb)); updReviewSum(); return; }
+  const b=e.target.closest("[data-act]"); if(!b||b.tagName==="INPUT") return;
+  const act=b.dataset.act, id=b.dataset.id, c=ctx();
+  switch(act){
+    case "checkin": b.disabled=true; await doCheck("in"); break;
+    case "checkout": b.disabled=true; await doCheck("out"); break;
+    case "new-leave": modal("ขอลา", leaveForm(c), saveLeave, "ส่งคำขอ"); bindLeaveCalc(); break;
+    case "approve": case "reject": { if(await write(`leaves/${id}`,{status:act==="approve"?"approved":"rejected", decidedBy:c.emp?.id||"hr", decidedAt:new Date().toISOString()},"update")) toast(act==="approve"?"อนุมัติการลาแล้ว":"ไม่อนุมัติการลา"); break; }
+    case "cancel-leave": confirmBox("ยกเลิกคำขอลานี้?","ยกเลิกคำขอ",async()=>{if(await write(`leaves/${id}`,null,"delete"))toast("ยกเลิกคำขอลาแล้ว");}); break;
+    case "new-emp": modal("เพิ่มพนักงาน", empForm(), saveEmp()); break;
+    case "edit-emp": modal("แก้ไขข้อมูลพนักงาน", empForm(S.employees[id]), saveEmp(id)); break;
+    case "del-emp": closeModal(); confirmBox(`ลบ ${empName(id)} ออกจากทะเบียน? ประวัติการลาและการประเมินจะยังอยู่ ถ้าพนักงานลาออก แนะนำให้เปลี่ยนสถานะเป็น “ลาออก” แทน`,"ลบพนักงาน",async()=>{if(await write(`employees/${id}`,null,"delete")){await write(`onboarding/${id}`,null,"delete");toast("ลบพนักงานแล้ว");}}); break;
+    case "unlink": if(await write(`employees/${id}`,{userId:null},"update")){closeModal();toast("ยกเลิกการผูกบัญชีแล้ว");} break;
+    case "link-me": { const v=$("#link-sel")?.value; if(v&&myId&&await write(`employees/${v}`,{userId:myId},"update")) toast("ผูกบัญชีแล้ว"); break; }
+    case "claim": { const v=$("#claim-sel")?.value; if(!myId){toast("ระบบยังระบุบัญชีของคุณไม่ได้ ลองเปิดลิงก์ใหม่");break;} if(v&&await write(`employees/${v}`,{userId:myId},"update")){toast("ผูกบัญชีเรียบร้อย");location.hash="home";} break; }
+    case "exit-preview": viewAs=""; render(); break;
+    case "new-review": openReview(null,false); break;
+    case "edit-review": openReview(id,false); break;
+    case "view-review": openReview(id,true); break;
+    case "add-kpi": syncKpis(); draft.kpis.push({name:"",weight:0,target:100,actual:0}); $("#kpis").innerHTML=draft.kpis.map((k,i)=>kpiRow(k,i)).join(""); updReviewSum(); break;
+    case "rm-kpi": syncKpis(); draft.kpis.splice(+b.dataset.i,1); $("#kpis").innerHTML=draft.kpis.map((k,i)=>kpiRow(k,i)).join(""); updReviewSum(); break;
+    case "new-cand": modal("เพิ่มผู้สมัคร", candForm(), saveCand()); break;
+    case "edit-cand": modal("แก้ไขผู้สมัคร", candForm(S.candidates[id]), saveCand(id)); break;
+    case "del-cand": closeModal(); confirmBox("ลบผู้สมัครรายนี้?","ลบ",async()=>{if(await write(`candidates/${id}`,null,"delete"))toast("ลบผู้สมัครแล้ว");}); break;
+    case "stage": await write(`candidates/${id}`,{stage:b.dataset.to},"update"); break;
+    case "hire": { const x=S.candidates[id]; const n=activeEmps().length+1; modal("สร้างเป็นพนักงาน", empForm({name:x.name,position:x.position,code:`EMP${String(n).padStart(3,"0")}`,status:"probation",role:"staff"}), async fd=>{const r=await saveEmp()(fd); if(r===false) return false; const e=Object.values(S.employees).find(z=>z.name===fd.get("name").trim()); await write(`candidates/${id}`,{empId:e?.id||"created"},"update");}); break; }
+    case "new-tr": modal("เพิ่มหลักสูตรอบรม", trForm(), saveTr()); break;
+    case "edit-tr": modal("แก้ไขหลักสูตร", trForm(S.trainings[id]), saveTr(id)); break;
+    case "del-tr": closeModal(); confirmBox("ลบหลักสูตรนี้?","ลบ",async()=>{if(await write(`trainings/${id}`,null,"delete"))toast("ลบหลักสูตรแล้ว");}); break;
+    case "tr-all": document.querySelectorAll("[name=att]").forEach(x=>x.checked=true); break;
+    case "clear-sample": confirmBox("ลบข้อมูลตัวอย่างทั้งหมด? ข้อมูลที่คุณเพิ่มเองจะไม่ถูกลบ","ลบข้อมูลตัวอย่าง",clearSample); break;
+  }
+});
+function saveCand(id){return async fd=>{const old=id?S.candidates[id]:{};const data={...old,name:fd.get("name").trim(),position:fd.get("position").trim(),source:fd.get("source").trim(),contact:fd.get("contact").trim(),interviewAt:fd.get("interviewAt"),stage:fd.get("stage"),note:fd.get("note").trim(),appliedAt:old.appliedAt||todayKey()};delete data.id;if(await write(`candidates/${id||uid("c")}`,data))toast("บันทึกผู้สมัครแล้ว");};}
+function saveTr(id){return async fd=>{const old=id?S.trainings[id]:{};const data={...old,course:fd.get("course").trim(),provider:fd.get("provider").trim(),date:fd.get("date"),hours:Number(fd.get("hours")),attendees:fd.getAll("att")};delete data.id;if(await write(`trainings/${id||uid("t")}`,data))toast("บันทึกหลักสูตรแล้ว");};}
+async function clearSample(){
+  let n=0;
+  for(const col of ["leaves","reviews","candidates","onboarding","trainings","attendance","employees"]){
+    for(const x of Object.values(S[col]).filter(v=>v.sample)){ try{await db.doc(`${col}/${x.id}`).delete();n++;}catch(e){} }
+  }
+  // attendance of other months
+  try{const snap=await db.collection("attendance").where("sample","==",true).limit(1000).get();for(const d of snap.docs){await db.doc(`attendance/${d.id}`).delete();n++;}}catch(e){}
+  viewAs=""; toast(`ลบข้อมูลตัวอย่างแล้ว ${n} รายการ`);
+}
+
+// ---------- boot ----------
+async function boot(){
+  const timer=setTimeout(()=>{timedOut=true;render();},10000);
+  const [d,u]=await Promise.all([window.claude?.use("db"),window.claude?.use("user")].map(p=>Promise.resolve(p).catch(()=>null)));
+  db=d; user=u;
+  if(!db){clearTimeout(timer);timedOut=true;render();return;}
+  if(user){ try{myId=await user.id();}catch(e){} try{isEditor=await user.canEdit();}catch(e){} }
+  ["employees","leaves","reviews","candidates","onboarding","trainings","settings"].forEach(col=>listen(col, db.collection(col).limit(1000)));
+  subscribeAttendance();
+  const iv=setInterval(()=>{if(loaded.has("employees")){clearTimeout(timer);clearInterval(iv);}},300);
+  render();
+}
+if(window.claude?.use) boot(); else { setTimeout(()=>{ if(window.claude?.use) boot(); else {timedOut=true;render();} },1500); }
+})();
+</script>
